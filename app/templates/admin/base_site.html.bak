@@ -1,0 +1,812 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} · ZEA{% endblock %}
+
+{% block branding %}
+<div id="zea-brand">
+    <a href="{% url 'admin:index' %}" class="zea-logo">
+        <span class="zea-z">Z</span>
+        <span class="zea-name">ZEA <span class="zea-sub">admin</span></span>
+    </a>
+    <a href="/" target="_blank" class="zea-open-site">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Сайт
+    </a>
+</div>
+{% endblock %}
+
+{% block footer %}
+<div id="footer"><p>ZEA IT Studio © 2024</p></div>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   ZEA Admin — Custom Design v3  (все баги исправлены)
+================================================================ */
+:root {
+  --bg:       #080c14;
+  --s:        #0c1120;
+  --s2:       #0f1628;
+  --card:     rgba(255,255,255,.04);
+  --b:        rgba(255,255,255,.07);
+  --ba:       rgba(99,102,241,.25);
+  --a:        #6366f1;
+  --a2:       #8b5cf6;
+  --ah:       #a5b4fc;
+  --text:     #e2e8f0;
+  --m:        #94a3b8;
+  --d:        #4b5563;
+  --ok:       #34d399;
+  --err:      #f87171;
+  --warn:     #fbbf24;
+  --r:        8px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{
+  font-family:'Inter',system-ui,sans-serif!important;
+  background:var(--bg)!important;
+  color:var(--text)!important;
+  font-size:13px!important;
+}
+a{color:var(--ah);text-decoration:none;transition:color .15s}
+a:hover{color:#fff}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#1e293b;border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:var(--a)}
+
+/* ────────────────────────────────────────────────────────────
+   ФИХ 1: Луна / переключатель тёмной темы — скрыть полностью
+──────────────────────────────────────────────────────────── */
+#header-theme-toggle,
+.theme-toggle,
+[data-theme-toggle],
+input#toggle-dark-mode,
+label[for*="dark-mode"],
+label[for*="theme"],
+button[aria-label*="theme"],
+button[aria-label*="dark"],
+button[aria-label*="moon"],
+#header .theme-switch,
+.header-theme-button{display:none!important}
+
+/* ────────────────────────────────────────────────────────────
+   ФИХ 2: Иконка Q (лупа) в поисковой строке — скрыть
+──────────────────────────────────────────────────────────── */
+#changelist-search label,
+#toolbar form > label,
+#changelist-search .search-icon,
+#changelist-search span.search-icon{display:none!important}
+
+/* ────────────────────────────────────────────────────────────
+   ФИХ 3: "ДЕЙСТВИЕ:" — убрать uppercase только для actions
+──────────────────────────────────────────────────────────── */
+.actions label,
+.actions span.action-counter{
+  text-transform:none!important;
+  font-size:12px!important;
+  font-weight:500!important;
+  color:var(--m)!important;
+  letter-spacing:0!important;
+}
+
+/* ────────────────────────────────────────────────────────────
+   ФИХ 4: Addlink в сайдбаре — правильная позиция, без зелёного
+──────────────────────────────────────────────────────────── */
+/* Базовый addlink (главный контент) — оставляем зелёный */
+.module .addlink,
+#content .addlink{color:var(--ok)!important;font-size:12px!important}
+
+/* Addlink ВНУТРИ сайдбара — маленькая кнопка справа */
+#nav-sidebar li{
+  position:relative!important;
+  display:block!important;
+  margin:1px 8px!important;
+  padding:0!important;
+  border-radius:7px!important;
+  list-style:none!important;
+}
+#nav-sidebar li > a:not(.addlink):not(.changelink):not(.viewlink){
+  display:block!important;
+  color:var(--m)!important;
+  font-size:12px!important;font-weight:500!important;
+  padding:7px 36px 7px 10px!important; /* справа — место под + */
+  border-radius:7px!important;
+  white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+  transition:all .15s!important;
+}
+#nav-sidebar li > a:not(.addlink):not(.changelink):not(.viewlink):hover{
+  color:var(--text)!important;background:rgba(99,102,241,.08)!important;
+}
+/* + кнопка — абсолютная, справа по центру */
+#nav-sidebar li > a.addlink{
+  position:absolute!important;
+  right:6px!important;top:50%!important;transform:translateY(-50%)!important;
+  width:20px!important;height:20px!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  border-radius:5px!important;
+  font-size:0!important; /* скрываем текст "Добавить" */
+  color:transparent!important;
+  transition:all .15s!important;
+}
+#nav-sidebar li > a.addlink::after{
+  content:'+';
+  font-size:15px!important;font-weight:300!important;
+  color:var(--d)!important;line-height:1!important;
+  transition:color .15s!important;
+}
+#nav-sidebar li > a.addlink:hover{background:rgba(99,102,241,.15)!important}
+#nav-sidebar li > a.addlink:hover::after{color:var(--ah)!important}
+/* Changelink в сайдбаре — скрыть (дублирует модель-ссылку) */
+#nav-sidebar li > a.changelink{display:none!important}
+
+/* ── Верхняя полоска-акцент ──────────────────────────────── */
+body::before{
+  content:'';
+  position:fixed;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,#6366f1,#8b5cf6,#06b6d4);
+  background-size:200% 100%;
+  animation:stripe 4s linear infinite;
+  z-index:9999;
+}
+@keyframes stripe{0%{background-position:0% 0%}100%{background-position:200% 0%}}
+
+/* ── Логотип ─────────────────────────────────────────────── */
+#zea-brand{display:flex;align-items:center;gap:12px}
+.zea-logo{display:flex;align-items:center;gap:9px;text-decoration:none!important}
+.zea-z{
+  width:30px;height:30px;border-radius:8px;
+  background:linear-gradient(-45deg,#6366f1,#8b5cf6,#22d3ee,#3b82f6);
+  background-size:300% 300%;animation:zg 5s ease infinite;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:14px;color:#fff;flex-shrink:0;
+  box-shadow:0 0 12px rgba(99,102,241,.5);
+}
+@keyframes zg{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.zea-name{font-size:16px;font-weight:800;color:#fff!important;letter-spacing:-.3px}
+.zea-sub{font-size:10px;font-weight:500;color:var(--m);text-transform:uppercase;letter-spacing:.5px;margin-left:3px}
+.zea-open-site{
+  display:flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:500;color:var(--d)!important;
+  border:1px solid rgba(255,255,255,.08);border-radius:6px;
+  padding:4px 10px;transition:all .15s;white-space:nowrap;
+}
+.zea-open-site:hover{color:var(--m)!important;border-color:var(--ba);background:rgba(99,102,241,.08)}
+
+/* ── Header ──────────────────────────────────────────────── */
+#header{
+  background:rgba(8,12,20,.9)!important;
+  backdrop-filter:blur(20px)!important;
+  border-bottom:1px solid var(--b)!important;
+  box-shadow:0 1px 20px rgba(0,0,0,.6)!important;
+  padding:0 20px!important;
+  height:54px!important;
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  position:sticky!important;top:2px!important;z-index:100!important;
+}
+#branding{display:flex;align-items:center}
+#branding h1,#branding h1 a{display:none!important}
+
+#user-tools{
+  display:flex!important;align-items:center!important;gap:2px!important;
+  font-size:11px!important;color:var(--d)!important;
+  white-space:nowrap!important;
+}
+/* "Добро пожаловать, ADMIN" */
+#user-tools strong{color:var(--m)!important;font-weight:600!important}
+/* Точка-разделитель между приветствием и ссылками */
+#user-tools .dot,
+#user-tools > [data-cy="user-separator"],
+#user-tools::before{display:none!important} /* скрыть если есть отдельный элемент */
+#user-tools a{
+  color:var(--d)!important;
+  padding:4px 9px!important;border-radius:6px!important;
+  border:1px solid transparent!important;
+  font-size:11px!important;font-weight:500!important;
+  transition:all .15s!important;
+}
+#user-tools a:hover{color:var(--text)!important;border-color:var(--b)!important;background:rgba(255,255,255,.04)!important}
+/* Разделители между ссылками в user-tools */
+#user-tools .divider,
+#user-tools > span:not([class]){color:var(--d)!important;font-size:10px!important;padding:0 1px!important}
+
+/* ── Breadcrumbs ─────────────────────────────────────────── */
+div.breadcrumbs{
+  background:transparent!important;
+  border-bottom:1px solid var(--b)!important;
+  padding:8px 22px!important;font-size:11px!important;color:var(--d)!important;
+}
+div.breadcrumbs a{color:var(--a)!important}
+div.breadcrumbs a:hover{color:var(--ah)!important}
+
+/* ── Sidebar ─────────────────────────────────────────────── */
+#nav-sidebar{
+  background:var(--s)!important;
+  border-right:1px solid var(--b)!important;
+  width:210px!important;min-width:210px!important;
+}
+.sidebar-container{padding:8px 0 16px!important}
+
+/* Поиск в сайдбаре */
+#nav-filter{padding:8px 10px!important}
+#nav-filter-input{
+  width:100%!important;
+  background:rgba(255,255,255,.06)!important;
+  border:1px solid var(--b)!important;
+  border-radius:6px!important;
+  color:var(--text)!important;
+  padding:6px 10px!important;
+  font-size:12px!important;font-family:'Inter',sans-serif!important;
+  outline:none!important;transition:border-color .15s!important;
+}
+#nav-filter-input:focus{border-color:var(--a)!important;box-shadow:0 0 0 2px rgba(99,102,241,.12)!important}
+#nav-filter-input::placeholder{color:var(--d)!important}
+
+/* Заголовок группы (CMS, Contacts, Пользователи) — маленький лейбл */
+#nav-sidebar .section,
+#nav-sidebar caption,
+.sidebar-container .app-list > div > a,
+.sidebar-container .app-list > div > p,
+#nav-sidebar .app-list > div > a {
+  display:block!important;
+  font-size:9px!important;font-weight:700!important;
+  text-transform:uppercase!important;letter-spacing:1.4px!important;
+  color:var(--d)!important;
+  padding:14px 14px 4px!important;
+  margin:0!important;
+  background:transparent!important;   /* убираем любой фон */
+  border:none!important;              /* убираем рамку если есть */
+  border-radius:0!important;
+  white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+/* Убрать фон с родительских div-оберток групп */
+#nav-sidebar .app-list > div,
+.sidebar-container .app-list > div{
+  background:transparent!important;
+  border:none!important;
+  border-radius:0!important;
+  padding:0!important;
+}
+
+/* Пункты меню — переопределяем старый flex подход через ФИХ 4 выше */
+
+/* Активный пункт */
+#nav-sidebar .current-model,
+#nav-sidebar li.selected{
+  background:rgba(99,102,241,.12)!important;
+}
+#nav-sidebar .current-model > a,
+#nav-sidebar li.selected > a{
+  color:var(--ah)!important;font-weight:600!important;
+}
+
+/* Текущее приложение — убрали синий бокс, оставили только акцент цвета */
+#nav-sidebar .current-app .section,
+#nav-sidebar .current-app > .section:link,
+#nav-sidebar .current-app > .section:visited{
+  color:var(--ah)!important;
+  background:none!important;
+  padding:14px 14px 5px!important;margin:0!important;
+  text-transform:uppercase!important;font-size:10px!important;font-weight:700!important;letter-spacing:1.2px!important;
+}
+
+/* Переключатель сайдбара */
+.toggle-nav-sidebar{
+  background:var(--s)!important;
+  border-right:1px solid var(--b)!important;
+  color:var(--d)!important;
+}
+.toggle-nav-sidebar:hover{color:var(--ah)!important}
+
+/* ── Основной контент ────────────────────────────────────── */
+#content,#content-main,.colM,.colMS{background:transparent!important}
+#content{padding:20px 22px!important}
+
+/* ── Карточки / модули ───────────────────────────────────── */
+.module{
+  background:var(--card)!important;
+  border:1px solid var(--b)!important;
+  border-radius:12px!important;
+  overflow:hidden!important;
+  margin-bottom:16px!important;
+}
+.module h2,.module caption{
+  background:rgba(99,102,241,.08)!important;
+  color:var(--m)!important;
+  font-size:10px!important;font-weight:700!important;
+  text-transform:uppercase!important;letter-spacing:.7px!important;
+  padding:10px 16px!important;border-bottom:1px solid var(--b)!important;
+}
+.module h2 a{color:var(--text)!important;font-size:13px!important;text-transform:none!important;font-weight:600!important;letter-spacing:0!important}
+
+/* Dashboard links */
+.addlink{color:var(--ok)!important;font-size:12px!important}
+.changelink,.viewlink{color:var(--ah)!important;font-size:12px!important}
+
+/* ── Кнопка «Добавить» вверху страницы ───────────────────── */
+.object-tools{margin-bottom:14px!important}
+.object-tools a{
+  background:linear-gradient(135deg,var(--a),var(--a2))!important;
+  color:#fff!important;border:none!important;border-radius:var(--r)!important;
+  padding:8px 18px!important;font-size:12px!important;font-weight:600!important;
+  display:inline-flex!important;align-items:center!important;gap:6px!important;
+  transition:all .2s!important;box-shadow:0 2px 10px rgba(99,102,241,.3)!important;
+}
+.object-tools a:hover{transform:translateY(-1px)!important;box-shadow:0 4px 18px rgba(99,102,241,.45)!important;color:#fff!important}
+
+/* ── Таблица ─────────────────────────────────────────────── */
+.results{overflow-x:auto!important;border-radius:0 0 12px 12px!important}
+#result_list{border-collapse:collapse!important;width:100%!important;min-width:500px!important}
+
+#result_list thead th{
+  background:rgba(99,102,241,.07)!important;
+  color:var(--m)!important;font-size:10px!important;font-weight:700!important;
+  text-transform:uppercase!important;letter-spacing:.6px!important;
+  padding:10px 14px!important;
+  border:none!important;border-bottom:1px solid var(--b)!important;
+  white-space:nowrap!important;
+}
+#result_list thead th a{color:var(--m)!important}
+#result_list thead th a:hover{color:var(--text)!important}
+#result_list thead th.sorted{background:rgba(99,102,241,.13)!important}
+#result_list thead th.sorted a{color:var(--ah)!important}
+
+#result_list tbody tr{border-bottom:1px solid rgba(255,255,255,.03)!important;transition:background .1s!important}
+#result_list tbody tr:hover{background:rgba(99,102,241,.05)!important}
+#result_list tbody tr.selected{background:rgba(99,102,241,.1)!important}
+#result_list td{
+  color:var(--text)!important;padding:10px 14px!important;
+  vertical-align:middle!important;font-size:13px!important;border:none!important;
+}
+#result_list td a{color:var(--ah)!important;font-weight:500!important}
+#result_list td a:hover{color:#fff!important}
+
+input[type=checkbox]{accent-color:var(--a)!important;width:14px!important;height:14px!important;cursor:pointer!important}
+
+/* ── Фильтр-панель ───────────────────────────────────────── */
+#changelist-filter{
+  background:var(--s)!important;
+  border-left:1px solid var(--b)!important;
+  border-radius:0 12px 12px 0!important;
+  padding:16px 14px!important;
+  min-width:175px!important;max-width:200px!important;
+  position:relative!important;
+  transition:min-width .22s ease,max-width .22s ease,padding .22s ease,opacity .22s ease,border .22s ease!important;
+  overflow:hidden!important;
+}
+/* Свёрнутый фильтр */
+#changelist-filter.zea-filter-collapsed{
+  min-width:0!important;max-width:0!important;
+  padding:0!important;opacity:0!important;border:none!important;
+}
+#changelist-filter h2{
+  color:var(--d)!important;font-size:9px!important;font-weight:700!important;
+  text-transform:uppercase!important;letter-spacing:1px!important;
+  margin-bottom:12px!important;padding:0!important;border:none!important;background:none!important;
+}
+#changelist-filter h3{
+  color:var(--m)!important;font-size:11px!important;font-weight:600!important;
+  margin:12px 0 6px!important;padding:0 0 5px!important;
+  border-bottom:1px solid var(--b)!important;
+}
+#changelist-filter ul{list-style:none!important;padding:0!important;margin:0!important}
+#changelist-filter li a{
+  color:var(--d)!important;font-size:12px!important;
+  padding:3px 0!important;display:block!important;transition:color .15s!important;
+}
+#changelist-filter li a:hover{color:var(--text)!important}
+#changelist-filter li.selected a{color:var(--a)!important;font-weight:600!important}
+
+/* Django 4.0+ details/summary фильтр */
+#changelist-filter details{margin-bottom:8px!important}
+#changelist-filter summary{
+  color:var(--m)!important;font-size:11px!important;font-weight:600!important;
+  cursor:pointer!important;padding:4px 0!important;
+  list-style:none!important;display:flex!important;align-items:center!important;gap:5px!important;
+  transition:color .15s!important;
+}
+#changelist-filter summary:hover{color:var(--text)!important}
+#changelist-filter summary::marker,
+#changelist-filter summary::-webkit-details-marker{display:none!important}
+#changelist-filter summary::before{
+  content:'▸';font-size:10px;color:var(--d);transition:transform .2s;display:inline-block;
+}
+#changelist-filter details[open] summary::before{transform:rotate(90deg)}
+
+/* ── Кнопка-тоггл фильтра (VS Code-стиль) ───────────────── */
+#zea-filter-btn{
+  position:absolute!important;
+  top:50%!important;
+  left:-14px!important;
+  transform:translateY(-50%)!important;
+  width:14px!important;
+  height:48px!important;
+  background:var(--s)!important;
+  border:1px solid var(--b)!important;
+  border-right:none!important;
+  border-radius:6px 0 0 6px!important;
+  cursor:pointer!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  color:var(--d)!important;
+  font-size:10px!important;
+  padding:0!important;
+  z-index:10!important;
+  transition:color .15s,background .15s!important;
+}
+#zea-filter-btn:hover{
+  background:rgba(99,102,241,.15)!important;
+  color:var(--ah)!important;
+}
+#zea-filter-btn svg{transition:transform .22s ease!important;flex-shrink:0!important}
+#changelist-filter.zea-filter-collapsed #zea-filter-btn{
+  left:0!important;
+  border-radius:6px!important;
+  border-right:1px solid var(--b)!important;
+  position:fixed!important;
+  right:0!important;
+  left:auto!important;
+  margin-right:-1px!important;
+}
+
+/* Когда фильтра нет — кнопка фиксируется у правого края */
+#zea-filter-ghost{
+  position:fixed!important;
+  right:0!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  width:14px!important;
+  height:48px!important;
+  background:var(--s)!important;
+  border:1px solid var(--b)!important;
+  border-right:none!important;
+  border-radius:6px 0 0 6px!important;
+  cursor:pointer!important;
+  display:none!important;
+  align-items:center!important;
+  justify-content:center!important;
+  color:var(--d)!important;
+  z-index:200!important;
+  transition:color .15s,background .15s!important;
+}
+#zea-filter-ghost.visible{display:flex!important}
+#zea-filter-ghost:hover{background:rgba(99,102,241,.15)!important;color:var(--ah)!important}
+
+/* Новая кнопка-тоггл фильтра (Django 4.x) */
+#changelist-filter-toggle{
+  background:var(--card)!important;
+  border:1px solid var(--b)!important;
+  border-radius:var(--r)!important;
+  color:var(--m)!important;padding:5px 12px!important;
+  font-size:12px!important;font-family:'Inter',sans-serif!important;cursor:pointer!important;
+  transition:all .15s!important;
+}
+#changelist-filter-toggle:hover{border-color:var(--ba)!important;color:var(--text)!important;background:rgba(99,102,241,.08)!important}
+
+/* ── Поиск — всё в одну строку ───────────────────────────── */
+#toolbar{
+  background:rgba(255,255,255,.02)!important;
+  border-bottom:1px solid var(--b)!important;
+  padding:9px 18px!important;
+  display:flex!important;align-items:center!important;gap:8px!important;
+}
+/* Форма поиска — flex-строка */
+#toolbar form,
+#changelist-search{
+  display:flex!important;align-items:center!important;
+  gap:8px!important;flex-wrap:nowrap!important;
+  flex:1!important;min-width:0!important;
+}
+/* Поле ввода — растягивается */
+#changelist-search input[type=text],
+#changelist-search input[type=search],
+#searchbar{
+  flex:1!important;
+  width:auto!important;min-width:0!important;max-width:none!important;
+  background:rgba(255,255,255,.06)!important;
+  border:1px solid var(--b)!important;border-radius:var(--r)!important;
+  color:var(--text)!important;padding:7px 12px!important;
+  font-family:'Inter',sans-serif!important;font-size:12px!important;
+  outline:none!important;
+  transition:border-color .15s,box-shadow .15s!important;
+}
+#changelist-search input[type=text]:focus,
+#changelist-search input[type=search]:focus,
+#searchbar:focus{border-color:var(--a)!important;box-shadow:0 0 0 2px rgba(99,102,241,.15)!important}
+#changelist-search input[type=text]::placeholder,
+#changelist-search input[type=search]::placeholder{color:var(--d)!important}
+/* Кнопка Найти — фиксированная */
+#changelist-search input[type=submit]{
+  flex-shrink:0!important;
+  background:linear-gradient(135deg,var(--a),var(--a2))!important;
+  color:#fff!important;border:none!important;border-radius:var(--r)!important;
+  padding:7px 16px!important;font-size:12px!important;font-weight:600!important;
+  font-family:'Inter',sans-serif!important;cursor:pointer!important;
+  white-space:nowrap!important;transition:all .15s!important;
+}
+#changelist-search input[type=submit]:hover{transform:translateY(-1px)!important;box-shadow:0 3px 10px rgba(99,102,241,.35)!important}
+/* Счётчик результатов */
+#changelist-search span,
+.search-results-count{
+  flex-shrink:0!important;
+  color:var(--d)!important;font-size:11px!important;white-space:nowrap!important;
+}
+
+/* ── Actions — всё в одну строку ────────────────────────── */
+.actions{
+  background:rgba(255,255,255,.02)!important;
+  border:1px solid var(--b)!important;border-radius:var(--r)!important;
+  padding:7px 14px!important;margin-bottom:12px!important;
+  display:flex!important;align-items:center!important;
+  gap:8px!important;flex-wrap:nowrap!important;
+}
+/* label оборачивает select — делаем flex-строку */
+.actions label{
+  display:flex!important;align-items:center!important;gap:8px!important;
+  color:var(--m)!important;font-size:12px!important;font-weight:500!important;
+  text-transform:none!important;letter-spacing:0!important;
+  white-space:nowrap!important;flex-shrink:0!important;
+}
+/* select внутри label */
+.actions label select,
+.actions select{
+  background:rgba(255,255,255,.06)!important;border:1px solid var(--b)!important;
+  border-radius:6px!important;color:var(--text)!important;
+  padding:5px 10px!important;font-size:12px!important;
+  font-family:'Inter',sans-serif!important;outline:none!important;
+  min-width:160px!important;
+}
+.actions label select option,.actions select option{background:#101624!important}
+.actions button[type=submit]{
+  flex-shrink:0!important;
+  background:linear-gradient(135deg,var(--a),var(--a2))!important;
+  color:#fff!important;border:none!important;border-radius:6px!important;
+  padding:6px 14px!important;font-size:12px!important;font-weight:600!important;
+  font-family:'Inter',sans-serif!important;cursor:pointer!important;
+  white-space:nowrap!important;transition:all .15s!important;
+}
+.actions button[type=submit]:hover{transform:translateY(-1px)!important}
+.actions span,
+.action-counter{
+  color:var(--d)!important;font-size:11px!important;
+  text-transform:none!important;white-space:nowrap!important;
+  flex-shrink:0!important;
+}
+
+/* ── Пагинация ───────────────────────────────────────────── */
+.paginator{
+  padding:12px 16px!important;color:var(--m)!important;font-size:12px!important;
+  display:flex!important;align-items:center!important;gap:3px!important;flex-wrap:wrap!important;
+  border-top:1px solid var(--b)!important;
+}
+.paginator a{
+  background:transparent!important;border:1px solid var(--b)!important;border-radius:6px!important;
+  color:var(--m)!important;padding:3px 9px!important;font-size:12px!important;transition:all .15s!important;
+}
+.paginator a:hover{background:rgba(99,102,241,.1)!important;border-color:var(--ba)!important;color:var(--text)!important}
+.paginator .this-page{
+  background:var(--a)!important;border:none!important;border-radius:6px!important;
+  color:#fff!important;padding:3px 9px!important;font-size:12px!important;font-weight:700!important;
+}
+
+/* ── Сообщения ───────────────────────────────────────────── */
+ul.messagelist{list-style:none!important;margin:0 0 16px!important}
+ul.messagelist li{
+  border-radius:var(--r)!important;padding:10px 16px!important;
+  margin-bottom:6px!important;font-size:13px!important;font-weight:500!important;
+}
+ul.messagelist li.success{background:rgba(52,211,153,.08)!important;color:#6ee7b7!important;border-left:3px solid var(--ok)!important}
+ul.messagelist li.warning{background:rgba(251,191,36,.08)!important;color:#fcd34d!important;border-left:3px solid var(--warn)!important}
+ul.messagelist li.error{background:rgba(248,113,113,.08)!important;color:#fca5a5!important;border-left:3px solid var(--err)!important}
+
+/* ── Форма ───────────────────────────────────────────────── */
+fieldset{
+  background:rgba(255,255,255,.025)!important;
+  border:1px solid var(--b)!important;border-radius:12px!important;
+  overflow:hidden!important;margin-bottom:16px!important;
+}
+fieldset h2{
+  background:rgba(99,102,241,.08)!important;color:var(--m)!important;
+  font-size:10px!important;font-weight:700!important;
+  text-transform:uppercase!important;letter-spacing:.5px!important;
+  padding:10px 18px!important;border-bottom:1px solid var(--b)!important;
+}
+.form-row{padding:12px 18px!important;border-bottom:1px solid rgba(255,255,255,.03)!important}
+.form-row:last-child{border-bottom:none!important}
+/* label — только внутри fieldset/form-row, не в actions/sidebar */
+fieldset label,
+.form-row label,
+.change-form label,
+.inline-group label{
+  color:var(--m)!important;font-size:11px!important;
+  font-weight:600!important;text-transform:uppercase!important;letter-spacing:.4px!important;
+}
+/* В actions label — обычный стиль (уже задан в ФИХ 3 выше) */
+.help,.helptext{color:var(--d)!important;font-size:11px!important;margin-top:4px!important;display:block!important}
+input[type=text],input[type=password],input[type=email],
+input[type=url],input[type=number],input[type=search],
+textarea,select,
+.vTextField,.vLargeTextField,.vURLField,.vIntegerField{
+  background:rgba(255,255,255,.05)!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+  border-radius:var(--r)!important;color:var(--text)!important;
+  padding:8px 12px!important;font-family:'Inter',sans-serif!important;
+  font-size:13px!important;outline:none!important;
+  transition:border-color .15s,box-shadow .15s!important;
+  width:100%!important;max-width:580px!important;
+}
+input[type=text]:focus,input[type=password]:focus,
+input[type=email]:focus,textarea:focus,select:focus{
+  border-color:var(--a)!important;
+  box-shadow:0 0 0 2px rgba(99,102,241,.15)!important;
+  background:rgba(99,102,241,.04)!important;
+}
+input::placeholder,textarea::placeholder{color:var(--d)!important}
+select option{background:#101624!important;color:var(--text)!important}
+input[type=file]{color:var(--m)!important;font-size:12px!important}
+
+/* ── Кнопки сохранения ───────────────────────────────────── */
+.submit-row{
+  background:rgba(255,255,255,.025)!important;
+  border-top:1px solid var(--b)!important;
+  padding:12px 18px!important;
+  display:flex!important;align-items:center!important;gap:8px!important;flex-wrap:wrap!important;
+  border-radius:0 0 12px 12px!important;
+}
+.submit-row input[type=submit],.submit-row button{
+  border-radius:var(--r)!important;font-family:'Inter',sans-serif!important;
+  font-size:12px!important;font-weight:600!important;
+  padding:8px 20px!important;cursor:pointer!important;border:none!important;transition:all .2s!important;
+}
+input[name=_save]{
+  background:linear-gradient(135deg,var(--a),var(--a2))!important;
+  color:#fff!important;box-shadow:0 2px 8px rgba(99,102,241,.3)!important;
+}
+input[name=_save]:hover{transform:translateY(-1px)!important;box-shadow:0 4px 16px rgba(99,102,241,.45)!important}
+input[name=_addanother],input[name=_continue]{
+  background:rgba(255,255,255,.06)!important;color:var(--text)!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+}
+input[name=_addanother]:hover,input[name=_continue]:hover{background:rgba(99,102,241,.1)!important;border-color:var(--ba)!important}
+.submit-row a.deletelink{
+  background:rgba(248,113,113,.08)!important;color:var(--err)!important;
+  border:1px solid rgba(248,113,113,.2)!important;border-radius:var(--r)!important;
+  padding:8px 16px!important;font-size:12px!important;font-weight:600!important;transition:all .15s!important;
+}
+.submit-row a.deletelink:hover{background:rgba(248,113,113,.15)!important}
+
+/* ── Ошибки ──────────────────────────────────────────────── */
+.errornote{
+  background:rgba(248,113,113,.08)!important;border:1px solid rgba(248,113,113,.2)!important;
+  border-radius:var(--r)!important;color:#fca5a5!important;padding:10px 16px!important;margin-bottom:14px!important;
+}
+ul.errorlist{list-style:none!important}
+ul.errorlist li{color:#fca5a5!important;font-size:11px!important;margin-top:3px!important}
+
+/* ── Логин страница ──────────────────────────────────────── */
+body.login{
+  background:var(--bg)!important;
+  background-image:radial-gradient(ellipse at 20% 50%,rgba(99,102,241,.1) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(139,92,246,.08) 0%,transparent 50%)!important;
+}
+.login #content-main{
+  background:rgba(255,255,255,.04)!important;
+  border:1px solid rgba(99,102,241,.2)!important;border-radius:16px!important;
+  padding:36px!important;max-width:380px!important;width:100%!important;
+  backdrop-filter:blur(20px)!important;
+  box-shadow:0 20px 50px rgba(0,0,0,.5),0 0 30px rgba(99,102,241,.08)!important;
+}
+
+/* ── Подвал ──────────────────────────────────────────────── */
+#footer{
+  background:transparent!important;border-top:1px solid var(--b)!important;
+  color:var(--d)!important;font-size:11px!important;
+  padding:10px 22px!important;text-align:center!important;
+}
+
+/* ── Inline группы ───────────────────────────────────────── */
+.inline-group{
+  background:rgba(255,255,255,.025)!important;
+  border:1px solid var(--b)!important;border-radius:12px!important;
+  overflow:hidden!important;margin-bottom:16px!important;
+}
+.inline-group .tabular td,.inline-group .tabular th{
+  border-color:var(--b)!important;color:var(--text)!important;
+  font-size:12px!important;padding:8px 12px!important;
+}
+
+/* ── Datepicker ──────────────────────────────────────────── */
+.calendarbox,.clockbox{
+  background:#101624!important;border:1px solid var(--ba)!important;
+  border-radius:10px!important;box-shadow:0 8px 30px rgba(0,0,0,.5)!important;
+}
+td.today a{background:var(--a)!important;border-radius:3px;color:#fff!important}
+
+/* ── Кастомные хелперы ───────────────────────────────────── */
+.zea-img{
+  width:68px;height:52px;object-fit:cover;
+  border-radius:6px;border:1px solid rgba(255,255,255,.08);
+  display:block;transition:transform .2s;
+}
+.zea-img:hover{transform:scale(1.06)}
+.zea-no-img{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:68px;height:52px;
+  background:rgba(99,102,241,.06);border:1px dashed rgba(99,102,241,.2);
+  border-radius:6px;color:var(--d);font-size:20px;
+}
+.tech-pill{
+  display:inline-block;
+  background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);
+  color:var(--ah);border-radius:20px;padding:1px 8px;font-size:11px;font-weight:600;margin:1px;
+}
+.c-dot{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--m);white-space:nowrap}
+.c-dot span:first-child{width:9px;height:9px;border-radius:50%;flex-shrink:0;display:inline-block}
+.zea-yes{color:#34d399!important;font-weight:700}
+.zea-no{color:#f87171!important;font-weight:700}
+
+/* Редактируемые поля в списке */
+#result_list td input[type=number],
+#result_list td input[type=text]{
+  background:rgba(255,255,255,.06)!important;border:1px solid rgba(255,255,255,.09)!important;
+  border-radius:6px!important;color:var(--text)!important;
+  padding:4px 8px!important;font-family:'Inter',sans-serif!important;
+  font-size:12px!important;width:68px!important;max-width:none!important;outline:none!important;
+}
+#result_list td input:focus{border-color:var(--a)!important;box-shadow:0 0 0 2px rgba(99,102,241,.15)!important}
+
+/* ── Recent actions ──────────────────────────────────────── */
+#recent-actions-module li{
+  padding:8px 18px!important;border-bottom:1px solid rgba(255,255,255,.03)!important;font-size:12px!important;
+}
+#recent-actions-module li:last-child{border-bottom:none!important}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  /* ── Collapsible filter panel (VS Code style) ── */
+  const STORE = 'zea-filter-open';
+  const filter = document.getElementById('changelist-filter');
+  if (!filter) return;
+
+  function chevronSVG(pointRight){
+    const pts = pointRight ? '5,4 9,8 5,12' : '9,4 5,8 9,12';
+    return '<svg width="10" height="16" viewBox="0 0 14 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="'+pts+'"/></svg>';
+  }
+
+  /* Кнопка внутри панели фильтра — прижата к левому краю */
+  const btn = document.createElement('button');
+  btn.id    = 'zea-filter-btn';
+  btn.title = 'Свернуть / развернуть фильтр';
+  filter.insertBefore(btn, filter.firstChild);
+
+  /* Кнопка снаружи — видна когда фильтр свёрнут */
+  const ghost = document.createElement('button');
+  ghost.id    = 'zea-filter-ghost';
+  ghost.title = 'Открыть фильтр';
+  document.body.appendChild(ghost);
+
+  let open = localStorage.getItem(STORE) !== '0';
+
+  function apply(animate){
+    if (!animate){ filter.style.transition='none'; }
+    filter.classList.toggle('zea-filter-collapsed', !open);
+    btn.innerHTML   = chevronSVG(open);   /* → свернуть */
+    ghost.innerHTML = chevronSVG(false);  /* ← развернуть */
+    ghost.classList.toggle('visible', !open);
+    if (!animate){ requestAnimationFrame(function(){ filter.style.transition=''; }); }
+  }
+
+  apply(false);
+
+  function toggle(){ open=!open; localStorage.setItem(STORE,open?'1':'0'); apply(true); }
+  btn.addEventListener('click', toggle);
+  ghost.addEventListener('click', toggle);
+});
+</script>
+{% endblock %}

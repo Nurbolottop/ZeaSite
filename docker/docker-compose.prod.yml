@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+
+  # ─── PostgreSQL ───────────────────────────────────────────────────
+  db_zea:
+    image: postgres:14
+    container_name: postgres_db_zea
+    env_file:
+      - ../.env
+    volumes:
+      - postgres_data_zea:/var/lib/postgresql/data
+    networks:
+      - zea_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  # ─── Django (prod — gunicorn) ─────────────────────────────────────
+  web_zea:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: django_web_zea
+    entrypoint: /entrypoint.sh
+    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120
+    volumes:
+      - ../app/static:/app/static
+      - ../app/media:/app/media
+    env_file:
+      - ../.env
+    environment:
+      - DJANGO_SETTINGS_MODULE=core.settings.prod
+      - POSTGRES_HOST=db_zea
+      - POSTGRES_PORT=5432
+    depends_on:
+      db_zea:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    networks:
+      - zea_network
+    restart: unless-stopped
+
+networks:
+  zea_network:
+    driver: bridge
+
+volumes:
+  postgres_data_zea:

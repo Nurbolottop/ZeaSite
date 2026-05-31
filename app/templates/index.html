@@ -1,0 +1,1149 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% get_current_language as LANGUAGE_CODE %}
+
+    <!-- Title & SEO -->
+    <title>{% if settings.meta_title %}{{ settings.meta_title }}{% else %}{{ settings.site_name }} — {{ settings.site_tagline }} | {% trans "Разработка цифровых решений" %}{% endif %}</title>
+    <meta name="description" content="{% if settings.meta_description %}{{ settings.meta_description }}{% else %}{{ settings.site_name }} — {% trans "мини IT-студия. Разрабатываем сайты, CRM-системы, Telegram-ботов и решения для автоматизации бизнес-процессов." %}{% endif %}">
+    {% if settings.meta_keywords %}<meta name="keywords" content="{{ settings.meta_keywords }}">{% endif %}
+    <meta name="robots" content="index, follow, max-image-preview:large">
+
+    <!-- Canonical + hreflang (мультиязычность для поиска) -->
+    <link rel="canonical" href="{{ canonical_url }}">
+    {% for code, url in alt_lang_urls.items %}
+    <link rel="alternate" hreflang="{{ code }}" href="{{ url }}">
+    {% endfor %}
+    <link rel="alternate" hreflang="x-default" href="{{ alt_lang_urls.ru }}">
+
+    <!-- Open Graph (соцсети) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ settings.site_name }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:title" content="{% if settings.meta_title %}{{ settings.meta_title }}{% else %}{{ settings.site_name }} — {{ settings.site_tagline }}{% endif %}">
+    <meta property="og:description" content="{% if settings.meta_description %}{{ settings.meta_description }}{% else %}{{ settings.hero_subtitle }}{% endif %}">
+    <meta property="og:locale" content="{{ LANGUAGE_CODE }}">
+    {% for code, url in alt_lang_urls.items %}{% if code != LANGUAGE_CODE %}<meta property="og:locale:alternate" content="{{ code }}">
+    {% endif %}{% endfor %}
+    {% if settings.og_image %}<meta property="og:image" content="{{ base_url }}{{ settings.og_image.url }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">{% endif %}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% if settings.meta_title %}{{ settings.meta_title }}{% else %}{{ settings.site_name }} — {{ settings.site_tagline }}{% endif %}">
+    <meta name="twitter:description" content="{% if settings.meta_description %}{{ settings.meta_description }}{% else %}{{ settings.hero_subtitle }}{% endif %}">
+    {% if settings.og_image %}<meta name="twitter:image" content="{{ base_url }}{{ settings.og_image.url }}">{% endif %}
+
+    <!-- Google Search Console -->
+    {% if settings.gsc_verification %}<meta name="google-site-verification" content="{{ settings.gsc_verification }}">{% endif %}
+
+    <!-- Favicon -->
+    {% if settings.favicon %}
+    <link rel="icon" type="image/webp" href="{{ settings.favicon.url }}">
+    <link rel="apple-touch-icon" href="{{ settings.favicon.url }}">
+    {% endif %}
+
+    <!-- Structured Data (Organization) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "{{ settings.site_name|escapejs }}",
+      "url": "{{ base_url }}",
+      {% if settings.logo %}"logo": "{{ base_url }}{{ settings.logo.url }}",{% endif %}
+      "description": "{% if settings.meta_description %}{{ settings.meta_description|escapejs }}{% else %}{{ settings.hero_subtitle|escapejs }}{% endif %}",
+      {% if settings.email %}"email": "{{ settings.email }}",{% endif %}
+      "sameAs": [
+        {% if settings.telegram_url %}"{{ settings.telegram_url }}"{% if settings.whatsapp_url or settings.instagram_url %},{% endif %}{% endif %}
+        {% if settings.whatsapp_url %}"{{ settings.whatsapp_url }}"{% if settings.instagram_url %},{% endif %}{% endif %}
+        {% if settings.instagram_url %}"{{ settings.instagram_url }}"{% endif %}
+      ]
+    }
+    </script>
+
+    <!-- Google Analytics 4 -->
+    {% if settings.ga4_id %}
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ settings.ga4_id }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ settings.ga4_id }}');
+    </script>
+    {% endif %}
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] } } }
+        }
+    </script>
+
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background:#0B0F19; font-family:'Inter',sans-serif; overflow-x:hidden; color:#fff; }
+
+        /* ── Glass ─────────────────────────── */
+        .glass { background:rgba(255,255,255,.04); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.09); }
+        .glass-nav { background:rgba(11,15,25,.75); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border-bottom:1px solid rgba(255,255,255,.07); }
+
+        /* ── Gradient text ──────────────────── */
+        .gradient-text { background:linear-gradient(135deg,#818cf8,#a78bfa,#22d3ee); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .text-glow { text-shadow:0 0 60px rgba(129,140,248,.35); }
+
+        /* ── Animated gradient ──────────────── */
+        .animated-gradient { background:linear-gradient(-45deg,#6366f1,#8b5cf6,#06b6d4,#3b82f6); background-size:400% 400%; animation:gradientShift 6s ease infinite; }
+        @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+        /* ── Ambient bg ─────────────────────── */
+        .ambient-bg { background: radial-gradient(ellipse at 15% 40%,rgba(99,102,241,.12) 0%,transparent 55%), radial-gradient(ellipse at 85% 15%,rgba(139,92,246,.09) 0%,transparent 55%), radial-gradient(ellipse at 55% 85%,rgba(6,182,212,.07) 0%,transparent 55%); }
+        .grid-bg { background-image:linear-gradient(rgba(99,102,241,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.04) 1px,transparent 1px); background-size:60px 60px; }
+
+        /* ── Float / glow ───────────────────── */
+        @keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+        @keyframes floatB { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-14px) rotate(4deg)} }
+        @keyframes floatC { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-22px)} }
+        @keyframes glowPulse { 0%,100%{opacity:.4} 50%{opacity:.9} }
+        .float-a { animation:floatA 6s ease-in-out infinite; }
+        .float-b { animation:floatB 8s ease-in-out infinite; }
+        .float-c { animation:floatC 10s ease-in-out infinite; }
+        .glow-pulse { animation:glowPulse 3.5s ease-in-out infinite; }
+
+        /* ── Cards ──────────────────────────── */
+        .card { transition:transform .3s,background .3s,border-color .3s,box-shadow .3s; }
+        .card:hover { transform:translateY(-8px); background:rgba(99,102,241,.08); border-color:rgba(99,102,241,.35); box-shadow:0 20px 40px rgba(99,102,241,.15),0 0 0 1px rgba(99,102,241,.25); }
+        .project-card { transition:transform .3s,box-shadow .3s; }
+        .project-card:hover { transform:translateY(-6px); box-shadow:0 30px 60px rgba(0,0,0,.5); }
+
+        /* ── Buttons ────────────────────────── */
+        .btn-primary { background:linear-gradient(135deg,#6366f1,#8b5cf6); transition:transform .25s,box-shadow .25s; }
+        .btn-primary:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(99,102,241,.4); }
+        .btn-outline { background:transparent; border:1px solid rgba(255,255,255,.18); transition:transform .25s,border-color .25s,background .25s; }
+        .btn-outline:hover { border-color:rgba(99,102,241,.6); background:rgba(99,102,241,.1); transform:translateY(-2px); }
+
+        /* ── Nav link ───────────────────────── */
+        .nav-link { position:relative; transition:color .25s; }
+        .nav-link::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:2px; background:linear-gradient(135deg,#6366f1,#8b5cf6); transition:width .3s; }
+        .nav-link:hover::after, .nav-link.active::after { width:100%; }
+        .nav-link.active { color:#fff !important; }
+
+        /* ── Tech tags ──────────────────────── */
+        .tech-tag { transition:transform .25s,background .25s,border-color .25s,box-shadow .25s; }
+        .tech-tag:hover { transform:translateY(-3px); background:rgba(99,102,241,.15); border-color:rgba(99,102,241,.45); box-shadow:0 6px 20px rgba(99,102,241,.2); }
+
+        /* ── Mobile menu ────────────────────── */
+        .mobile-menu { transform:translateX(100%); transition:transform .35s cubic-bezier(.4,0,.2,1); }
+        .mobile-menu.open { transform:translateX(0); }
+
+        /* ── Divider ────────────────────────── */
+        .divider { height:1px; background:linear-gradient(90deg,transparent,rgba(99,102,241,.25),transparent); }
+
+        /* ── Color themes for cards ──────────── */
+        /* Each project/service card uses data-color attribute */
+        [data-color="indigo"] .c-grad  { background:linear-gradient(135deg,rgba(30,27,75,.7),rgba(30,58,138,.7)); }
+        [data-color="indigo"] .c-glow  { background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(59,130,246,.15)); }
+        [data-color="indigo"] .c-icon  { background:rgba(99,102,241,.25); color:#818cf8; }
+        [data-color="indigo"] .c-label { color:#818cf8; background:rgba(99,102,241,.12); }
+        [data-color="indigo"] .c-more  { color:#818cf8; }
+        [data-color="indigo"] .c-more:hover { color:#c7d2fe; }
+        [data-color="indigo"] .c-sicon { background:rgba(99,102,241,.2); }
+        [data-color="indigo"] .c-sicon i { color:#818cf8; }
+
+        [data-color="purple"] .c-grad  { background:linear-gradient(135deg,rgba(46,16,101,.7),rgba(88,28,135,.7)); }
+        [data-color="purple"] .c-glow  { background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(236,72,153,.15)); }
+        [data-color="purple"] .c-icon  { background:rgba(168,85,247,.25); color:#c084fc; }
+        [data-color="purple"] .c-label { color:#c084fc; background:rgba(168,85,247,.12); }
+        [data-color="purple"] .c-more  { color:#c084fc; }
+        [data-color="purple"] .c-more:hover { color:#e9d5ff; }
+        [data-color="purple"] .c-sicon { background:rgba(168,85,247,.2); }
+        [data-color="purple"] .c-sicon i { color:#c084fc; }
+
+        [data-color="cyan"] .c-grad  { background:linear-gradient(135deg,rgba(8,51,68,.7),rgba(19,78,74,.7)); }
+        [data-color="cyan"] .c-glow  { background:linear-gradient(135deg,rgba(6,182,212,.15),rgba(20,184,166,.15)); }
+        [data-color="cyan"] .c-icon  { background:rgba(6,182,212,.25); color:#22d3ee; }
+        [data-color="cyan"] .c-label { color:#22d3ee; background:rgba(6,182,212,.12); }
+        [data-color="cyan"] .c-more  { color:#22d3ee; }
+        [data-color="cyan"] .c-more:hover { color:#a5f3fc; }
+        [data-color="cyan"] .c-sicon { background:rgba(6,182,212,.2); }
+        [data-color="cyan"] .c-sicon i { color:#22d3ee; }
+
+        [data-color="blue"] .c-grad  { background:linear-gradient(135deg,rgba(23,37,84,.7),rgba(30,58,138,.7)); }
+        [data-color="blue"] .c-glow  { background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(99,102,241,.15)); }
+        [data-color="blue"] .c-icon  { background:rgba(59,130,246,.25); color:#60a5fa; }
+        [data-color="blue"] .c-label { color:#60a5fa; background:rgba(59,130,246,.12); }
+        [data-color="blue"] .c-more  { color:#60a5fa; }
+        [data-color="blue"] .c-more:hover { color:#bfdbfe; }
+        [data-color="blue"] .c-sicon { background:rgba(59,130,246,.2); }
+        [data-color="blue"] .c-sicon i { color:#60a5fa; }
+
+        [data-color="green"] .c-grad  { background:linear-gradient(135deg,rgba(2,44,34,.7),rgba(6,78,59,.7)); }
+        [data-color="green"] .c-glow  { background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(16,185,129,.15)); }
+        [data-color="green"] .c-icon  { background:rgba(34,197,94,.25); color:#4ade80; }
+        [data-color="green"] .c-label { color:#4ade80; background:rgba(34,197,94,.12); }
+        [data-color="green"] .c-more  { color:#4ade80; }
+        [data-color="green"] .c-more:hover { color:#bbf7d0; }
+        [data-color="green"] .c-sicon { background:rgba(34,197,94,.2); }
+        [data-color="green"] .c-sicon i { color:#4ade80; }
+
+        [data-color="pink"] .c-grad  { background:linear-gradient(135deg,rgba(80,7,36,.7),rgba(112,26,117,.7)); }
+        [data-color="pink"] .c-glow  { background:linear-gradient(135deg,rgba(236,72,153,.15),rgba(217,70,239,.15)); }
+        [data-color="pink"] .c-icon  { background:rgba(236,72,153,.25); color:#f472b6; }
+        [data-color="pink"] .c-label { color:#f472b6; background:rgba(236,72,153,.12); }
+        [data-color="pink"] .c-more  { color:#f472b6; }
+        [data-color="pink"] .c-more:hover { color:#fbcfe8; }
+        [data-color="pink"] .c-sicon { background:rgba(236,72,153,.2); }
+        [data-color="pink"] .c-sicon i { color:#f472b6; }
+
+        [data-color="orange"] .c-grad  { background:linear-gradient(135deg,rgba(67,20,7,.7),rgba(124,45,18,.7)); }
+        [data-color="orange"] .c-glow  { background:linear-gradient(135deg,rgba(249,115,22,.15),rgba(234,179,8,.15)); }
+        [data-color="orange"] .c-icon  { background:rgba(249,115,22,.25); color:#fb923c; }
+        [data-color="orange"] .c-label { color:#fb923c; background:rgba(249,115,22,.12); }
+        [data-color="orange"] .c-more  { color:#fb923c; }
+        [data-color="orange"] .c-more:hover { color:#fed7aa; }
+        [data-color="orange"] .c-sicon { background:rgba(249,115,22,.2); }
+        [data-color="orange"] .c-sicon i { color:#fb923c; }
+
+        [data-color="yellow"] .c-grad  { background:linear-gradient(135deg,rgba(66,32,6,.7),rgba(113,63,18,.7)); }
+        [data-color="yellow"] .c-glow  { background:linear-gradient(135deg,rgba(234,179,8,.15),rgba(245,158,11,.15)); }
+        [data-color="yellow"] .c-icon  { background:rgba(234,179,8,.25); color:#facc15; }
+        [data-color="yellow"] .c-label { color:#facc15; background:rgba(234,179,8,.12); }
+        [data-color="yellow"] .c-more  { color:#facc15; }
+        [data-color="yellow"] .c-more:hover { color:#fef08a; }
+        [data-color="yellow"] .c-sicon { background:rgba(234,179,8,.2); }
+        [data-color="yellow"] .c-sicon i { color:#facc15; }
+
+        /* ── Scroll indicator ───────────────── */
+        @keyframes scrollBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+        .scroll-indicator { animation:scrollBounce 2s ease-in-out infinite; }
+
+        /* ── Scrollbar ──────────────────────── */
+        ::-webkit-scrollbar { width:5px; }
+        ::-webkit-scrollbar-track { background:#0B0F19; }
+        ::-webkit-scrollbar-thumb { background:#6366f1; border-radius:3px; }
+
+        /* ── Contact form ───────────────────── */
+        .cf-input { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); }
+        .cf-input:focus { border-color:rgba(99,102,241,.6); background:rgba(99,102,241,.06); }
+        .cf-input.cf-error { border-color:rgba(239,68,68,.5); }
+        select.cf-input option { background:#0D1120; color:#d1d5db; }
+    </style>
+</head>
+
+<body class="bg-[#0B0F19] text-white">
+
+<!-- ══════════ HEADER ══════════ -->
+<header id="header" class="fixed top-0 left-0 right-0 z-50 glass-nav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16 md:h-20">
+            <a href="#home" class="flex items-center gap-2.5">
+                {% if settings.logo %}
+                <img src="{{ settings.logo.url }}" alt="{{ settings.site_name }}"
+                     class="h-8 w-auto object-contain">
+                {% else %}
+                <div class="w-9 h-9 rounded-xl animated-gradient flex items-center justify-center shadow-lg">
+                    <span class="text-white font-black text-sm">{{ settings.site_name|first }}</span>
+                </div>
+                <span class="text-white font-extrabold text-xl tracking-tight">{{ settings.site_name }}</span>
+                {% endif %}
+            </a>
+
+            <nav class="hidden md:flex items-center gap-7">
+                <a href="#about"    class="nav-link text-gray-400 hover:text-white text-sm font-medium">{% trans "О нас" %}</a>
+                <a href="#services" class="nav-link text-gray-400 hover:text-white text-sm font-medium">{% trans "Услуги" %}</a>
+                <a href="#projects" class="nav-link text-gray-400 hover:text-white text-sm font-medium">{% trans "Проекты" %}</a>
+                <a href="#partners" class="nav-link text-gray-400 hover:text-white text-sm font-medium">{% trans "Партнёры" %}</a>
+                <a href="#contact"  class="nav-link text-gray-400 hover:text-white text-sm font-medium">{% trans "Контакты" %}</a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                {% get_current_language as CURRENT_LANG %}
+                <div class="hidden md:flex items-center gap-1">
+                    {% for lang_code, lang_name in LANGUAGES %}
+                    {% language lang_code %}
+                    <a href="{% url 'index' %}" hreflang="{{ lang_code }}"
+                       class="lang-link px-2.5 py-1 rounded-lg text-xs font-semibold uppercase transition-colors {% if lang_code == CURRENT_LANG %}text-white bg-indigo-600/40 border border-indigo-500/50{% else %}text-gray-400 hover:text-white hover:bg-white/10{% endif %}">
+                        {{ lang_code }}
+                    </a>
+                    {% endlanguage %}
+                    {% endfor %}
+                </div>
+                <a href="#contact" class="hidden md:inline-flex btn-primary items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold">{% trans "Связаться" %}</a>
+                <button id="burger-btn" class="md:hidden flex flex-col justify-center gap-1.5 w-9 h-9 p-1" aria-label="{% trans 'Меню' %}">
+                    <span class="block w-full h-0.5 bg-white rounded transition-all duration-300"></span>
+                    <span class="block w-full h-0.5 bg-white rounded transition-all duration-300"></span>
+                    <span class="block w-full h-0.5 bg-white rounded transition-all duration-300"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Mobile drawer -->
+<div id="mobile-menu" class="mobile-menu fixed top-0 right-0 bottom-0 w-72 z-50 bg-[#0D1120] border-l border-white/10 flex flex-col p-7">
+    <div class="flex items-center justify-between mb-10">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg animated-gradient flex items-center justify-center"><span class="text-white font-black text-xs">Z</span></div>
+            <span class="text-white font-bold text-lg">ZEA</span>
+        </div>
+        <button id="close-menu" class="text-gray-400 hover:text-white p-1"><i data-lucide="x" class="w-6 h-6"></i></button>
+    </div>
+    <nav class="flex flex-col gap-5">
+        <a href="#about"    class="mobile-link text-gray-300 hover:text-white text-lg font-medium transition-colors py-1">{% trans "О нас" %}</a>
+        <a href="#services" class="mobile-link text-gray-300 hover:text-white text-lg font-medium transition-colors py-1">{% trans "Услуги" %}</a>
+        <a href="#projects" class="mobile-link text-gray-300 hover:text-white text-lg font-medium transition-colors py-1">{% trans "Проекты" %}</a>
+        <a href="#partners" class="mobile-link text-gray-300 hover:text-white text-lg font-medium transition-colors py-1">{% trans "Партнёры" %}</a>
+        <a href="#contact"  class="mobile-link text-gray-300 hover:text-white text-lg font-medium transition-colors py-1">{% trans "Контакты" %}</a>
+    </nav>
+    <div class="mt-auto">
+        <a href="#contact" class="mobile-link btn-primary flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-white font-semibold">
+            <i data-lucide="message-circle" class="w-4 h-4"></i> {% trans "Связаться" %}
+        </a>
+        <div class="flex items-center gap-2 mt-4 justify-center">
+            {% for lang_code, lang_name in LANGUAGES %}
+            {% language lang_code %}
+            <a href="{% url 'index' %}" hreflang="{{ lang_code }}"
+               class="lang-link px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-colors {% if lang_code == CURRENT_LANG %}text-white bg-indigo-600/40 border border-indigo-500/50{% else %}text-gray-400 hover:text-white{% endif %}">
+                {{ lang_code }}
+            </a>
+            {% endlanguage %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div id="overlay" class="hidden fixed inset-0 bg-black/60 z-40 backdrop-blur-sm"></div>
+
+
+<!-- ══════════ HERO ══════════ -->
+<section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden ambient-bg grid-bg">
+    <div class="pointer-events-none absolute top-1/4 left-1/5  w-[500px] h-[500px] rounded-full bg-indigo-600/10 blur-[80px] glow-pulse"></div>
+    <div class="pointer-events-none absolute bottom-1/4 right-1/5 w-[400px] h-[400px] rounded-full bg-purple-600/10 blur-[80px] glow-pulse" style="animation-delay:1.8s"></div>
+
+    <!-- Floating cards -->
+    <div class="float-a absolute top-28 right-16 hidden xl:block">
+        <div class="glass rounded-2xl px-5 py-4 w-48 shadow-xl">
+            <div class="flex items-center gap-2 mb-2"><div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div><span class="text-xs text-gray-400">{% trans "Проект запущен" %}</span></div>
+            <p class="text-white text-sm font-bold">KIKI Academy</p>
+            <p class="text-gray-400 text-xs mt-0.5">{% trans "LMS платформа" %}</p>
+        </div>
+    </div>
+    <div class="float-b absolute bottom-36 left-16 hidden xl:block">
+        <div class="glass rounded-2xl px-5 py-4 w-48 shadow-xl">
+            <div class="flex items-center gap-2 mb-2"><div class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div><span class="text-xs text-gray-400">{% trans "Разрабатываем" %}</span></div>
+            <p class="text-white text-sm font-bold">CRM-система</p>
+            <p class="text-gray-400 text-xs mt-0.5">{% trans "Автоматизация" %}</p>
+        </div>
+    </div>
+
+    <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-24 pb-16">
+        <div class="inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-sm text-gray-300 mb-8" data-aos="fade-down" data-aos-duration="800">
+            <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+            {{ settings.hero_badge }}
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-[1.1] text-glow"
+            data-aos="fade-up" data-aos-duration="900" data-aos-delay="100">
+            {% trans "ZEA — разработка" %}<br>
+            <span class="gradient-text">{% trans "цифровых решений" %}</span><br>
+            {% trans "для бизнеса" %}
+        </h1>
+
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
+           data-aos="fade-up" data-aos-duration="900" data-aos-delay="200">
+            {{ settings.hero_subtitle }}
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4"
+             data-aos="fade-up" data-aos-duration="900" data-aos-delay="300">
+            <a href="#projects" class="btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-white font-semibold text-base">
+                <i data-lucide="layout-grid" class="w-5 h-5"></i> {% trans "Наши проекты" %}
+            </a>
+            <a href="#contact" class="btn-outline w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-white font-semibold text-base">
+                <i data-lucide="message-circle" class="w-5 h-5"></i> {% trans "Связаться" %}
+            </a>
+        </div>
+
+        <div class="mt-20 flex flex-col items-center gap-2 text-gray-600 scroll-indicator" data-aos="fade-up" data-aos-delay="600">
+            <span class="text-[10px] uppercase tracking-[.2em]">{% trans "Scroll" %}</span>
+            <i data-lucide="chevron-down" class="w-5 h-5"></i>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+
+<!-- ══════════ ABOUT ══════════ -->
+<section id="about" class="py-24 md:py-32 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+            <div>
+                <div class="inline-flex items-center gap-2 glass px-3.5 py-1.5 rounded-full text-xs text-indigo-400 mb-7" data-aos="fade-right">
+                    <i data-lucide="info" class="w-3.5 h-3.5"></i> {% trans "О компании" %}
+                </div>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-6 leading-tight"
+                    data-aos="fade-right" data-aos-delay="100">
+                    {% trans "Строим" %}<br><span class="gradient-text">{% trans "цифровое будущее" %}</span><br>{% trans "вашего бизнеса" %}
+                </h2>
+                <p class="text-gray-400 text-lg leading-relaxed mb-8"
+                   data-aos="fade-right" data-aos-delay="200">
+                    {{ settings.about_text }}
+                </p>
+                <a href="#services" class="btn-primary inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-white font-semibold"
+                   data-aos="fade-right" data-aos-delay="300">
+                    {% trans "Наши услуги" %} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <!-- About feature cards -->
+            <div class="grid grid-cols-2 gap-4" data-aos="fade-left" data-aos-delay="200">
+                <div class="glass card rounded-2xl p-6 border border-white/10">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center mb-4">
+                        <i data-lucide="code-2" class="w-5 h-5 text-indigo-400"></i>
+                    </div>
+                    <h3 class="text-white font-semibold mb-1.5">{% trans "Инд. разработка" %}</h3>
+                    <p class="text-gray-500 text-sm">{% trans "Решения под ваш бизнес" %}</p>
+                </div>
+                <div class="glass card rounded-2xl p-6 border border-white/10">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center mb-4">
+                        <i data-lucide="zap" class="w-5 h-5 text-purple-400"></i>
+                    </div>
+                    <h3 class="text-white font-semibold mb-1.5">{% trans "Автоматизация" %}</h3>
+                    <p class="text-gray-500 text-sm">{% trans "Оптимизируем процессы" %}</p>
+                </div>
+                <div class="glass card rounded-2xl p-6 border border-white/10">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center mb-4">
+                        <i data-lucide="palette" class="w-5 h-5 text-cyan-400"></i>
+                    </div>
+                    <h3 class="text-white font-semibold mb-1.5">{% trans "Современный дизайн" %}</h3>
+                    <p class="text-gray-500 text-sm">{% trans "UI/UX мирового уровня" %}</p>
+                </div>
+                <div class="glass card rounded-2xl p-6 border border-white/10">
+                    <div class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center mb-4">
+                        <i data-lucide="headphones" class="w-5 h-5 text-green-400"></i>
+                    </div>
+                    <h3 class="text-white font-semibold mb-1.5">{% trans "Поддержка" %}</h3>
+                    <p class="text-gray-500 text-sm">{% trans "После запуска проекта" %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+
+<!-- ══════════ SERVICES ══════════ -->
+<section id="services" class="py-24 md:py-32 relative">
+    <div class="absolute inset-0 ambient-bg pointer-events-none"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <div class="inline-flex items-center gap-2 glass px-3.5 py-1.5 rounded-full text-xs text-indigo-400 mb-7" data-aos="fade-up">
+                <i data-lucide="briefcase" class="w-3.5 h-3.5"></i> {% trans "Услуги" %}
+            </div>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4" data-aos="fade-up" data-aos-delay="100">
+                {% trans "Что мы" %} <span class="gradient-text">{% trans "создаём" %}</span>
+            </h2>
+            <p class="text-gray-400 text-lg max-w-xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+                {% trans "Полный спектр услуг для цифровой трансформации вашего бизнеса" %}
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for service in services %}
+            <div class="glass card rounded-2xl overflow-hidden border border-white/10" data-color="{{ service.color }}"
+                 data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'0' }}0">
+
+                {% if service.image %}
+                <!-- Фото услуги -->
+                <div class="h-44 overflow-hidden relative">
+                    <img src="{{ service.image.url }}" alt="{{ service.title }}"
+                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div class="absolute bottom-3 left-4">
+                        <div class="w-9 h-9 rounded-xl c-sicon flex items-center justify-center shadow-lg">
+                            <i data-lucide="{{ service.icon }}" class="w-4 h-4"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-white text-xl font-bold mb-2">{{ service.title }}</h3>
+                    <p class="text-gray-400 leading-relaxed text-sm">{{ service.description }}</p>
+                </div>
+
+                {% else %}
+                <!-- Иконка (фото не загружено) -->
+                <div class="p-8">
+                    <div class="w-12 h-12 rounded-2xl c-sicon flex items-center justify-center mb-6">
+                        <i data-lucide="{{ service.icon }}" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-white text-xl font-bold mb-3">{{ service.title }}</h3>
+                    <p class="text-gray-400 leading-relaxed">{{ service.description }}</p>
+                </div>
+                {% endif %}
+
+            </div>
+            {% empty %}
+            <p class="text-gray-500 col-span-3 text-center py-8">{% trans "Услуги не добавлены" %}</p>
+            {% endfor %}
+
+            <!-- CTA card -->
+            <div class="glass card rounded-2xl p-8 border border-indigo-500/25 bg-gradient-to-br from-indigo-600/8 to-purple-600/8 flex flex-col justify-between"
+                 data-aos="fade-up">
+                <div>
+                    <h3 class="text-white text-xl font-bold mb-3">{% trans "Нужен свой проект?" %}</h3>
+                    <p class="text-gray-400 leading-relaxed mb-6">{% trans "Обсудим вашу задачу и предложим оптимальное решение." %}</p>
+                </div>
+                <a href="#contact" class="btn-primary inline-flex items-center gap-2 px-5 py-3 rounded-xl text-white font-semibold text-sm self-start">
+                    {% trans "Обсудить" %} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+
+<!-- ══════════ PROJECTS ══════════ -->
+<section id="projects" class="py-24 md:py-32 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <div class="inline-flex items-center gap-2 glass px-3.5 py-1.5 rounded-full text-xs text-indigo-400 mb-7" data-aos="fade-up">
+                <i data-lucide="layers" class="w-3.5 h-3.5"></i> {% trans "Проекты" %}
+            </div>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4" data-aos="fade-up" data-aos-delay="100">
+                {% trans "Наши" %} <span class="gradient-text">{% trans "работы" %}</span>
+            </h2>
+            <p class="text-gray-400 text-lg max-w-xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+                {% trans "Реализованные проекты, которые работают и приносят результат" %}
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            {% for project in projects %}
+            <div class="project-card glass rounded-2xl overflow-hidden border border-white/10" data-color="{{ project.color }}"
+                 data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'0' }}0">
+
+                <!-- Шапка карточки: скриншот или цветная плашка -->
+                {% if project.image %}
+                <div class="h-52 overflow-hidden relative">
+                    <img src="{{ project.image.url }}" alt="{{ project.name }}"
+                         class="w-full h-full object-cover transition-transform duration-700 hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                    <div class="absolute bottom-4 left-5 flex items-center gap-2">
+                        <span class="c-label text-xs px-2.5 py-1 rounded-full font-medium">{{ project.project_type }}</span>
+                        <span class="text-xs text-gray-400">{{ project.year }}</span>
+                    </div>
+                </div>
+                {% else %}
+                <div class="h-52 c-grad relative flex items-center justify-center overflow-hidden">
+                    <div class="c-glow absolute inset-0"></div>
+                    <div class="relative text-center z-10">
+                        <div class="w-16 h-16 rounded-2xl c-icon flex items-center justify-center mx-auto mb-3 shadow-lg">
+                            <i data-lucide="{{ project.icon }}" class="w-8 h-8"></i>
+                        </div>
+                        <span class="text-sm font-medium opacity-80">{{ project.project_type }}</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="p-7">
+                    {% if not project.image %}
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="c-label text-xs px-2.5 py-1 rounded-full font-medium">{{ project.project_type }}</span>
+                        <span class="text-xs text-gray-600">{{ project.year }}</span>
+                    </div>
+                    {% endif %}
+                    <h3 class="text-white text-xl font-bold mb-2">{{ project.name }}</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-5">{{ project.description }}</p>
+
+                    <div class="flex flex-wrap gap-2 mb-5">
+                        {% for tech in project.technologies_list %}
+                        <span class="tech-tag text-xs text-gray-400 border border-white/10 px-2.5 py-1 rounded-lg">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <button class="c-more text-sm font-medium flex items-center gap-1.5 transition-colors group">
+                            {% trans "Подробнее" %} <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+                        </button>
+                        {% if project.live_url %}
+                        <a href="{{ project.live_url }}" target="_blank" rel="noopener"
+                           class="text-gray-500 hover:text-gray-300 text-sm flex items-center gap-1.5 transition-colors">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> {% trans "Открыть" %}
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-gray-500 col-span-2 text-center py-8">{% trans "Проекты не добавлены" %}</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+
+<!-- ══════════ STATS ══════════ -->
+<section id="experience" class="py-24 md:py-32 relative">
+    <div class="absolute inset-0 ambient-bg pointer-events-none"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <div class="inline-flex items-center gap-2 glass px-3.5 py-1.5 rounded-full text-xs text-indigo-400 mb-7" data-aos="fade-up">
+                <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> {% trans "Опыт" %}
+            </div>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white" data-aos="fade-up" data-aos-delay="100">
+                {% trans "Цифры" %} <span class="gradient-text">{% trans "говорят" %}</span>
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+            {% for stat in stats %}
+            {% if stat.icon %}
+            <!-- Широкая карточка -->
+            <div class="col-span-2 lg:col-span-4 glass card rounded-2xl border border-indigo-500/25 bg-gradient-to-r from-indigo-600/8 to-purple-600/8"
+                 data-aos="fade-up" data-aos-delay="40">
+                <div class="flex flex-col sm:flex-row items-center gap-6 p-8 sm:p-10">
+                    <div class="w-20 h-20 animated-gradient rounded-3xl flex items-center justify-center flex-shrink-0 shadow-xl">
+                        <i data-lucide="{{ stat.icon }}" class="w-10 h-10 text-white"></i>
+                    </div>
+                    <div class="text-center sm:text-left">
+                        <p class="text-4xl sm:text-5xl font-black gradient-text leading-tight mb-1">{{ stat.value_text }}</p>
+                        <p class="text-gray-400 text-lg">{{ stat.label }}</p>
+                    </div>
+                    <div class="hidden sm:block w-px h-16 bg-white/10 flex-shrink-0 mx-4"></div>
+                    {% if stat.description %}
+                    <div class="hidden sm:block text-gray-500 text-sm leading-relaxed max-w-xs">
+                        {{ stat.description }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+            <!-- Числовая карточка -->
+            <div class="glass card rounded-2xl p-8 text-center border border-white/10" data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'0' }}0">
+                {% if stat.is_counter %}
+                <div class="flex items-end justify-center gap-1 mb-2">
+                    <span class="text-5xl font-black gradient-text counter-num" data-target="{{ stat.counter_target }}">0</span>
+                    {% if stat.suffix %}<span class="text-2xl font-black text-indigo-400 mb-1">{{ stat.suffix }}</span>{% endif %}
+                </div>
+                {% else %}
+                <div class="text-4xl font-black gradient-text mb-2">{{ stat.value_text }}{% if stat.suffix %}{{ stat.suffix }}{% endif %}</div>
+                {% endif %}
+                <p class="text-gray-400 text-sm mt-2">{{ stat.label }}</p>
+            </div>
+            {% endif %}
+            {% empty %}
+            <!-- Fallback stats -->
+            <div class="glass card rounded-2xl p-8 text-center border border-white/10" data-aos="fade-up" data-aos-delay="80">
+                <div class="flex items-end justify-center gap-1 mb-2">
+                    <span class="text-5xl font-black gradient-text counter-num" data-target="3">0</span>
+                    <span class="text-2xl font-black text-indigo-400 mb-1">+</span>
+                </div>
+                <p class="text-gray-400 text-sm mt-2">{% trans "Года опыта" %}</p>
+            </div>
+            <div class="glass card rounded-2xl p-8 text-center border border-white/10" data-aos="fade-up" data-aos-delay="140">
+                <div class="flex items-end justify-center gap-1 mb-2">
+                    <span class="text-5xl font-black gradient-text counter-num" data-target="5">0</span>
+                    <span class="text-2xl font-black text-purple-400 mb-1">+</span>
+                </div>
+                <p class="text-gray-400 text-sm mt-2">{% trans "Проектов сдано" %}</p>
+            </div>
+            <div class="glass card rounded-2xl p-8 text-center border border-white/10" data-aos="fade-up" data-aos-delay="200">
+                <div class="text-3xl font-black gradient-text mb-2">CRM / Bot</div>
+                <p class="text-gray-400 text-sm">{% trans "Сайты & боты" %}</p>
+            </div>
+            <div class="glass card rounded-2xl p-8 text-center border border-white/10" data-aos="fade-up" data-aos-delay="260">
+                <div class="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center mx-auto mb-3">
+                    <i data-lucide="refresh-cw" class="w-6 h-6 text-indigo-400"></i>
+                </div>
+                <p class="text-white font-semibold text-sm">{% trans "Полный цикл" %}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+
+<!-- ══════════ TECH STACK ══════════ -->
+<section id="tech" class="py-24 md:py-32 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <div class="inline-flex items-center gap-2 glass px-3.5 py-1.5 rounded-full text-xs text-indigo-400 mb-7" data-aos="fade-up">
+                <i data-lucide="cpu" class="w-3.5 h-3.5"></i> {% trans "Технологии" %}
+            </div>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4" data-aos="fade-up" data-aos-delay="100">
+                {% trans "Наш" %} <span class="gradient-text">{% trans "стек" %}</span>
+            </h2>
+            <p class="text-gray-400 text-lg" data-aos="fade-up" data-aos-delay="200">{% trans "Проверенные технологии для надёжных решений" %}</p>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="200">
+            {% for tech in tech_stack %}
+            <div class="tech-tag glass border border-white/10 rounded-2xl px-6 py-4 flex items-center gap-3 cursor-default" data-color="{{ tech.color }}">
+                <div class="w-9 h-9 rounded-xl c-sicon flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {% if tech.logo %}
+                    <img src="{{ tech.logo.url }}" alt="{{ tech.name }}" class="w-6 h-6 object-contain">
+                    {% else %}
+                    <span class="text-xs font-black" style="-webkit-text-fill-color:initial">{{ tech.label }}</span>
+                    {% endif %}
+                </div>
+                <span class="text-white font-semibold">{{ tech.name }}</span>
+            </div>
+            {% empty %}
+            <p class="text-gray-500">{% trans "Технологии не добавлены" %}</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+
+<!-- ══════════ PARTNERS ══════════ -->
+<section id="partners" class="py-24 md:py-32 relative">
+    <div class="absolute inset-0 ambient-bg pointer-events-none"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <div class="inline-flex items-center gap-2 glass px-3.5 py-1.5 rounded-full text-xs text-indigo-400 mb-7" data-aos="fade-up">
+                <i data-lucide="handshake" class="w-3.5 h-3.5"></i> {% trans "Партнёры" %}
+            </div>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4" data-aos="fade-up" data-aos-delay="100">
+                {% trans "Нам" %} <span class="gradient-text">{% trans "доверяют" %}</span>
+            </h2>
+            <p class="text-gray-400 text-lg" data-aos="fade-up" data-aos-delay="200">{% trans "Компании, с которыми мы работаем" %}</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-5" data-aos="fade-up" data-aos-delay="200">
+            {% for partner in partners %}
+            <div class="glass card rounded-2xl p-8 text-center border border-white/10" data-color="{{ partner.color }}">
+                {% if partner.logo %}
+                <div class="w-16 h-16 rounded-2xl overflow-hidden mx-auto mb-4 border border-white/10">
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.name }}"
+                         class="w-full h-full object-contain">
+                </div>
+                {% else %}
+                <div class="w-14 h-14 rounded-2xl c-sicon flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="{{ partner.icon }}" class="w-7 h-7 c-icon"></i>
+                </div>
+                {% endif %}
+                <p class="text-white font-semibold">{{ partner.name }}</p>
+                <p class="text-gray-500 text-xs mt-1">{{ partner.industry }}</p>
+            </div>
+            {% empty %}
+            <p class="text-gray-500 col-span-4 text-center py-8">{% trans "Партнёры не добавлены" %}</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+
+<!-- ══════════ WHY ZEA ══════════ -->
+<section id="why" class="py-24 md:py-32 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <div class="inline-flex items-center gap-2 glass px-3.5 py-1.5 rounded-full text-xs text-indigo-400 mb-7" data-aos="fade-up">
+                <i data-lucide="star" class="w-3.5 h-3.5"></i> {% trans "Почему ZEA" %}
+            </div>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white" data-aos="fade-up" data-aos-delay="100">
+                {% trans "Почему выбирают" %} <span class="gradient-text">{% trans "нас" %}</span>
+            </h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for reason in why_us %}
+            <div class="glass card rounded-2xl p-8 border border-white/10" data-color="{{ reason.color }}"
+                 data-aos="fade-up" data-aos-delay="{{ forloop.counter|add:'0' }}0">
+                <div class="w-10 h-10 rounded-xl c-sicon flex items-center justify-center mb-4">
+                    <i data-lucide="{{ reason.icon }}" class="w-5 h-5"></i>
+                </div>
+                <h3 class="text-white font-bold mb-2">{{ reason.title }}</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">{{ reason.description }}</p>
+            </div>
+            {% empty %}
+            <p class="text-gray-500 col-span-3 text-center py-8">{% trans "Данные не добавлены" %}</p>
+            {% endfor %}
+
+            <!-- CTA card -->
+            <div class="glass rounded-2xl p-8 border border-indigo-500/25 bg-gradient-to-br from-indigo-600/8 to-purple-600/8 flex flex-col items-center justify-center text-center"
+                 data-aos="fade-up">
+                <div class="w-12 h-12 animated-gradient rounded-2xl flex items-center justify-center mb-4 shadow-lg">
+                    <i data-lucide="message-circle" class="w-6 h-6 text-white"></i>
+                </div>
+                <h3 class="text-white font-bold mb-2">{% trans "Готовы начать?" %}</h3>
+                <p class="text-gray-400 text-sm mb-5">{% trans "Обсудим ваш проект бесплатно" %}</p>
+                <a href="#contact" class="btn-primary px-6 py-2.5 rounded-xl text-white font-semibold text-sm">{% trans "Связаться" %}</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+
+<!-- ══════════ CONTACT ══════════ -->
+<section id="contact" class="py-24 md:py-32 relative overflow-hidden">
+    <div class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-indigo-600/8 blur-[100px] glow-pulse"></div>
+
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-14 lg:gap-20 items-start">
+
+            <!-- Левая колонка: заголовок + соцсети -->
+            <div data-aos="fade-right">
+                <div class="inline-flex items-center gap-2 glass px-3.5 py-1.5 rounded-full text-xs text-indigo-400 mb-7">
+                    <i data-lucide="mail" class="w-3.5 h-3.5"></i> {% trans "Контакты" %}
+                </div>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                    {% trans "Хотите запустить" %}<br><span class="gradient-text">{% trans "сайт, CRM или бота?" %}</span>
+                </h2>
+                <p class="text-gray-400 text-lg mb-10 leading-relaxed">
+                    {% trans "Напишите нам — обсудим задачу и предложим решение" %}
+                </p>
+
+                <div class="flex flex-wrap gap-3">
+                    {% if settings.telegram_url %}
+                    <a href="{{ settings.telegram_url }}" target="_blank" rel="noopener"
+                       class="glass card flex items-center gap-3 px-5 py-3 rounded-xl border border-white/10 text-white font-semibold hover:border-blue-400/40 transition-all text-sm">
+                        <div class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="send" class="w-4 h-4 text-blue-400"></i>
+                        </div>
+                        Telegram
+                    </a>
+                    {% endif %}
+                    {% if settings.whatsapp_url %}
+                    <a href="{{ settings.whatsapp_url }}" target="_blank" rel="noopener"
+                       class="glass card flex items-center gap-3 px-5 py-3 rounded-xl border border-white/10 text-white font-semibold hover:border-green-400/40 transition-all text-sm">
+                        <div class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="message-circle" class="w-4 h-4 text-green-400"></i>
+                        </div>
+                        WhatsApp
+                    </a>
+                    {% endif %}
+                    {% if settings.instagram_url %}
+                    <a href="{{ settings.instagram_url }}" target="_blank" rel="noopener"
+                       class="glass card flex items-center gap-3 px-5 py-3 rounded-xl border border-white/10 text-white font-semibold hover:border-pink-400/40 transition-all text-sm">
+                        <div class="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-pink-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                            </svg>
+                        </div>
+                        Instagram
+                    </a>
+                    {% endif %}
+                    {% if settings.email %}
+                    <a href="mailto:{{ settings.email }}"
+                       class="glass card flex items-center gap-3 px-5 py-3 rounded-xl border border-white/10 text-white font-semibold hover:border-indigo-400/40 transition-all text-sm">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="mail" class="w-4 h-4 text-indigo-400"></i>
+                        </div>
+                        Email
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Правая колонка: форма -->
+            <div data-aos="fade-left" data-aos-delay="100">
+                <div class="glass rounded-2xl p-8 border border-white/10">
+
+                    <!-- Успех -->
+                    <div id="contact-success" class="hidden text-center py-8">
+                        <div class="w-16 h-16 animated-gradient rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <i data-lucide="check" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-white text-xl font-bold mb-2">{% trans "Заявка отправлена!" %}</h3>
+                        <p class="text-gray-400">{% trans "Мы свяжемся с вами в ближайшее время." %}</p>
+                    </div>
+
+                    <!-- Форма -->
+                    <form id="contact-form" action="{% url 'contact_submit' %}" method="post" novalidate>
+                        {% csrf_token %}
+
+                        <h3 class="text-white text-xl font-bold mb-6">{% trans "Оставить заявку" %}</h3>
+
+                        <!-- Имя -->
+                        <div class="mb-4">
+                            <label class="block text-sm text-gray-400 mb-1.5">{% trans "Имя" %}</label>
+                            <input type="text" name="name" id="id_name"
+                                   placeholder="{% trans 'Ваше имя' %}"
+                                   class="cf-input w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-indigo-500/60 transition-colors">
+                        </div>
+
+                        <!-- Тип услуги -->
+                        <div class="mb-4">
+                            <label class="block text-sm text-gray-400 mb-1.5">{% trans "Тип услуги" %}</label>
+                            <div class="relative">
+                                <select name="service" id="id_service"
+                                        class="cf-input w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500/60 transition-colors appearance-none cursor-pointer"
+                                        style="-webkit-text-fill-color:#9ca3af; color:#9ca3af">
+                                    <option value="" style="background:#0B0F19">{% trans "Выберите услугу" %}</option>
+                                    <option value="website" style="background:#0B0F19">{% trans "Разработка сайта" %}</option>
+                                    <option value="crm" style="background:#0B0F19">{% trans "CRM-система" %}</option>
+                                    <option value="bot" style="background:#0B0F19">{% trans "Telegram-бот" %}</option>
+                                    <option value="design" style="background:#0B0F19">{% trans "UI/UX Дизайн" %}</option>
+                                    <option value="backend" style="background:#0B0F19">{% trans "Backend-разработка" %}</option>
+                                    <option value="other" style="background:#0B0F19">{% trans "Другое" %}</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-gray-500 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <!-- Телефон + Email в ряд -->
+                        <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-1.5">{% trans "Телефон / WhatsApp" %}</label>
+                                <input type="tel" name="phone" id="id_phone"
+                                       placeholder="+996 XXX XXX XXX"
+                                       class="cf-input w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-indigo-500/60 transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-1.5">Email</label>
+                                <input type="email" name="email" id="id_email"
+                                       placeholder="hello@example.com"
+                                       class="cf-input w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-indigo-500/60 transition-colors">
+                            </div>
+                        </div>
+
+                        <!-- Сообщение -->
+                        <div class="mb-5">
+                            <label class="block text-sm text-gray-400 mb-1.5">{% trans "Сообщение" %}</label>
+                            <textarea name="message" id="id_message" rows="4"
+                                      placeholder="{% trans 'Опишите вашу задачу...' %}"
+                                      class="cf-input w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-indigo-500/60 transition-colors resize-none"></textarea>
+                        </div>
+
+                        <!-- Ошибка -->
+                        <p id="contact-error" class="hidden text-red-400 text-sm mb-4"></p>
+
+                        <!-- Кнопка -->
+                        <button type="submit" id="contact-btn"
+                                class="btn-primary w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-semibold text-sm">
+                            <i data-lucide="send" class="w-4 h-4" id="contact-btn-icon"></i>
+                            <span id="contact-btn-text">{% trans "Отправить заявку" %}</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="border-t border-white/8 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            <a href="#home" class="flex items-center gap-2.5">
+                {% if settings.logo %}
+                <img src="{{ settings.logo.url }}" alt="{{ settings.site_name }}" class="h-7 w-auto object-contain">
+                {% else %}
+                <div class="w-8 h-8 rounded-xl animated-gradient flex items-center justify-center">
+                    <span class="text-white font-black text-xs">{{ settings.site_name|first }}</span>
+                </div>
+                <span class="text-white font-extrabold text-lg">{{ settings.site_name }}</span>
+                {% endif %}
+            </a>
+            <nav class="flex flex-wrap justify-center gap-6">
+                <a href="#about"    class="text-gray-500 hover:text-gray-300 text-sm transition-colors">{% trans "О нас" %}</a>
+                <a href="#services" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">{% trans "Услуги" %}</a>
+                <a href="#projects" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">{% trans "Проекты" %}</a>
+                <a href="#partners" class="text-gray-500 hover:text-gray-300 text-sm transition-colors">{% trans "Партнёры" %}</a>
+                <a href="#contact"  class="text-gray-500 hover:text-gray-300 text-sm transition-colors">{% trans "Контакты" %}</a>
+            </nav>
+            <p class="text-gray-600 text-sm">{% if settings.footer_text %}{{ settings.footer_text }}{% else %}© 2024 {{ settings.site_name }}. {% trans "All rights reserved." %}{% endif %}</p>
+        </div>
+    </div>
+</footer>
+
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+/* ════════════════════════════════════════════════════════
+   initApp — вызывается при первой загрузке и после AJAX-
+   смены языка (body swap). AbortController сбрасывает все
+   старые слушатели перед повторной инициализацией.
+════════════════════════════════════════════════════════ */
+let _appAbort = null;
+
+function initApp() {
+    if (_appAbort) _appAbort.abort();
+    _appAbort = new AbortController();
+    const sig = { signal: _appAbort.signal };
+
+    lucide.createIcons();
+    AOS.init({ duration:700, easing:'ease-out-cubic', once:true, offset:70 });
+
+    /* ── Mobile menu ── */
+    const burgerBtn   = document.getElementById('burger-btn');
+    const mobileMenu  = document.getElementById('mobile-menu');
+    const bgOverlay   = document.getElementById('overlay');
+    const closeBtn    = document.getElementById('close-menu');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+    function openMenu()  { mobileMenu.classList.add('open');    bgOverlay.classList.remove('hidden'); document.body.style.overflow='hidden'; }
+    function closeMenu() { mobileMenu.classList.remove('open'); bgOverlay.classList.add('hidden');    document.body.style.overflow=''; }
+    if (burgerBtn) burgerBtn.addEventListener('click', openMenu, sig);
+    if (closeBtn)  closeBtn.addEventListener('click', closeMenu, sig);
+    if (bgOverlay) bgOverlay.addEventListener('click', closeMenu, sig);
+    mobileLinks.forEach(l => l.addEventListener('click', closeMenu, sig));
+
+    /* ── Smooth scroll ── */
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+            const target = document.querySelector(a.getAttribute('href'));
+            if (!target) return;
+            e.preventDefault();
+            window.scrollTo({ top: target.getBoundingClientRect().top + scrollY - 80, behavior:'smooth' });
+        }, sig);
+    });
+
+    /* ── Counter animation ── */
+    const counterObs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            const end = parseInt(el.dataset.target, 10);
+            let cur = 0;
+            const id = setInterval(() => {
+                cur = Math.min(cur + end / 50, end);
+                el.textContent = Math.round(cur);
+                if (cur >= end) clearInterval(id);
+            }, 28);
+            counterObs.unobserve(el);
+        });
+    }, { threshold:0.6 });
+    document.querySelectorAll('.counter-num').forEach(el => counterObs.observe(el));
+
+    /* ── Active nav ── */
+    const navAnchors = document.querySelectorAll('nav .nav-link');
+    const navObs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const id = entry.target.getAttribute('id');
+            navAnchors.forEach(a => {
+                const match = a.getAttribute('href') === '#' + id;
+                a.classList.toggle('active', match);
+                a.classList.toggle('text-white', match);
+                a.classList.toggle('text-gray-400', !match);
+            });
+        });
+    }, { threshold:0.4, rootMargin:'-80px 0px -40% 0px' });
+    document.querySelectorAll('section[id]').forEach(s => navObs.observe(s));
+
+    /* ── Header shadow ── */
+    window.addEventListener('scroll', () => {
+        const h = document.getElementById('header');
+        if (h) h.style.boxShadow = scrollY > 20 ? '0 4px 30px rgba(0,0,0,.4)' : 'none';
+    }, { passive:true, ...sig });
+
+    /* ── Contact form ── */
+    const cfForm    = document.getElementById('contact-form');
+    const cfSuccess = document.getElementById('contact-success');
+    const cfErr     = document.getElementById('contact-error');
+    const cfBtn     = document.getElementById('contact-btn');
+    const cfBtnText = document.getElementById('contact-btn-text');
+    const cfBtnIcon = document.getElementById('contact-btn-icon');
+    if (cfForm && cfBtnText) {
+        const origLabel = cfBtnText.textContent;
+        cfForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            cfErr.classList.add('hidden');
+            cfForm.querySelectorAll('.cf-input').forEach(el => el.classList.remove('cf-error'));
+            cfBtn.disabled = true;
+            cfBtnText.textContent = '...';
+            cfBtnIcon.setAttribute('data-lucide', 'loader');
+            lucide.createIcons();
+            const data = new FormData(cfForm);
+            try {
+                const res  = await fetch(cfForm.action, { method:'POST', body:data });
+                const json = await res.json();
+                if (json.ok) {
+                    cfForm.classList.add('hidden');
+                    cfSuccess.classList.remove('hidden');
+                    lucide.createIcons();
+                } else {
+                    Object.keys(json.errors||{}).forEach(f => {
+                        const el = cfForm.querySelector(`[name="${f}"]`);
+                        if (el) el.classList.add('cf-error');
+                    });
+                    cfErr.textContent = Object.values(json.errors||{}).flat().join(' ');
+                    cfErr.classList.remove('hidden');
+                    cfBtn.disabled = false;
+                    cfBtnText.textContent = origLabel;
+                    cfBtnIcon.setAttribute('data-lucide', 'send');
+                    lucide.createIcons();
+                }
+            } catch {
+                cfErr.textContent = '{% trans "Ошибка соединения. Попробуйте позже." %}';
+                cfErr.classList.remove('hidden');
+                cfBtn.disabled = false;
+                cfBtnText.textContent = origLabel;
+                cfBtnIcon.setAttribute('data-lucide', 'send');
+                lucide.createIcons();
+            }
+        }, sig);
+        const sel = document.getElementById('id_service');
+        if (sel) sel.addEventListener('change', () => {
+            sel.style.webkitTextFillColor = sel.value ? '#fff' : '#9ca3af';
+            sel.style.color = sel.value ? '#fff' : '#9ca3af';
+        }, sig);
+    }
+
+    /* ── Language switcher (AJAX по языковому URL, без перезагрузки) ── */
+    document.querySelectorAll('a.lang-link').forEach(link => {
+        link.addEventListener('click', async e => {
+            const url = link.getAttribute('href');
+            if (!url || url === window.location.pathname) return;
+            e.preventDefault();
+
+            /* Fade out */
+            document.body.style.transition = 'opacity .18s ease';
+            document.body.style.opacity    = '0';
+
+            /* Запросить языковую версию страницы */
+            const res  = await fetch(url);
+            const html = await res.text();
+
+            /* Вставить новый body + обновить URL в адресной строке */
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            document.documentElement.lang = doc.documentElement.lang;
+            document.title = doc.title;
+            document.body.innerHTML = doc.body.innerHTML;
+            history.pushState({}, '', url);
+
+            /* Переинициализировать всё */
+            initApp();
+
+            /* Fade in */
+            document.body.style.transition = 'opacity .25s ease';
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                document.body.style.opacity = '1';
+            }));
+        }, sig);
+    });
+}
+
+initApp();
+</script>
+</body>
+</html>

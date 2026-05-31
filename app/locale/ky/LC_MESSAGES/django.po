@@ -1,0 +1,408 @@
+# ZEA IT Studio — Кыргыз тилиндеги котормо
+# Copyright (C) 2026 ZEA
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ZEA 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-31 07:18+0600\n"
+"PO-Revision-Date: 2026-05-31 05:10+0600\n"
+"Last-Translator: ZEA Team\n"
+"Language-Team: Kyrgyz\n"
+"Language: ky\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: apps/contacts/forms.py:7 templates/index.html:899
+msgid "Выберите услугу"
+msgstr "Кызматты тандоо"
+
+#: apps/contacts/forms.py:8 templates/index.html:900
+msgid "Разработка сайта"
+msgstr "Сайт иштеп чыгуу"
+
+#: apps/contacts/forms.py:9 templates/index.html:901
+msgid "CRM-система"
+msgstr "CRM-система"
+
+#: apps/contacts/forms.py:10 templates/index.html:902
+msgid "Telegram-бот"
+msgstr "Telegram-бот"
+
+#: apps/contacts/forms.py:11 templates/index.html:903
+msgid "UI/UX Дизайн"
+msgstr "UI/UX Дизайн"
+
+#: apps/contacts/forms.py:12 templates/index.html:904
+msgid "Backend-разработка"
+msgstr "Backend-иштеп чыгуу"
+
+#: apps/contacts/forms.py:13 templates/index.html:905
+msgid "Другое"
+msgstr "Башка"
+
+#: apps/contacts/forms.py:21 templates/index.html:894
+msgid "Тип услуги"
+msgstr "Кызмат түрү"
+
+#: apps/contacts/forms.py:31 templates/index.html:886
+msgid "Имя"
+msgstr "Аты"
+
+#: apps/contacts/forms.py:32 templates/index.html:914
+msgid "Телефон / WhatsApp"
+msgstr "Телефон / WhatsApp"
+
+#: apps/contacts/forms.py:33
+msgid "Email"
+msgstr ""
+
+#: apps/contacts/forms.py:34 templates/index.html:929
+msgid "Сообщение"
+msgstr "Кабар"
+
+#: apps/contacts/forms.py:37 templates/index.html:888
+msgid "Ваше имя"
+msgstr "Сиздин атыңыз"
+
+#: apps/contacts/forms.py:41 templates/index.html:931
+msgid "Опишите вашу задачу..."
+msgstr "Тапшырмаңызды сүрөттөңүз..."
+
+#: apps/contacts/forms.py:52
+msgid "Укажите телефон или email — чтобы мы могли связаться с вами."
+msgstr ""
+"Биз сиз менен байланыша алышыбыз үчүн телефонуңузду же emailди жазыңыз."
+
+#: core/settings/base.py:139
+msgid "Русский"
+msgstr "Орусча"
+
+#: core/settings/base.py:140
+msgid "Кыргызча"
+msgstr "Кыргызча"
+
+#: core/settings/base.py:141
+msgid "English"
+msgstr "Англисче"
+
+#: templates/404.html:8 templates/404.html:53
+msgid "Страница не найдена"
+msgstr "Барак табылган жок"
+
+#: templates/404.html:54
+msgid ""
+"Возможно, ссылка устарела или страница была перемещена. Вернитесь на главную "
+"— там всё на месте."
+msgstr ""
+
+#: templates/404.html:55
+msgid "На главную"
+msgstr "Башкы бетке"
+
+#: templates/index.html:11
+msgid "Разработка цифровых решений"
+msgstr "Санарип чечимдерди иштеп чыгуу"
+
+#: templates/index.html:12
+msgid ""
+"мини IT-студия. Разрабатываем сайты, CRM-системы, Telegram-ботов и решения "
+"для автоматизации бизнес-процессов."
+msgstr ""
+"Мини IT-студия. Сайттарды, CRM-системаларды, Telegram-боттарды жана бизнес-"
+"процесстерди автоматташтыруу чечимдерин иштеп чыгабыз."
+
+#: templates/index.html:263 templates/index.html:303 templates/index.html:968
+msgid "О нас"
+msgstr "Биз жөнүндө"
+
+#: templates/index.html:264 templates/index.html:304 templates/index.html:453
+#: templates/index.html:969
+msgid "Услуги"
+msgstr "Кызматтар"
+
+#: templates/index.html:265 templates/index.html:305 templates/index.html:524
+#: templates/index.html:970
+msgid "Проекты"
+msgstr "Долбоорлор"
+
+#: templates/index.html:266 templates/index.html:306 templates/index.html:725
+#: templates/index.html:971
+msgid "Партнёры"
+msgstr "Өнөктөштөр"
+
+#: templates/index.html:267 templates/index.html:307 templates/index.html:812
+#: templates/index.html:972
+msgid "Контакты"
+msgstr "Байланыш"
+
+#: templates/index.html:282 templates/index.html:311 templates/index.html:373
+#: templates/index.html:793
+msgid "Связаться"
+msgstr "Байланышуу"
+
+#: templates/index.html:283
+msgid "Меню"
+msgstr "Меню"
+
+#: templates/index.html:336
+msgid "Проект запущен"
+msgstr "Долбоор ишке киргизилди"
+
+#: templates/index.html:338
+msgid "LMS платформа"
+msgstr "LMS платформа"
+
+#: templates/index.html:343
+msgid "Разрабатываем"
+msgstr "Иштеп жатабыз"
+
+#: templates/index.html:345 templates/index.html:422
+msgid "Автоматизация"
+msgstr "Автоматташтыруу"
+
+#: templates/index.html:357
+msgid "ZEA — разработка"
+msgstr "ZEA — иштеп чыгуу"
+
+#: templates/index.html:358
+msgid "цифровых решений"
+msgstr "санарип чечимдер"
+
+#: templates/index.html:359
+msgid "для бизнеса"
+msgstr "бизнес үчүн"
+
+#: templates/index.html:370
+msgid "Наши проекты"
+msgstr "Биздин долбоорлор"
+
+#: templates/index.html:378
+msgid "Scroll"
+msgstr "Scroll"
+
+#: templates/index.html:393
+msgid "О компании"
+msgstr "Компания жөнүндө"
+
+#: templates/index.html:397
+msgid "Строим"
+msgstr "Курабыз"
+
+#: templates/index.html:397
+msgid "цифровое будущее"
+msgstr "санарип келечек"
+
+#: templates/index.html:397
+msgid "вашего бизнеса"
+msgstr "бизнесиңиздин"
+
+#: templates/index.html:405
+msgid "Наши услуги"
+msgstr "Биздин кызматтар"
+
+#: templates/index.html:415
+msgid "Инд. разработка"
+msgstr "Жеке иштеп чыгуу"
+
+#: templates/index.html:416
+msgid "Решения под ваш бизнес"
+msgstr "Бизнесиңизге ылайык чечимдер"
+
+#: templates/index.html:423
+msgid "Оптимизируем процессы"
+msgstr "Процесстерди оптималдаштыруу"
+
+#: templates/index.html:429
+msgid "Современный дизайн"
+msgstr "Заманбап дизайн"
+
+#: templates/index.html:430
+msgid "UI/UX мирового уровня"
+msgstr "Дүйнөлүк деңгээлдеги UI/UX"
+
+#: templates/index.html:436
+msgid "Поддержка"
+msgstr "Колдоо"
+
+#: templates/index.html:437
+msgid "После запуска проекта"
+msgstr "Долбоор ишке кийин"
+
+#: templates/index.html:456
+msgid "Что мы"
+msgstr "Эмне"
+
+#: templates/index.html:456
+msgid "создаём"
+msgstr "жасайбыз"
+
+#: templates/index.html:459
+msgid "Полный спектр услуг для цифровой трансформации вашего бизнеса"
+msgstr "Бизнесиңиздин санарип трансформациясы үчүн толук кызматтар"
+
+#: templates/index.html:498
+msgid "Услуги не добавлены"
+msgstr "Кызматтар кошулган жок"
+
+#: templates/index.html:505
+msgid "Нужен свой проект?"
+msgstr "Өз долбооруңуз керекпи?"
+
+#: templates/index.html:506
+msgid "Обсудим вашу задачу и предложим оптимальное решение."
+msgstr "Сиздин тапшырмаңызды талкуулап, оптималдуу чечим сунуштайбыз."
+
+#: templates/index.html:509
+msgid "Обсудить"
+msgstr "Талкуулоо"
+
+#: templates/index.html:527
+msgid "Наши"
+msgstr "Биздин"
+
+#: templates/index.html:527
+msgid "работы"
+msgstr "иштер"
+
+#: templates/index.html:530
+msgid "Реализованные проекты, которые работают и приносят результат"
+msgstr "Натыйжа берген ишке ашырылган долбоорлор"
+
+#: templates/index.html:580
+msgid "Подробнее"
+msgstr "Толугураак"
+
+#: templates/index.html:585
+msgid "Открыть"
+msgstr "Ачуу"
+
+#: templates/index.html:592
+msgid "Проекты не добавлены"
+msgstr "Долбоорлор кошулган жок"
+
+#: templates/index.html:607
+msgid "Опыт"
+msgstr "Тажрыйба"
+
+#: templates/index.html:610
+msgid "Цифры"
+msgstr "Сандар"
+
+#: templates/index.html:610
+msgid "говорят"
+msgstr "сүйлөйт"
+
+#: templates/index.html:657
+msgid "Года опыта"
+msgstr "Тажрыйба жылдары"
+
+#: templates/index.html:664
+msgid "Проектов сдано"
+msgstr "Тапшырылган долбоорлор"
+
+#: templates/index.html:668
+msgid "Сайты & боты"
+msgstr "Сайттар & боттор"
+
+#: templates/index.html:674
+msgid "Полный цикл"
+msgstr "Толук ци��л"
+
+#: templates/index.html:689
+msgid "Технологии"
+msgstr "Технологиялар"
+
+#: templates/index.html:692
+msgid "Наш"
+msgstr "Биздин"
+
+#: templates/index.html:692
+msgid "стек"
+msgstr "стек"
+
+#: templates/index.html:694
+msgid "Проверенные технологии для надёжных решений"
+msgstr "Ишенимдүү чечимдер үчүн текшерилген технологиялар"
+
+#: templates/index.html:710
+msgid "Технологии не добавлены"
+msgstr "Технологиялар кошулган жок"
+
+#: templates/index.html:728
+msgid "Нам"
+msgstr "Бизге"
+
+#: templates/index.html:728
+msgid "доверяют"
+msgstr "ишенишет"
+
+#: templates/index.html:730
+msgid "Компании, с которыми мы работаем"
+msgstr "Биз менен иштеген компаниялар"
+
+#: templates/index.html:750
+msgid "Партнёры не добавлены"
+msgstr "Өнөктөштөр кошулган жок"
+
+#: templates/index.html:764
+msgid "Почему ZEA"
+msgstr "Эмне үчүн ZEA"
+
+#: templates/index.html:767
+msgid "Почему выбирают"
+msgstr "Эмне үчүн"
+
+#: templates/index.html:767
+msgid "нас"
+msgstr "бизди тандашат"
+
+#: templates/index.html:782
+msgid "Данные не добавлены"
+msgstr "Маалыматтар кошулган жок"
+
+#: templates/index.html:791
+msgid "Готовы начать?"
+msgstr "Баштоого даярсызбы?"
+
+#: templates/index.html:792
+msgid "Обсудим ваш проект бесплатно"
+msgstr "Долбооруңузду бекер талкуулайбыз"
+
+#: templates/index.html:815
+msgid "Хотите запустить"
+msgstr "Ишке киргизгиңиз келеби"
+
+#: templates/index.html:815
+msgid "сайт, CRM или бота?"
+msgstr "сайт, CRM же бот?"
+
+#: templates/index.html:818
+msgid "Напишите нам — обсудим задачу и предложим решение"
+msgstr "Бизге жазыңыз — тапшырманы талкуулап, чечим сунуштайбыз"
+
+#: templates/index.html:874
+msgid "Заявка отправлена!"
+msgstr "Арыз жөнөтүлдү!"
+
+#: templates/index.html:875
+msgid "Мы свяжемся с вами в ближайшее время."
+msgstr "Биз жакын арада сиз менен байланышабыз."
+
+#: templates/index.html:882
+msgid "Оставить заявку"
+msgstr "Арыз калтыруу"
+
+#: templates/index.html:942
+msgid "Отправить заявку"
+msgstr "Арызды жөнөтүү"
+
+#: templates/index.html:974
+msgid "All rights reserved."
+msgstr "Бардык укуктар корголгон."
+
+#: templates/index.html:1097
+msgid "Ошибка соединения. Попробуйте позже."
+msgstr ""
