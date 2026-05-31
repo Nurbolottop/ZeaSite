@@ -30,6 +30,7 @@ services:
     volumes:
       - ../app/static:/app/static
       - ../app/media:/app/media
+      - ../app/staticfiles:/app/staticfiles
     env_file:
       - ../.env
     environment:
@@ -40,7 +41,7 @@ services:
       db_zea:
         condition: service_healthy
     ports:
-      - "8000:8000"
+      - "8087:8000"
     networks:
       - zea_network
     restart: unless-stopped

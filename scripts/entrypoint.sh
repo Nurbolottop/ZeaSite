@@ -11,6 +11,9 @@ echo "==> PostgreSQL готов!"
 echo "==> Применяем миграции..."
 python manage.py migrate --noinput
 
+echo "==> Компилируем переводы..."
+python manage.py compilemessages || true
+
 echo "==> Собираем статику..."
 python manage.py collectstatic --noinput
 
