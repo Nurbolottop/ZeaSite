@@ -1,6 +1,8 @@
 from django.db import models
 from django_resized import ResizedImageField
 
+from apps.contacts.choices import REQUEST_TYPE_CHOICES
+
 
 COLOR_CHOICES = [
     ('indigo', 'Indigo'),
@@ -57,12 +59,21 @@ class Project(models.Model):
     live_url     = models.URLField('🔗 Ссылка на проект', blank=True,
                                    help_text='URL живого сайта (кнопка "Открыть проект")')
     year         = models.PositiveIntegerField('Год', default=2024)
+    # ── Кейс (окно «Подробнее») ──
+    task         = models.TextField('Задача', blank=True,
+                                    help_text='Какую задачу бизнеса решали')
+    solution     = models.TextField('Решение', blank=True,
+                                    help_text='Что сделали')
+    result       = models.TextField('Результат', blank=True,
+                                    help_text='Только подтверждённый результат')
+    is_featured  = models.BooleanField('Избранный кейс', default=False,
+                                       help_text='Показывается первым и в карточках первого экрана')
     order        = models.PositiveIntegerField('Порядок', default=0)
     is_active    = models.BooleanField('Активно', default=True)
 
     class Meta:
-        verbose_name        = 'Проект'
-        verbose_name_plural = 'Проекты'
+        verbose_name        = 'Проект сайта (кейс)'
+        verbose_name_plural = 'Проекты сайта (кейсы)'
         ordering            = ['order']
 
     def __str__(self):
@@ -89,8 +100,8 @@ class Partner(models.Model):
     is_active = models.BooleanField('Активно', default=True)
 
     class Meta:
-        verbose_name        = 'Партнёр'
-        verbose_name_plural = 'Партнёры'
+        verbose_name        = 'Партнёр сайта (логотип)'
+        verbose_name_plural = 'Партнёры сайта (логотипы)'
         ordering            = ['order']
 
     def __str__(self):
@@ -155,6 +166,7 @@ class Stat(models.Model):
     description    = models.TextField('Описание (для широкой карточки)', blank=True)
     color          = models.CharField('Цвет', max_length=20, choices=COLOR_CHOICES, default='indigo')
     order          = models.PositiveIntegerField('Порядок', default=0)
+    is_active      = models.BooleanField('Активно', default=True)
 
     class Meta:
         verbose_name        = 'Статистика'
@@ -169,7 +181,7 @@ class SiteSettings(models.Model):
     # ── Брендинг ─────────────────────────────────────────────
     site_name    = models.CharField('Название сайта', max_length=100, default='ZEA')
     site_tagline = models.CharField('Слоган / подзаголовок бренда', max_length=200,
-                                    default='IT Studio', blank=True)
+                                    default='Технологический партнёр для бизнеса', blank=True)
     logo         = ResizedImageField(
                        '🖼 Логотип',
                        size=[600, 200], quality=92,
@@ -205,30 +217,36 @@ class SiteSettings(models.Model):
 
     # ── Hero ─────────────────────────────────────────────────
     hero_badge    = models.CharField('Hero бейдж', max_length=100,
-                                     default='Открыты для новых проектов')
-    hero_title    = models.CharField('Hero заголовок', max_length=200,
-                                     default='ZEA — разработка цифровых решений для бизнеса')
+                                     default='Технологический партнёр для бизнеса')
+    hero_title    = models.CharField('Hero заголовок (H1)', max_length=200,
+                                     default='ZEA — технологический партнёр для бизнеса')
     hero_subtitle = models.TextField('Hero подзаголовок',
-                                     default='Создаём сайты, CRM-системы, Telegram-ботов и внутренние '
-                                             'платформы для автоматизации бизнес-процессов.')
+                                     default='Проектируем, разрабатываем, запускаем и сопровождаем '
+                                             'цифровые продукты. Работаем как ваша IT-команда: '
+                                             'долгосрочно или под конкретную задачу.')
 
     # ── О компании ───────────────────────────────────────────
     about_text = models.TextField('О компании',
-                                  default='ZEA — мини IT-студия, которая помогает бизнесам запускать '
-                                          'современные цифровые продукты. Мы разрабатываем сайты, '
-                                          'CRM-системы, Telegram-ботов и решения для автоматизации '
-                                          'процессов.')
+                                  default='ZEA создаёт цифровые продукты и системы для бизнеса — от '
+                                          'сайтов и внутренних платформ до CRM, мобильных приложений '
+                                          'и автоматизации. Мы не заканчиваем работу после запуска: '
+                                          'сопровождаем продукт, развиваем его и адаптируем под новые '
+                                          'задачи компании.')
 
     # ── Контакты ─────────────────────────────────────────────
-    telegram_url   = models.URLField('Telegram URL',   blank=True, default='https://t.me/zea_studio')
-    whatsapp_url   = models.URLField('WhatsApp URL',   blank=True, default='https://wa.me/996700000000')
+    # Пустое поле = контакт не показывается на сайте.
+    telegram_url   = models.URLField('Telegram URL',   blank=True,
+                                     help_text='Пусто — кнопка не показывается')
+    whatsapp_url   = models.URLField('WhatsApp URL',   blank=True,
+                                     help_text='Формат: https://wa.me/996XXXXXXXXX. Пусто — не показывается')
     instagram_url  = models.URLField('Instagram URL',  blank=True,
-                                     default='https://instagram.com/zea.studio')
-    email          = models.EmailField('Email', blank=True, default='hello@zea.dev')
+                                     help_text='Пусто — кнопка не показывается')
+    email          = models.EmailField('Email', blank=True,
+                                       help_text='Пусто — кнопка не показывается')
 
     # ── Подвал ───────────────────────────────────────────────
     footer_text    = models.CharField('Текст подвала', max_length=200, blank=True,
-                                      default='© 2024 ZEA IT Studio. All rights reserved.')
+                                      help_text='Пусто — «© <текущий год> ZEA»')
 
     # ── Аналитика и индексация ───────────────────────────────
     site_domain      = models.URLField('Домен сайта', blank=True,
@@ -261,3 +279,65 @@ class SiteSettings(models.Model):
     def get(cls):
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+
+# ── Блоки нового позиционирования ───────────────────────────────────────────
+
+class CooperationFormat(models.Model):
+    """Форматы сотрудничества (технологическое партнёрство / разработка под заказ)."""
+    title        = models.CharField('Название', max_length=120)
+    audience     = models.CharField('Для кого', max_length=250, blank=True)
+    description  = models.TextField('Описание')
+    terms        = models.CharField('Условия (строка внизу)', max_length=250, blank=True,
+                                    help_text='Без процентов и сумм — условия обсуждаются индивидуально')
+    cta_label    = models.CharField('Текст кнопки', max_length=60)
+    request_type = models.CharField('Тип обращения в форме', max_length=20,
+                                    choices=REQUEST_TYPE_CHOICES, default='partnership',
+                                    help_text='Кнопка открывает форму с этим типом обращения')
+    icon         = models.CharField('Иконка (lucide)', max_length=60, default='handshake')
+    is_primary   = models.BooleanField('Основной формат', default=False,
+                                       help_text='Выделяется визуально')
+    order        = models.PositiveIntegerField('Порядок', default=0)
+    is_active    = models.BooleanField('Активно', default=True)
+
+    class Meta:
+        verbose_name        = 'Формат сотрудничества'
+        verbose_name_plural = 'Форматы сотрудничества'
+        ordering            = ['order']
+
+    def __str__(self):
+        return self.title
+
+
+class ProcessStep(models.Model):
+    """Шаги блока «Как мы начинаем работу». Номер шага = позиция в списке."""
+    title       = models.CharField('Название', max_length=100)
+    description = models.TextField('Описание')
+    order       = models.PositiveIntegerField('Порядок', default=0)
+    is_active   = models.BooleanField('Активно', default=True)
+
+    class Meta:
+        verbose_name        = 'Шаг работы'
+        verbose_name_plural = 'Как мы начинаем работу'
+        ordering            = ['order']
+
+    def __str__(self):
+        return self.title
+
+
+class Commitment(models.Model):
+    """Пункты блока «Что мы берём на себя»."""
+    title       = models.CharField('Название', max_length=100)
+    description = models.TextField('Описание')
+    icon        = models.CharField('Иконка (lucide)', max_length=60, default='check-circle')
+    color       = models.CharField('Цвет', max_length=20, choices=COLOR_CHOICES, default='indigo')
+    order       = models.PositiveIntegerField('Порядок', default=0)
+    is_active   = models.BooleanField('Активно', default=True)
+
+    class Meta:
+        verbose_name        = 'Что берём на себя'
+        verbose_name_plural = 'Что мы берём на себя'
+        ordering            = ['order']
+
+    def __str__(self):
+        return self.title

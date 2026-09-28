@@ -1,0 +1,233 @@
+{% load i18n %}
+<script>
+/* ════════════════════════════════════════════════════════
+   initApp — вызывается при первой загрузке и после AJAX-
+   смены языка (body swap). AbortController сбрасывает все
+   старые слушатели перед повторной инициализацией.
+════════════════════════════════════════════════════════ */
+let _appAbort = null;
+const I18N = {
+    connectionError: '{% trans "Ошибка соединения. Попробуйте позже." as t %}{{ t|escapejs }}',
+};
+
+function initApp() {
+    if (_appAbort) _appAbort.abort();
+    _appAbort = new AbortController();
+    const sig = { signal: _appAbort.signal };
+
+    lucide.createIcons();
+    AOS.init({ duration:700, easing:'ease-out-cubic', once:true, offset:70 });
+
+    /* ── Mobile menu ── */
+    const burgerBtn   = document.getElementById('burger-btn');
+    const mobileMenu  = document.getElementById('mobile-menu');
+    const bgOverlay   = document.getElementById('overlay');
+    const closeBtn    = document.getElementById('close-menu');
+    function openMenu()  { mobileMenu.classList.add('open');    bgOverlay.classList.remove('hidden'); document.body.style.overflow='hidden'; }
+    function closeMenu() { mobileMenu.classList.remove('open'); bgOverlay.classList.add('hidden');    document.body.style.overflow=''; }
+    if (burgerBtn) burgerBtn.addEventListener('click', openMenu, sig);
+    if (closeBtn)  closeBtn.addEventListener('click', closeMenu, sig);
+    if (bgOverlay) bgOverlay.addEventListener('click', closeMenu, sig);
+    document.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', closeMenu, sig));
+
+    /* ── Тип обращения: радио + подсказка в сообщении ── */
+    const cfForm    = document.getElementById('contact-form');
+    const cfMessage = document.getElementById('id_message');
+    function setRequestType(type) {
+        if (!cfForm) return;
+        const radio = cfForm.querySelector(`input[name="request_type"][value="${type}"]`);
+        if (radio) { radio.checked = true; updatePlaceholder(); }
+    }
+    function updatePlaceholder() {
+        const checked = cfForm && cfForm.querySelector('input[name="request_type"]:checked');
+        if (!checked || !cfMessage) return;
+        const ph = cfMessage.dataset['placeholder' + checked.value.charAt(0).toUpperCase() + checked.value.slice(1)];
+        if (ph) cfMessage.placeholder = ph;
+    }
+    if (cfForm) cfForm.querySelectorAll('input[name="request_type"]').forEach(r => r.addEventListener('change', updatePlaceholder, sig));
+    document.querySelectorAll('[data-request-type]').forEach(el => {
+        el.addEventListener('click', () => setRequestType(el.dataset.requestType), sig);
+    });
+    const urlType = new URLSearchParams(location.search).get('request');
+    if (urlType) setRequestType(urlType);
+
+    /* ── Smooth scroll ── */
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+            const href = a.getAttribute('href');
+            const target = href.length > 1 && document.querySelector(href);
+            if (!target) return;
+            e.preventDefault();
+            window.scrollTo({ top: target.getBoundingClientRect().top + scrollY - 80, behavior:'smooth' });
+        }, sig);
+    });
+
+    /* ── Counter animation (в HTML уже реальное число — для no-JS и поисковиков) ── */
+    const counterObs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            const end = parseInt(el.dataset.target, 10);
+            counterObs.unobserve(el);
+            if (!end) return;
+            let cur = 0;
+            el.textContent = '0';
+            const id = setInterval(() => {
+                cur = Math.min(cur + end / 50, end);
+                el.textContent = Math.round(cur);
+                if (cur >= end) clearInterval(id);
+            }, 28);
+        });
+    }, { threshold:0.6 });
+    document.querySelectorAll('.counter-num').forEach(el => counterObs.observe(el));
+
+    /* ── Active nav ── */
+    const navAnchors = document.querySelectorAll('nav .nav-link');
+    const navObs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const id = entry.target.getAttribute('id');
+            navAnchors.forEach(a => {
+                const match = a.getAttribute('href') === '#' + id;
+                a.classList.toggle('active', match);
+                a.classList.toggle('text-white', match);
+                a.classList.toggle('text-gray-400', !match);
+            });
+        });
+    }, { threshold:0.3, rootMargin:'-80px 0px -40% 0px' });
+    document.querySelectorAll('section[id]').forEach(s => navObs.observe(s));
+
+    /* ── Header shadow ── */
+    window.addEventListener('scroll', () => {
+        const h = document.getElementById('header');
+        if (h) h.style.boxShadow = scrollY > 20 ? '0 4px 30px rgba(0,0,0,.4)' : 'none';
+    }, { passive:true, ...sig });
+
+    /* ── Окно «Подробнее» ── */
+    const modal     = document.getElementById('project-modal');
+    const modalBody = document.getElementById('project-modal-body');
+    let lastFocus = null;
+    function openProject(pk) {
+        const tpl = document.getElementById('project-detail-' + pk);
+        if (!modal || !tpl) return;
+        lastFocus = document.activeElement;
+        modalBody.replaceChildren(tpl.content.cloneNode(true));
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+        lucide.createIcons();
+        requestAnimationFrame(() => modal.classList.add('open'));
+        const closeBtnModal = modal.querySelector('button[data-modal-close]');
+        if (closeBtnModal) closeBtnModal.focus({ preventScroll:true });
+    }
+    function closeProject() {
+        if (!modal || modal.classList.contains('hidden')) return;
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+        setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); modalBody.replaceChildren(); }, 250);
+        if (lastFocus) lastFocus.focus({ preventScroll:true });
+    }
+    document.querySelectorAll('[data-project-open]').forEach(btn => {
+        btn.addEventListener('click', () => openProject(btn.dataset.projectOpen), sig);
+    });
+    if (modal) {
+        modal.addEventListener('click', e => {
+            const closer = e.target.closest('[data-modal-close]');
+            if (!closer) return;
+            if (closer.dataset.requestType) {
+                /* «Нужен похожий проект» — выбрать тип и перейти к форме */
+                e.preventDefault();
+                setRequestType(closer.dataset.requestType);
+                closeProject();
+                const target = document.getElementById('contact');
+                if (target) window.scrollTo({ top: target.getBoundingClientRect().top + scrollY - 80, behavior:'smooth' });
+                return;
+            }
+            closeProject();
+        }, sig);
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeProject(); }, sig);
+    }
+
+    /* ── Contact form ── */
+    const cfSuccess = document.getElementById('contact-success');
+    const cfErr     = document.getElementById('contact-error');
+    const cfBtn     = document.getElementById('contact-btn');
+    const cfBtnText = document.getElementById('contact-btn-text');
+    const cfBtnIcon = document.getElementById('contact-btn-icon');
+    if (cfForm && cfBtnText) {
+        const origLabel = cfBtnText.textContent;
+        function resetBtn() {
+            cfBtn.disabled = false;
+            cfBtnText.textContent = origLabel;
+            cfBtnIcon.setAttribute('data-lucide', 'send');
+            lucide.createIcons();
+        }
+        cfForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            cfErr.classList.add('hidden');
+            cfForm.querySelectorAll('.cf-input').forEach(el => el.classList.remove('cf-error'));
+            cfBtn.disabled = true;
+            cfBtnText.textContent = '...';
+            cfBtnIcon.setAttribute('data-lucide', 'loader');
+            lucide.createIcons();
+            try {
+                const res  = await fetch(cfForm.action, { method:'POST', body:new FormData(cfForm) });
+                const json = await res.json();
+                if (json.ok) {
+                    cfForm.classList.add('hidden');
+                    cfSuccess.classList.remove('hidden');
+                    lucide.createIcons();
+                } else {
+                    Object.keys(json.errors||{}).forEach(f => {
+                        const el = cfForm.querySelector(`[name="${f}"]`);
+                        if (el) el.classList.add('cf-error');
+                    });
+                    cfErr.textContent = Object.values(json.errors||{}).flat().join(' ');
+                    cfErr.classList.remove('hidden');
+                    resetBtn();
+                }
+            } catch {
+                cfErr.textContent = I18N.connectionError;
+                cfErr.classList.remove('hidden');
+                resetBtn();
+            }
+        }, sig);
+        const sel = document.getElementById('id_service');
+        if (sel) sel.addEventListener('change', () => {
+            sel.style.webkitTextFillColor = sel.value ? '#fff' : '#9ca3af';
+            sel.style.color = sel.value ? '#fff' : '#9ca3af';
+        }, sig);
+    }
+
+    /* ── Language switcher (AJAX по языковому URL, без перезагрузки) ── */
+    document.querySelectorAll('a.lang-link').forEach(link => {
+        link.addEventListener('click', async e => {
+            const url = link.getAttribute('href');
+            if (!url || url === window.location.pathname) return;
+            e.preventDefault();
+            document.body.style.transition = 'opacity .18s ease';
+            document.body.style.opacity    = '0';
+            try {
+                const res  = await fetch(url);
+                const html = await res.text();
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                document.documentElement.lang = doc.documentElement.lang;
+                document.title = doc.title;
+                document.body.innerHTML = doc.body.innerHTML;
+                document.body.style.overflow = '';
+                history.pushState({}, '', url);
+                initApp();
+            } catch {
+                window.location.href = url;
+                return;
+            }
+            document.body.style.transition = 'opacity .25s ease';
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                document.body.style.opacity = '1';
+            }));
+        }, sig);
+    });
+}
+
+initApp();
+</script>

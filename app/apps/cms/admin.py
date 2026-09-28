@@ -1,7 +1,10 @@
 from django import forms
 from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin
-from .models import Service, Project, Partner, TechStack, WhyUs, Stat, SiteSettings
+from .models import (
+    Service, Project, Partner, TechStack, WhyUs, Stat, SiteSettings,
+    CooperationFormat, ProcessStep, Commitment,
+)
 
 
 # ── Готовый набор иконок (lucide), сгруппированный по категориям ─────────────
@@ -18,6 +21,10 @@ ICON_CHOICES = [
         ('layers', 'layers — слои'),
         ('git-branch', 'git-branch — ветка'),
         ('wrench', 'wrench — гаечный ключ'),
+        ('plug', 'plug — интеграция'),
+        ('workflow', 'workflow — процесс'),
+        ('search-check', 'search-check — анализ'),
+        ('life-buoy', 'life-buoy — сопровождение'),
     ]),
     ('Дизайн', [
         ('palette', 'palette — палитра'),
@@ -28,6 +35,8 @@ ICON_CHOICES = [
         ('layout-grid', 'layout-grid — сетка'),
         ('monitor', 'monitor — монитор'),
         ('smartphone', 'smartphone — телефон'),
+        ('pencil-ruler', 'pencil-ruler — проектирование'),
+        ('app-window', 'app-window — веб-приложение'),
     ]),
     ('Бизнес', [
         ('briefcase', 'briefcase — портфель'),
@@ -44,6 +53,15 @@ ICON_CHOICES = [
         ('handshake', 'handshake — рукопожатие'),
         ('graduation-cap', 'graduation-cap — обучение'),
         ('shirt', 'shirt — одежда'),
+        ('building', 'building — строительство'),
+        ('truck', 'truck — логистика'),
+        ('stethoscope', 'stethoscope — медицина'),
+        ('heart-pulse', 'heart-pulse — здоровье'),
+        ('palmtree', 'palmtree — отдых'),
+        ('bed', 'bed — гостиница'),
+        ('party-popper', 'party-popper — мероприятия'),
+        ('newspaper', 'newspaper — медиа'),
+        ('file-text', 'file-text — документы'),
     ]),
     ('Связь', [
         ('message-circle', 'message-circle — чат'),
@@ -138,10 +156,10 @@ class ServiceAdmin(PreviewAdmin):
 # ── Project ─────────────────────────────────────────────────────────────────
 @admin.register(Project)
 class ProjectAdmin(PreviewAdmin):
-    list_display       = ('name', 'project_type', 'year', 'color', 'order', 'is_active')
+    list_display       = ('name', 'project_type', 'year', 'is_featured', 'order', 'is_active')
     list_display_links = ('name',)
-    list_editable      = ('order', 'is_active')
-    list_filter        = ('is_active', 'year', 'color')
+    list_editable      = ('is_featured', 'order', 'is_active')
+    list_filter        = ('is_active', 'is_featured', 'year', 'color')
     search_fields      = ('name', 'description', 'technologies')
     ordering           = ('order',)
     list_per_page      = 25
@@ -156,6 +174,10 @@ class ProjectAdmin(PreviewAdmin):
         }),
         ('Ссылки и детали', {
             'fields': ('live_url', 'year'),
+        }),
+        ('Кейс (окно «Подробнее»)', {
+            'description': 'Заполняйте только проверенными фактами. Пустые поля не показываются.',
+            'fields': ('task', 'solution', 'result', 'is_featured'),
         }),
         ('Отображение', {
             'classes': ('collapse',),
@@ -245,10 +267,11 @@ class WhyUsAdmin(PreviewAdmin):
 # ── Stat ────────────────────────────────────────────────────────────────────
 @admin.register(Stat)
 class StatAdmin(PreviewAdmin):
-    list_display       = ('value_text', 'suffix', 'label', 'is_counter', 'counter_target', 'order')
+    list_display       = ('value_text', 'suffix', 'label', 'is_counter', 'counter_target', 'order', 'is_active')
     list_display_links = ('value_text',)
-    list_editable      = ('order',)
-    list_filter        = ('is_counter',)
+    list_editable      = ('order', 'is_active')
+    list_filter        = ('is_active', 'is_counter')
+    actions            = [make_active, make_inactive]
     search_fields      = ('value_text', 'label')
     ordering           = ('order',)
 
@@ -264,7 +287,70 @@ class StatAdmin(PreviewAdmin):
         }),
         ('Отображение', {
             'classes': ('collapse',),
-            'fields': ('order',),
+            'fields': ('order', 'is_active'),
+        }),
+    )
+
+
+# ── CooperationFormat ───────────────────────────────────────────────────────
+@admin.register(CooperationFormat)
+class CooperationFormatAdmin(PreviewAdmin):
+    list_display       = ('title', 'request_type', 'is_primary', 'order', 'is_active')
+    list_display_links = ('title',)
+    list_editable      = ('order', 'is_active')
+    list_filter        = ('is_active', 'is_primary')
+    ordering           = ('order',)
+    actions            = [make_active, make_inactive]
+
+    fieldsets = (
+        ('Основная информация', {
+            'fields': ('title', 'audience', 'description', 'terms'),
+        }),
+        ('Кнопка', {
+            'fields': ('cta_label', 'request_type'),
+        }),
+        ('Внешний вид', {
+            'fields': ('icon', 'is_primary'),
+        }),
+        ('Отображение', {
+            'classes': ('collapse',),
+            'fields': ('order', 'is_active'),
+        }),
+    )
+
+
+# ── ProcessStep ─────────────────────────────────────────────────────────────
+@admin.register(ProcessStep)
+class ProcessStepAdmin(TranslationAdmin):
+    list_display       = ('order', 'title', 'is_active')
+    list_display_links = ('title',)
+    list_editable      = ('order', 'is_active')
+    list_filter        = ('is_active',)
+    ordering           = ('order',)
+    actions            = [make_active, make_inactive]
+    fields             = ('title', 'description', 'order', 'is_active')
+
+
+# ── Commitment ──────────────────────────────────────────────────────────────
+@admin.register(Commitment)
+class CommitmentAdmin(PreviewAdmin):
+    list_display       = ('title', 'icon', 'color', 'order', 'is_active')
+    list_display_links = ('title',)
+    list_editable      = ('order', 'is_active')
+    list_filter        = ('is_active', 'color')
+    ordering           = ('order',)
+    actions            = [make_active, make_inactive]
+
+    fieldsets = (
+        ('Основная информация', {
+            'fields': ('title', 'description'),
+        }),
+        ('Внешний вид', {
+            'fields': ('icon', 'color'),
+        }),
+        ('Отображение', {
+            'classes': ('collapse',),
+            'fields': ('order', 'is_active'),
         }),
     )
 
@@ -284,6 +370,7 @@ class SiteSettingsAdmin(TranslationAdmin):
             'fields': ('about_text',),
         }),
         ('Контактная информация', {
+            'description': 'Незаполненный контакт на сайте не показывается.',
             'fields': ('telegram_url', 'whatsapp_url', 'instagram_url', 'email'),
         }),
         ('SEO', {

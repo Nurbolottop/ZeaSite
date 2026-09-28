@@ -1,6 +1,23 @@
 # -*- coding: utf-8 -*-
-# Загрузчик контента ZEA (ru/ky/en). Запускается через manage.py shell.
-from apps.cms.models import Service, Project, Partner, TechStack, WhyUs, Stat, SiteSettings
+"""Загрузчик ЧЕРНОВИКОВ портфолио ZEA (ru/ky/en): проекты, партнёры, стек.
+
+    docker exec -i <web> python manage.py shell < load_zea.py
+
+БЕЗОПАСНОСТЬ:
+  * ничего не удаляет (раньше скрипт начинал с Model.objects.all().delete());
+  * повторный запуск обновляет записи по русскому названию (update_or_create);
+  * НОВЫЕ проекты и партнёры создаются СКРЫТЫМИ (is_active=False) — данные
+    не подтверждены. Показывать их на сайте — только вручную в админке
+    после проверки фактов и согласия клиента;
+  * у существующих записей флаг is_active не меняется (решение из админки
+    сохраняется);
+  * тексты сайта (hero, «О нас», услуги, «Почему ZEA») и статистика здесь
+    больше НЕ загружаются: утверждённый контент — `manage.py populate_db`,
+    цифры — только подтверждённые, вручную.
+
+Не запускать на production без отдельного решения.
+"""
+from apps.cms.models import Project, Partner, TechStack
 
 LANGS = ['ru', 'ky', 'en']
 
@@ -12,134 +29,20 @@ def setml(obj, field, val):
         setattr(obj, '%s_%s' % (field, l), val[l])
 
 
-# ─────────────────────────────────────────────────────────────
-# SITE SETTINGS
-# ─────────────────────────────────────────────────────────────
-s = SiteSettings.get()
-SS = {
-    'site_name': {'ru': 'ZEA', 'ky': 'ZEA', 'en': 'ZEA'},
-    'site_tagline': {'ru': 'IT-студия', 'ky': 'IT-студия', 'en': 'IT Studio'},
-    'hero_badge': {
-        'ru': 'Открыты для новых проектов',
-        'ky': 'Жаңы долбоорлорго ачыкбыз',
-        'en': 'Open for new projects'},
-    'hero_title': {
-        'ru': 'Разрабатываем цифровые решения для бизнеса',
-        'ky': 'Бизнес үчүн санариптик чечимдерди иштеп чыгабыз',
-        'en': 'We build digital solutions for business'},
-    'hero_subtitle': {
-        'ru': 'Создаём сайты, CRM-системы, Telegram-ботов и backend на Django, PostgreSQL и Docker. '
-              'Помогаем бизнесу автоматизировать процессы и запускать рабочие продукты.',
-        'ky': 'Сайттарды, CRM-системаларды, Telegram-botторду жана Django, PostgreSQL, Docker негизиндеги '
-              'backend чечимдерди түзөбүз. Бизнеске процесстерди автоматташтырууга жана иштеген '
-              'продукттарды чыгарууга жардам беребиз.',
-        'en': 'We create websites, CRM systems, Telegram bots and backend solutions with Django, '
-              'PostgreSQL and Docker. We help businesses automate workflows and launch working products.'},
-    'about_text': {
-        'ru': 'ZEA — IT-студия из Бишкека. Делаем понятные и надёжные цифровые продукты для бизнеса: '
-              'от идеи и структуры до backend, дизайна, деплоя и поддержки после запуска.',
-        'ky': 'ZEA — Бишкектеги IT-студия. Бизнес үчүн түшүнүктүү жана ишеничтүү санариптик продукттарды '
-              'жасайбыз: идеядан жана структурадан баштап backend, дизайн, деплой жана иштеп чыккандан '
-              'кийинки колдоого чейин.',
-        'en': 'ZEA is an IT studio based in Bishkek. We build clear and reliable digital products for '
-              'business — from idea and structure to backend, design, deployment and post-launch support.'},
-    'footer_text': {
-        'ru': '© 2026 ZEA IT Studio. Цифровые решения для бизнеса.',
-        'ky': '© 2026 ZEA IT Studio. Бизнес үчүн санариптик чечимдер.',
-        'en': '© 2026 ZEA IT Studio. Digital solutions for business.'},
-    'meta_title': {
-        'ru': 'ZEA IT Studio — сайты, CRM, Telegram-боты и backend-разработка',
-        'ky': 'ZEA IT Studio — сайттар, CRM, Telegram-боттор жана backend иштеп чыгуу',
-        'en': 'ZEA IT Studio — Websites, CRM, Telegram Bots & Backend Development'},
-    'meta_description': {
-        'ru': 'ZEA — IT-студия из Бишкека. Разрабатываем сайты, CRM-системы, Telegram-ботов, backend на '
-              'Django/PostgreSQL/Docker и UI/UX-дизайн для бизнеса.',
-        'ky': 'ZEA — Бишкектеги IT-студия. Бизнес үчүн сайттарды, CRM-системаларды, Telegram-botторду, '
-              'Django/PostgreSQL/Docker backend жана UI/UX дизайнды иштеп чыгабыз.',
-        'en': 'ZEA is an IT studio from Bishkek. We develop websites, CRM systems, Telegram bots, '
-              'Django/PostgreSQL/Docker backend and UI/UX design for business.'},
-    'meta_keywords': {
-        'ru': 'ZEA, IT студия Бишкек, разработка сайтов, CRM система, Telegram бот, Django, PostgreSQL, '
-              'Docker, backend, UI UX дизайн',
-        'ky': 'ZEA, Бишкек IT студия, сайт жасоо, CRM система, Telegram бот, Django, PostgreSQL, Docker, '
-              'backend, UI UX дизайн',
-        'en': 'ZEA, IT studio Bishkek, website development, CRM system, Telegram bot, Django, PostgreSQL, '
-              'Docker, backend, UI UX design'},
-}
-for f, v in SS.items():
-    setml(s, f, v)
-s.site_domain = 'https://zeastudio.su'
-s.save()
-print('SiteSettings: ok')
+def upsert(Model, key_field, data, ml_fields, new_is_active):
+    """update_or_create по русскому значению key_field; без удаления."""
+    obj = Model.objects.filter(**{'%s_ru' % key_field: data[key_field]['ru']}).first()
+    created = obj is None
+    if created:
+        obj = Model(is_active=new_is_active)
+    for k, v in data.items():
+        if k in ml_fields:
+            setml(obj, k, v)
+        else:
+            setattr(obj, k, v)
+    obj.save()
+    return created
 
-
-# ─────────────────────────────────────────────────────────────
-# SERVICES
-# ─────────────────────────────────────────────────────────────
-SERVICES = [
-    dict(icon='globe', color='indigo', order=1,
-         title={'ru': 'Разработка сайтов', 'ky': 'Сайттарды иштеп чыгуу', 'en': 'Website Development'},
-         description={
-             'ru': 'Создаём лендинги, корпоративные сайты, сайты услуг и каталоги с адаптивным дизайном, '
-                   'быстрой загрузкой и понятной структурой.',
-             'ky': 'Адаптивдүү дизайны, тез жүктөлүшү жана түшүнүктүү структурасы бар лендингдерди, '
-                   'корпоративдик сайттарды, кызмат сайттарын жана каталогдорду жасайбыз.',
-             'en': 'We build landing pages, corporate sites, service websites and catalogs with responsive '
-                   'design, fast loading and clear structure.'}),
-    dict(icon='database', color='purple', order=2,
-         title={'ru': 'CRM-системы', 'ky': 'CRM-системалар', 'en': 'CRM Systems'},
-         description={
-             'ru': 'Разрабатываем CRM для учёта клиентов, заказов, сотрудников, задач и отчётов под '
-                   'реальные бизнес-процессы.',
-             'ky': 'Кардарларды, буйрутмаларды, кызматкерлерди, тапшырмаларды жана отчётторду эсепке алуу '
-                   'үчүн бизнес-процесстерге ылайык CRM иштеп чыгабыз.',
-             'en': 'We develop CRM systems for managing clients, orders, staff, tasks and reports tailored '
-                   'to real business processes.'}),
-    dict(icon='bot', color='cyan', order=3,
-         title={'ru': 'Telegram-боты', 'ky': 'Telegram-боттор', 'en': 'Telegram Bots'},
-         description={
-             'ru': 'Создаём ботов для заявок, уведомлений, личных кабинетов и интеграций с сайтами и CRM.',
-             'ky': 'Өтүнмөлөр, билдирүүлөр, жеке кабинеттер жана сайттар менен CRM интеграциялары үчүн '
-                   'ботторду түзөбүз.',
-             'en': 'We create bots for requests, notifications, user accounts and integrations with '
-                   'websites and CRM.'}),
-    dict(icon='server', color='blue', order=4,
-         title={'ru': 'Backend-разработка', 'ky': 'Backend иштеп чыгуу', 'en': 'Backend Development'},
-         description={
-             'ru': 'Проектируем серверную часть на Django, PostgreSQL и Docker: API, роли, базы данных, '
-                   'безопасность и деплой.',
-             'ky': 'Django, PostgreSQL жана Docker негизинде сервердик бөлүктү долбоорлойбуз: API, ролдор, '
-                   'маалымат базалары, коопсуздук жана деплой.',
-             'en': 'We design the backend on Django, PostgreSQL and Docker: APIs, roles, databases, '
-                   'security and deployment.'}),
-    dict(icon='layout', color='green', order=5,
-         title={'ru': 'UI/UX-дизайн', 'ky': 'UI/UX дизайн', 'en': 'UI/UX Design'},
-         description={
-             'ru': 'Проектируем интерфейсы для сайтов, админ-панелей и внутренних систем — удобные и '
-                   'понятные пользователю.',
-             'ky': 'Сайттар, админ-панелдер жана ички системалар үчүн ыңгайлуу, түшүнүктүү интерфейстерди '
-                   'долбоорлойбуз.',
-             'en': 'We design interfaces for websites, admin panels and internal systems — convenient and '
-                   'user-friendly.'}),
-    dict(icon='shield-check', color='orange', order=6,
-         title={'ru': 'Поддержка и развитие', 'ky': 'Колдоо жана өнүктүрүү', 'en': 'Support and Growth'},
-         description={
-             'ru': 'Помогаем запускать проект, исправлять ошибки, добавлять новые функции и развивать '
-                   'систему после релиза.',
-             'ky': 'Долбоорду ишке киргизүүгө, каталарды оңдоого, жаңы функцияларды кошууга жана релизден '
-                   'кийин системаны өнүктүрүүгө жардам беребиз.',
-             'en': 'We help launch projects, fix bugs, add new features and grow the system after release.'}),
-]
-Service.objects.all().delete()
-for d in SERVICES:
-    o = Service(icon=d['icon'], color=d['color'], order=d['order'], is_active=True)
-    setml(o, 'title', d['title'])
-    setml(o, 'description', d['description'])
-    o.save()
-print('Services: %d' % Service.objects.count())
-
-
-# ─────────────────────────────────────────────────────────────
 # PROJECTS
 # ─────────────────────────────────────────────────────────────
 def P(name, desc, ptype, tech, icon, color, year, order, live=''):
@@ -337,19 +240,11 @@ PROJECTS = [
        'en': 'Django, Docker, JavaScript'},
       'briefcase', 'cyan', 2025, 18),
 ]
-Project.objects.all().delete()
-for d in PROJECTS:
-    o = Project(icon=d['icon'], color=d['color'], year=d['year'], order=d['order'],
-                live_url=d['live_url'], is_active=True)
-    setml(o, 'name', d['name'])
-    setml(o, 'description', d['description'])
-    setml(o, 'project_type', d['project_type'])
-    setml(o, 'technologies', d['technologies'])
-    o.save()
-print('Projects: %d' % Project.objects.count())
+created = sum(upsert(Project, 'name', d, ('name', 'description', 'project_type', 'technologies'),
+                     new_is_active=False) for d in PROJECTS)
+print('Projects: создано %d (скрыты), обновлено %d' % (created, len(PROJECTS) - created))
 
 
-# ─────────────────────────────────────────────────────────────
 # PARTNERS
 # ─────────────────────────────────────────────────────────────
 PARTNERS = [
@@ -372,16 +267,10 @@ PARTNERS = [
          name={'ru': 'Vizitka KG', 'ky': 'Vizitka KG', 'en': 'Vizitka KG'},
          industry={'ru': 'Медиа и реклама', 'ky': 'Медиа жана жарнама', 'en': 'Media and Advertising'}),
 ]
-Partner.objects.all().delete()
-for d in PARTNERS:
-    o = Partner(icon=d['icon'], color=d['color'], order=d['order'], is_active=True)
-    setml(o, 'name', d['name'])
-    setml(o, 'industry', d['industry'])
-    o.save()
-print('Partners: %d' % Partner.objects.count())
+created = sum(upsert(Partner, 'name', d, ('name', 'industry'), new_is_active=False) for d in PARTNERS)
+print('Partners: создано %d (скрыты), обновлено %d' % (created, len(PARTNERS) - created))
 
 
-# ─────────────────────────────────────────────────────────────
 # TECH STACK
 # ─────────────────────────────────────────────────────────────
 def T(name, label, color, order):
@@ -398,121 +287,7 @@ TECH = [
     T('Nginx', 'Ng', 'green', 9), T('Linux', 'Lx', 'orange', 10),
     T('Git', 'Git', 'red', 11), T('Tailwind', 'Tw', 'cyan', 12),
 ]
-TechStack.objects.all().delete()
-for d in TECH:
-    o = TechStack(color=d['color'], order=d['order'], is_active=True)
-    setml(o, 'name', d['name'])
-    setml(o, 'label', d['label'])
-    o.save()
-print('TechStack: %d' % TechStack.objects.count())
+created = sum(upsert(TechStack, 'name', d, ('name', 'label'), new_is_active=True) for d in TECH)
+print('TechStack: создано %d, обновлено %d' % (created, len(TECH) - created))
 
-
-# ─────────────────────────────────────────────────────────────
-# WHY US
-# ─────────────────────────────────────────────────────────────
-WHY = [
-    dict(icon='check-circle', color='cyan', order=1,
-         title={'ru': 'Работаем от бизнес-задачи', 'ky': 'Бизнес-маселеден баштайбыз',
-                'en': 'Business-first approach'},
-         description={
-             'ru': 'Сначала разбираем процесс, роли пользователей и цель системы, и только потом '
-                   'проектируем интерфейс и backend.',
-             'ky': 'Адегенде процессти, колдонуучулардын ролдорун жана системанын максатын талдайбыз, '
-                   'андан кийин гана интерфейс менен backend долбоорлойбуз.',
-             'en': "We first analyze the process, user roles and the system's goal, and only then "
-                   'design the interface and backend.'}),
-    dict(icon='shield-check', color='green', order=2,
-         title={'ru': 'Делаем рабочие системы', 'ky': 'Иштеген системаларды жасайбыз',
-                'en': 'We build working systems'},
-         description={
-             'ru': 'Фокус не на красивой картинке, а на продукте, который принимает заявки, хранит '
-                   'данные и помогает управлять бизнесом.',
-             'ky': 'Көңүл сулуу сүрөткө эмес, өтүнмөлөрдү кабыл алган, маалыматтарды сактаган жана '
-                   'бизнести башкарууга жардам берген продуктка бурулат.',
-             'en': 'We focus not on a pretty picture but on a product that takes requests, stores data '
-                   'and helps run the business.'}),
-    dict(icon='rocket', color='purple', order=3,
-         title={'ru': 'Запускаем поэтапно', 'ky': 'Этап-этабы менен ишке киргизебиз',
-                'en': 'Step-by-step launch'},
-         description={
-             'ru': 'Разбиваем проект на этапы: MVP, основные функции, тестирование, запуск и '
-                   'дальнейшее развитие.',
-             'ky': 'Долбоорду этаптарга бөлөбүз: MVP, негизги функциялар, тестирлөө, ишке киргизүү жана '
-                   'андан аркы өнүктүрүү.',
-             'en': 'We split the project into stages: MVP, core features, testing, launch and further '
-                   'growth.'}),
-    dict(icon='server', color='blue', order=4,
-         title={'ru': 'Понимаем backend и деплой', 'ky': 'Backend жана деплойду түшүнөбүз',
-                'en': 'Backend and deployment expertise'},
-         description={
-             'ru': 'Настраиваем сервер, базу данных, Docker, домен, SSL и окружение, чтобы проект был '
-                   'готов к реальной работе.',
-             'ky': 'Долбоор реалдуу иштөөгө даяр болушу үчүн серверди, маалымат базасын, Docker, домен, '
-                   'SSL жана чөйрөнү жөндөйбүз.',
-             'en': 'We set up the server, database, Docker, domain, SSL and environment so the project '
-                   'is ready for real use.'}),
-    dict(icon='zap', color='orange', order=5,
-         title={'ru': 'Поддерживаем после запуска', 'ky': 'Ишке киргизгенден кийин колдойбуз',
-                'en': 'Support after launch'},
-         description={
-             'ru': 'После релиза помогаем исправлять ошибки, улучшать интерфейс и добавлять новые '
-                   'функции по мере роста бизнеса.',
-             'ky': 'Релизден кийин каталарды оңдоого, интерфейсти жакшыртууга жана бизнес өскөн сайын '
-                   'жаңы функцияларды кошууга жардам беребиз.',
-             'en': 'After release we help fix bugs, improve the interface and add new features as the '
-                   'business grows.'}),
-]
-WhyUs.objects.all().delete()
-for d in WHY:
-    o = WhyUs(icon=d['icon'], color=d['color'], order=d['order'], is_active=True)
-    setml(o, 'title', d['title'])
-    setml(o, 'description', d['description'])
-    o.save()
-print('WhyUs: %d' % WhyUs.objects.count())
-
-
-# ─────────────────────────────────────────────────────────────
-# STATS
-# ─────────────────────────────────────────────────────────────
-STATS = [
-    dict(icon='rocket', color='purple', order=1, is_counter=True, counter_target=3,
-         value_text={'ru': '3', 'ky': '3', 'en': '3'},
-         label={'ru': 'года опыта', 'ky': 'жыл тажрыйба', 'en': 'years of experience'},
-         suffix={'ru': '+', 'ky': '+', 'en': '+'},
-         description={'ru': 'в разработке сайтов, backend и бизнес-систем',
-                      'ky': 'сайт, backend жана бизнес-системаларды иштеп чыгууда',
-                      'en': 'in websites, backend and business systems'}),
-    dict(icon='layers', color='indigo', order=2, is_counter=True, counter_target=18,
-         value_text={'ru': '18', 'ky': '18', 'en': '18'},
-         label={'ru': 'проектов', 'ky': 'долбоор', 'en': 'projects'},
-         suffix={'ru': '+', 'ky': '+', 'en': '+'},
-         description={'ru': 'сайты, CRM, платформы и автоматизация',
-                      'ky': 'сайттар, CRM, платформалар жана автоматташтыруу',
-                      'en': 'websites, CRM, platforms and automation'}),
-    dict(icon='building-2', color='cyan', order=3, is_counter=True, counter_target=7,
-         value_text={'ru': '7', 'ky': '7', 'en': '7'},
-         label={'ru': 'сфер бизнеса', 'ky': 'бизнес тармагы', 'en': 'industries'},
-         suffix={'ru': '+', 'ky': '+', 'en': '+'},
-         description={'ru': 'медицина, логистика, туризм, образование, финтех, IoT, недвижимость',
-                      'ky': 'медицина, логистика, туризм, билим берүү, финтех, IoT, кыймылсыз мүлк',
-                      'en': 'healthcare, logistics, tourism, education, fintech, IoT, real estate'}),
-    dict(icon='code-2', color='green', order=4, is_counter=False, counter_target=None,
-         value_text={'ru': 'Full', 'ky': 'Full', 'en': 'Full'},
-         label={'ru': 'цикл разработки', 'ky': 'цикл иштеп чыгуу', 'en': 'cycle development'},
-         suffix={'ru': '', 'ky': '', 'en': ''},
-         description={'ru': 'от структуры и дизайна до backend, деплоя и поддержки',
-                      'ky': 'структурадан жана дизайндан backend, деплой жана колдоого чейин',
-                      'en': 'from structure and design to backend, deployment and support'}),
-]
-Stat.objects.all().delete()
-for d in STATS:
-    o = Stat(icon=d['icon'], color=d['color'], order=d['order'],
-             is_counter=d['is_counter'], counter_target=d['counter_target'])
-    setml(o, 'value_text', d['value_text'])
-    setml(o, 'label', d['label'])
-    setml(o, 'suffix', d['suffix'])
-    setml(o, 'description', d['description'])
-    o.save()
-print('Stats: %d' % Stat.objects.count())
-
-print('=== DONE ===')
+print('=== DONE (ничего не удалено) ===')

@@ -1,0 +1,5 @@
+/* Исходник Tailwind для публичного сайта. Собранный файл:
+   app/static/css/tailwind.css (хранится в git). Сборка: npm run build:css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

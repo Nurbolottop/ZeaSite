@@ -1,0 +1,66 @@
+{% load i18n %}{% get_current_language as CURRENT_LANG %}
+<!-- ══════════ HEADER ══════════ -->
+<header id="header" class="fixed top-0 left-0 right-0 z-50 glass-nav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20 md:h-24">
+            <a href="#home" class="flex items-center gap-2.5" aria-label="{{ settings.site_name }}">
+                {% include "site/_brand.html" with size="lg" %}
+            </a>
+
+            <nav class="hidden lg:flex items-center gap-7" aria-label="{% trans 'Основное меню' %}">
+                {% for href, label in nav_items %}
+                <a href="{{ href }}" class="nav-link text-gray-400 hover:text-white text-sm font-medium">{{ label }}</a>
+                {% endfor %}
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <div class="hidden md:flex items-center gap-1">
+                    {% for lang_code, lang_name in LANGUAGES %}
+                    {% language lang_code %}
+                    <a href="{% url 'index' %}" hreflang="{{ lang_code }}"
+                       class="lang-link px-2.5 py-1 rounded-lg text-xs font-semibold uppercase transition-colors {% if lang_code == CURRENT_LANG %}text-white bg-indigo-600/40 border border-indigo-500/50{% else %}text-gray-400 hover:text-white hover:bg-white/10{% endif %}">
+                        {{ lang_code }}
+                    </a>
+                    {% endlanguage %}
+                    {% endfor %}
+                </div>
+                <a href="#contact" data-request-type="partnership"
+                   class="hidden md:inline-flex btn-primary items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold">{% trans "Обсудить партнёрство" %}</a>
+                <button id="burger-btn" class="lg:hidden flex flex-col justify-center gap-1.5 w-9 h-9 p-1" aria-label="{% trans 'Меню' %}">
+                    <span class="block w-full h-0.5 bg-white rounded transition-all duration-300"></span>
+                    <span class="block w-full h-0.5 bg-white rounded transition-all duration-300"></span>
+                    <span class="block w-full h-0.5 bg-white rounded transition-all duration-300"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Mobile drawer -->
+<div id="mobile-menu" class="mobile-menu fixed top-0 right-0 bottom-0 w-72 z-50 bg-[#0D1120] border-l border-white/10 flex flex-col p-7">
+    <div class="flex items-center justify-between mb-10">
+        <div class="flex items-center gap-2">{% include "site/_brand.html" with size="sm" %}</div>
+        <button id="close-menu" aria-label="{% trans 'Закрыть меню' %}" class="text-gray-400 hover:text-white p-1"><i data-lucide="x" class="w-6 h-6"></i></button>
+    </div>
+    <nav class="flex flex-col gap-5">
+        {% for href, label in nav_items %}
+        <a href="{{ href }}" class="mobile-link text-gray-300 hover:text-white text-lg font-medium transition-colors py-1">{{ label }}</a>
+        {% endfor %}
+    </nav>
+    <div class="mt-auto">
+        <a href="#contact" data-request-type="partnership" class="mobile-link btn-primary flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-white font-semibold">
+            <i data-lucide="handshake" class="w-4 h-4"></i> {% trans "Обсудить партнёрство" %}
+        </a>
+        <div class="flex items-center gap-2 mt-4 justify-center">
+            {% for lang_code, lang_name in LANGUAGES %}
+            {% language lang_code %}
+            <a href="{% url 'index' %}" hreflang="{{ lang_code }}"
+               class="lang-link px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-colors {% if lang_code == CURRENT_LANG %}text-white bg-indigo-600/40 border border-indigo-500/50{% else %}text-gray-400 hover:text-white{% endif %}">
+                {{ lang_code }}
+            </a>
+            {% endlanguage %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div id="overlay" class="hidden fixed inset-0 bg-black/60 z-40 backdrop-blur-sm"></div>

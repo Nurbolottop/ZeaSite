@@ -1,0 +1,72 @@
+{% load i18n %}
+<!-- ══════════ НАПРАВЛЕНИЯ ══════════ -->
+<section id="services" class="py-24 md:py-32 relative">
+    <div class="absolute inset-0 ambient-bg pointer-events-none"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <div class="inline-flex items-center gap-2 glass px-3.5 py-1.5 rounded-full text-xs eyebrow mb-7" data-aos="fade-up">
+                <i data-lucide="briefcase" class="w-3.5 h-3.5"></i> {% trans "Направления" %}
+            </div>
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4" data-aos="fade-up" data-aos-delay="100">
+                {% blocktrans %}Какие задачи <span class="gradient-text">мы решаем</span>{% endblocktrans %}
+            </h2>
+            <p class="section-sub text-lg max-w-xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+                {% trans "Сначала задача бизнеса — потом технология." %}
+            </p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {% for service in services %}
+            <div class="glass card rounded-2xl overflow-hidden border border-white/10 flex flex-col" data-color="{{ service.color }}"
+                 data-aos="fade-up" data-aos-delay="{{ forloop.counter }}0">
+                {% if service.image %}
+                <div class="h-36 overflow-hidden relative">
+                    <img src="{{ service.image.url }}" alt="{{ service.title }}" loading="lazy"
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                </div>
+                {% endif %}
+                <div class="p-7 flex-1">
+                    <div class="w-11 h-11 rounded-xl c-sicon flex items-center justify-center mb-5">
+                        <i data-lucide="{{ service.icon|default:'code-2' }}" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-white text-lg font-bold mb-2">{{ service.title }}</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">{{ service.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- CTA card -->
+            <div class="glass card rounded-2xl p-7 border border-indigo-500/25 bg-gradient-to-br from-indigo-600/10 to-purple-600/10 flex flex-col justify-between"
+                 data-aos="fade-up">
+                <div>
+                    <h3 class="text-white text-lg font-bold mb-2">{% trans "Не нашли свою задачу?" %}</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">{% trans "Опишите её — подскажем, какое решение подойдёт." %}</p>
+                </div>
+                <a href="#contact" class="btn-primary inline-flex items-center gap-2 px-5 py-3 rounded-xl text-white font-semibold text-sm self-start">
+                    {% trans "Обсудить задачу" %} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
+
+        {% if tech_stack %}
+        <div class="mt-16 text-center" data-aos="fade-up">
+            <p class="text-xs uppercase tracking-[.18em] text-gray-400 font-semibold mb-5">{% trans "Технологии, с которыми работаем" %}</p>
+            <div class="flex flex-wrap justify-center gap-2.5">
+                {% for tech in tech_stack %}
+                <span class="tech-tag glass border border-white/10 rounded-xl pl-2 pr-4 py-2 inline-flex items-center gap-2.5 cursor-default" data-color="{{ tech.color }}">
+                    <span class="w-7 h-7 rounded-lg c-sicon flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        {% if tech.logo %}
+                        <img src="{{ tech.logo.url }}" alt="" class="w-5 h-5 object-contain" loading="lazy">
+                        {% else %}
+                        <span class="text-[10px] font-black">{{ tech.label }}</span>
+                        {% endif %}
+                    </span>
+                    <span class="text-gray-200 text-sm font-semibold">{{ tech.name }}</span>
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>

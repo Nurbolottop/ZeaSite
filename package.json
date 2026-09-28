@@ -1,0 +1,12 @@
+{
+  "name": "zea-site",
+  "private": true,
+  "description": "Сборка Tailwind CSS для публичного сайта ZEA (Hub в сборку не входит)",
+  "scripts": {
+    "build:css": "tailwindcss -c tailwind.config.js -i frontend/tailwind.src.css -o app/static/css/tailwind.css --minify",
+    "watch:css": "tailwindcss -c tailwind.config.js -i frontend/tailwind.src.css -o app/static/css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}

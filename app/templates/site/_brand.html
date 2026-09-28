@@ -1,0 +1,10 @@
+{# Логотип из настроек или текстовый знак. size: lg (шапка) / sm (меню, подвал) #}
+{% if settings.logo %}
+<img src="{{ settings.logo.url }}" alt="{{ settings.site_name }}"
+     class="{% if size == 'lg' %}h-16 md:h-20{% else %}h-8{% endif %} w-auto object-contain">
+{% else %}
+<div class="{% if size == 'lg' %}w-9 h-9{% else %}w-8 h-8{% endif %} rounded-xl animated-gradient flex items-center justify-center shadow-lg">
+    <span class="text-white font-black text-sm">{{ settings.site_name|first }}</span>
+</div>
+<span class="text-white font-extrabold {% if size == 'lg' %}text-xl{% else %}text-lg{% endif %} tracking-tight">{{ settings.site_name }}</span>
+{% endif %}

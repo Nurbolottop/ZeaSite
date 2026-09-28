@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ZEA 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 07:18+0600\n"
+"POT-Creation-Date: 2026-09-29 01:20+0600\n"
 "PO-Revision-Date: 2026-05-31 05:10+0600\n"
 "Last-Translator: ZEA Team\n"
 "Language-Team: English\n"
@@ -15,75 +15,119 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: apps/contacts/forms.py:7 templates/index.html:899
-msgid "Выберите услугу"
-msgstr "Select a service"
+#: apps/base/views.py:86
+msgid "О нас"
+msgstr "About Us"
 
-#: apps/contacts/forms.py:8 templates/index.html:900
-msgid "Разработка сайта"
-msgstr "Website Development"
+#: apps/base/views.py:86 templates/site/sections/cooperation.html:9
+msgid "Сотрудничество"
+msgstr "Cooperation"
 
-#: apps/contacts/forms.py:9 templates/index.html:901
-msgid "CRM-система"
-msgstr "CRM System"
+#: apps/base/views.py:87 templates/site/sections/services.html:8
+msgid "Направления"
+msgstr "Services"
 
-#: apps/contacts/forms.py:10 templates/index.html:902
-msgid "Telegram-бот"
-msgstr "Telegram Bot"
+#: apps/base/views.py:89 templates/site/sections/projects.html:7
+msgid "Проекты"
+msgstr "Projects"
 
-#: apps/contacts/forms.py:11 templates/index.html:903
-msgid "UI/UX Дизайн"
-msgstr "UI/UX Design"
+#: apps/base/views.py:90 templates/site/sections/contact.html:12
+msgid "Контакты"
+msgstr "Contacts"
 
-#: apps/contacts/forms.py:12 templates/index.html:904
-msgid "Backend-разработка"
-msgstr "Backend Development"
+#: apps/contacts/choices.py:6
+msgid "Хочу обсудить партнёрство"
+msgstr "I want to discuss a partnership"
 
-#: apps/contacts/forms.py:13 templates/index.html:905
-msgid "Другое"
-msgstr "Other"
+#: apps/contacts/choices.py:7
+msgid "Нужна разработка"
+msgstr "I need development"
 
-#: apps/contacts/forms.py:21 templates/index.html:894
-msgid "Тип услуги"
-msgstr "Service Type"
+#: apps/contacts/choices.py:8
+msgid "Другой вопрос"
+msgstr "Other question"
 
-#: apps/contacts/forms.py:31 templates/index.html:886
+#: apps/contacts/choices.py:12
+msgid "Сайт"
+msgstr "Website"
+
+#: apps/contacts/choices.py:13
+msgid "Веб-система или платформа"
+msgstr "Web system or platform"
+
+#: apps/contacts/choices.py:14
+msgid "CRM и внутренние системы"
+msgstr "CRM and internal systems"
+
+#: apps/contacts/choices.py:15
+msgid "Мобильное приложение"
+msgstr "Mobile app"
+
+#: apps/contacts/choices.py:16
+msgid "Автоматизация"
+msgstr "Automation"
+
+#: apps/contacts/choices.py:17
+msgid "Интеграции"
+msgstr "Integrations"
+
+#: apps/contacts/choices.py:18
+msgid "Сопровождение"
+msgstr "Support"
+
+#: apps/contacts/choices.py:19
+msgid "Пока не знаю / другое"
+msgstr "Not sure yet / other"
+
+#: apps/contacts/forms.py:16
+msgid "Тип обращения"
+msgstr "Request type"
+
+#: apps/contacts/forms.py:20
+msgid "Выберите направление"
+msgstr "Choose a service"
+
+#: apps/contacts/forms.py:22
+msgid "Направление"
+msgstr "Service"
+
+#: apps/contacts/forms.py:24
+msgid "Компания"
+msgstr "Company"
+
+#: apps/contacts/forms.py:25
+msgid "Сфера бизнеса"
+msgstr "Industry"
+
+#: apps/contacts/forms.py:31 templates/site/sections/contact.html:94
 msgid "Имя"
 msgstr "Name"
 
-#: apps/contacts/forms.py:32 templates/index.html:914
+#: apps/contacts/forms.py:32 templates/site/sections/contact.html:131
 msgid "Телефон / WhatsApp"
 msgstr "Phone / WhatsApp"
 
 #: apps/contacts/forms.py:33
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
-#: apps/contacts/forms.py:34 templates/index.html:929
+#: apps/contacts/forms.py:34 templates/site/sections/contact.html:145
 msgid "Сообщение"
 msgstr "Message"
 
-#: apps/contacts/forms.py:37 templates/index.html:888
-msgid "Ваше имя"
-msgstr "Your name"
-
-#: apps/contacts/forms.py:41 templates/index.html:931
-msgid "Опишите вашу задачу..."
-msgstr "Describe your task..."
-
-#: apps/contacts/forms.py:52
+#: apps/contacts/forms.py:43
 msgid "Укажите телефон или email — чтобы мы могли связаться с вами."
 msgstr "Please provide your phone or email so we can reach you."
 
-#: core/settings/base.py:139
+#: core/settings/base.py:160
 msgid "Русский"
 msgstr "Russian"
 
-#: core/settings/base.py:140
+#: core/settings/base.py:161
 msgid "Кыргызча"
 msgstr "Kyrgyz"
 
-#: core/settings/base.py:141
+#: core/settings/base.py:162
 msgid "English"
 msgstr "English"
 
@@ -93,315 +137,261 @@ msgstr "Page not found"
 
 #: templates/404.html:54
 msgid ""
-"Возможно, ссылка устарела или страница была перемещена. Вернитесь на главную "
-"— там всё на месте."
+"Возможно, ссылка устарела или страница была перемещена. Вернитесь на главную"
+" — там всё на месте."
 msgstr ""
+"The link may be outdated or the page may have moved. Head back to the home "
+"page — everything is there."
 
 #: templates/404.html:55
 msgid "На главную"
 msgstr "Go home"
 
-#: templates/index.html:11
-msgid "Разработка цифровых решений"
-msgstr "Digital Solutions Development"
+#: templates/site/_footer.html:10
+msgid "Меню в подвале"
+msgstr "Footer menu"
 
-#: templates/index.html:12
-msgid ""
-"мини IT-студия. Разрабатываем сайты, CRM-системы, Telegram-ботов и решения "
-"для автоматизации бизнес-процессов."
-msgstr ""
-"mini IT studio. We develop websites, CRM systems, Telegram bots and business "
-"process automation solutions."
+#: templates/site/_header.html:10
+msgid "Основное меню"
+msgstr "Main menu"
 
-#: templates/index.html:263 templates/index.html:303 templates/index.html:968
-msgid "О нас"
-msgstr "About Us"
+#: templates/site/_header.html:28 templates/site/_header.html:52
+#: templates/site/sections/hero.html:46 templates/site/sections/why.html:34
+msgid "Обсудить партнёрство"
+msgstr "Discuss a partnership"
 
-#: templates/index.html:264 templates/index.html:304 templates/index.html:453
-#: templates/index.html:969
-msgid "Услуги"
-msgstr "Services"
-
-#: templates/index.html:265 templates/index.html:305 templates/index.html:524
-#: templates/index.html:970
-msgid "Проекты"
-msgstr "Projects"
-
-#: templates/index.html:266 templates/index.html:306 templates/index.html:725
-#: templates/index.html:971
-msgid "Партнёры"
-msgstr "Partners"
-
-#: templates/index.html:267 templates/index.html:307 templates/index.html:812
-#: templates/index.html:972
-msgid "Контакты"
-msgstr "Contact"
-
-#: templates/index.html:282 templates/index.html:311 templates/index.html:373
-#: templates/index.html:793
-msgid "Связаться"
-msgstr "Get in Touch"
-
-#: templates/index.html:283
+#: templates/site/_header.html:29
 msgid "Меню"
 msgstr "Menu"
 
-#: templates/index.html:336
-msgid "Проект запущен"
-msgstr "Project Launched"
+#: templates/site/_header.html:43
+msgid "Закрыть меню"
+msgstr "Close menu"
 
-#: templates/index.html:338
-msgid "LMS платформа"
-msgstr "LMS Platform"
+#: templates/site/_project_modal.html:7
+msgid "Закрыть"
+msgstr "Close"
 
-#: templates/index.html:343
-msgid "Разрабатываем"
-msgstr "In Development"
+#: templates/site/_scripts.html:10
+msgid "Ошибка соединения. Попробуйте позже."
+msgstr "Connection error. Please try again later."
 
-#: templates/index.html:345 templates/index.html:422
-msgid "Автоматизация"
-msgstr "Automation"
+#: templates/site/sections/about.html:8
+msgid "О ZEA"
+msgstr "About ZEA"
 
-#: templates/index.html:357
-msgid "ZEA — разработка"
-msgstr "ZEA — development"
+#: templates/site/sections/about.html:12
+msgid ""
+"IT-команда <span class=\"gradient-text\">для развития вашего бизнеса</span>"
+msgstr "An IT team <span class=\"gradient-text\">to grow your business</span>"
 
-#: templates/index.html:358
-msgid "цифровых решений"
-msgstr "of digital solutions"
+#: templates/site/sections/about.html:19
+msgid "Форматы сотрудничества"
+msgstr "Ways to work together"
 
-#: templates/index.html:359
-msgid "для бизнеса"
-msgstr "for business"
+#: templates/site/sections/about.html:26
+msgid "Что мы берём на себя"
+msgstr "What we take care of"
 
-#: templates/index.html:370
-msgid "Наши проекты"
-msgstr "Our Projects"
+#: templates/site/sections/contact.html:15
+msgid "Расскажите <span class=\"gradient-text\">о вашем бизнесе</span>"
+msgstr "Tell us <span class=\"gradient-text\">about your business</span>"
 
-#: templates/index.html:378
-msgid "Scroll"
-msgstr "Scroll"
+#: templates/site/sections/contact.html:18
+msgid ""
+"Обсудим задачу и предложим подходящий формат: партнёрство или разработку под"
+" заказ."
+msgstr ""
+"We'll discuss your task and suggest the right format: a partnership or "
+"custom development."
 
-#: templates/index.html:393
-msgid "О компании"
-msgstr "About"
+#: templates/site/sections/contact.html:59
+msgid ""
+"Оставьте заявку — мы свяжемся с вами по телефону или email, который вы "
+"укажете."
+msgstr ""
+"Leave a request and we'll get back to you by the phone or email you provide."
 
-#: templates/index.html:397
-msgid "Строим"
-msgstr "Building"
-
-#: templates/index.html:397
-msgid "цифровое будущее"
-msgstr "the digital future"
-
-#: templates/index.html:397
-msgid "вашего бизнеса"
-msgstr "of your business"
-
-#: templates/index.html:405
-msgid "Наши услуги"
-msgstr "Our Services"
-
-#: templates/index.html:415
-msgid "Инд. разработка"
-msgstr "Custom Dev"
-
-#: templates/index.html:416
-msgid "Решения под ваш бизнес"
-msgstr "Tailored to your business"
-
-#: templates/index.html:423
-msgid "Оптимизируем процессы"
-msgstr "Process optimization"
-
-#: templates/index.html:429
-msgid "Современный дизайн"
-msgstr "Modern Design"
-
-#: templates/index.html:430
-msgid "UI/UX мирового уровня"
-msgstr "World-class UI/UX"
-
-#: templates/index.html:436
-msgid "Поддержка"
-msgstr "Support"
-
-#: templates/index.html:437
-msgid "После запуска проекта"
-msgstr "Post-launch support"
-
-#: templates/index.html:456
-msgid "Что мы"
-msgstr "What we"
-
-#: templates/index.html:456
-msgid "создаём"
-msgstr "create"
-
-#: templates/index.html:459
-msgid "Полный спектр услуг для цифровой трансформации вашего бизнеса"
-msgstr "Full range of services for your business digital transformation"
-
-#: templates/index.html:498
-msgid "Услуги не добавлены"
-msgstr "No services added"
-
-#: templates/index.html:505
-msgid "Нужен свой проект?"
-msgstr "Need a custom project?"
-
-#: templates/index.html:506
-msgid "Обсудим вашу задачу и предложим оптимальное решение."
-msgstr "We'll discuss your task and propose the optimal solution."
-
-#: templates/index.html:509
-msgid "Обсудить"
-msgstr "Let's talk"
-
-#: templates/index.html:527
-msgid "Наши"
-msgstr "Our"
-
-#: templates/index.html:527
-msgid "работы"
-msgstr "works"
-
-#: templates/index.html:530
-msgid "Реализованные проекты, которые работают и приносят результат"
-msgstr "Completed projects that work and deliver results"
-
-#: templates/index.html:580
-msgid "Подробнее"
-msgstr "Learn more"
-
-#: templates/index.html:585
-msgid "Открыть"
-msgstr "Open"
-
-#: templates/index.html:592
-msgid "Проекты не добавлены"
-msgstr "No projects added"
-
-#: templates/index.html:607
-msgid "Опыт"
-msgstr "Experience"
-
-#: templates/index.html:610
-msgid "Цифры"
-msgstr "Numbers"
-
-#: templates/index.html:610
-msgid "говорят"
-msgstr "speak"
-
-#: templates/index.html:657
-msgid "Года опыта"
-msgstr "Years of experience"
-
-#: templates/index.html:664
-msgid "Проектов сдано"
-msgstr "Projects delivered"
-
-#: templates/index.html:668
-msgid "Сайты & боты"
-msgstr "Sites & bots"
-
-#: templates/index.html:674
-msgid "Полный цикл"
-msgstr "Full cycle"
-
-#: templates/index.html:689
-msgid "Технологии"
-msgstr "Technologies"
-
-#: templates/index.html:692
-msgid "Наш"
-msgstr "Our"
-
-#: templates/index.html:692
-msgid "стек"
-msgstr "stack"
-
-#: templates/index.html:694
-msgid "Проверенные технологии для надёжных решений"
-msgstr "Proven technologies for reliable solutions"
-
-#: templates/index.html:710
-msgid "Технологии не добавлены"
-msgstr "No technologies added"
-
-#: templates/index.html:728
-msgid "Нам"
-msgstr "They"
-
-#: templates/index.html:728
-msgid "доверяют"
-msgstr "trust us"
-
-#: templates/index.html:730
-msgid "Компании, с которыми мы работаем"
-msgstr "Companies we work with"
-
-#: templates/index.html:750
-msgid "Партнёры не добавлены"
-msgstr "No partners added"
-
-#: templates/index.html:764
-msgid "Почему ZEA"
-msgstr "Why ZEA"
-
-#: templates/index.html:767
-msgid "Почему выбирают"
-msgstr "Why choose"
-
-#: templates/index.html:767
-msgid "нас"
-msgstr "us"
-
-#: templates/index.html:782
-msgid "Данные не добавлены"
-msgstr "No data added"
-
-#: templates/index.html:791
-msgid "Готовы начать?"
-msgstr "Ready to start?"
-
-#: templates/index.html:792
-msgid "Обсудим ваш проект бесплатно"
-msgstr "Let's discuss your project for free"
-
-#: templates/index.html:815
-msgid "Хотите запустить"
-msgstr "Want to launch"
-
-#: templates/index.html:815
-msgid "сайт, CRM или бота?"
-msgstr "a website, CRM or bot?"
-
-#: templates/index.html:818
-msgid "Напишите нам — обсудим задачу и предложим решение"
-msgstr "Write to us — we'll discuss your task and propose a solution"
-
-#: templates/index.html:874
+#: templates/site/sections/contact.html:72
 msgid "Заявка отправлена!"
 msgstr "Request sent!"
 
-#: templates/index.html:875
+#: templates/site/sections/contact.html:73
 msgid "Мы свяжемся с вами в ближайшее время."
 msgstr "We will contact you shortly."
 
-#: templates/index.html:882
+#: templates/site/sections/contact.html:78
 msgid "Оставить заявку"
-msgstr "Book a Consultation"
+msgstr "Leave a request"
 
-#: templates/index.html:942
+#: templates/site/sections/contact.html:96
+msgid "Ваше имя"
+msgstr "Your name"
+
+#: templates/site/sections/contact.html:118
+msgid "Необязательно"
+msgstr "Optional"
+
+#: templates/site/sections/contact.html:124
+msgid "Например: логистика"
+msgstr "For example: logistics"
+
+#: templates/site/sections/contact.html:147
+msgid "Опишите вашу задачу..."
+msgstr "Describe your task..."
+
+#: templates/site/sections/contact.html:148
+msgid "Расскажите о бизнесе и задачах, которые хотите решить"
+msgstr "Tell us about your business and the problems you want to solve"
+
+#: templates/site/sections/contact.html:149
+msgid "Опишите, что нужно разработать, и желаемые сроки"
+msgstr "Describe what needs to be built and your preferred timeline"
+
+#: templates/site/sections/contact.html:150
+msgid "Опишите ваш вопрос"
+msgstr "Describe your question"
+
+#: templates/site/sections/contact.html:159
 msgid "Отправить заявку"
-msgstr "Send Request"
+msgstr "Send request"
 
-#: templates/index.html:974
-msgid "All rights reserved."
-msgstr "All rights reserved."
+#: templates/site/sections/cooperation.html:12
+msgid "Два формата <span class=\"gradient-text\">сотрудничества</span>"
+msgstr "Two ways <span class=\"gradient-text\">to work together</span>"
 
-#: templates/index.html:1097
-msgid "Ошибка соединения. Попробуйте позже."
+#: templates/site/sections/cooperation.html:15
+msgid ""
+"Долгосрочная IT-команда для бизнеса или разработка конкретного продукта."
 msgstr ""
+"A long-term IT team for your business, or development of a specific product."
+
+#: templates/site/sections/cooperation.html:28
+msgid "Основной формат"
+msgstr "Main format"
+
+#: templates/site/sections/hero.html:14
+msgid "Кейс"
+msgstr "Case study"
+
+#: templates/site/sections/hero.html:50
+msgid "Заказать разработку"
+msgstr "Order development"
+
+#: templates/site/sections/hero.html:55
+msgid "Scroll"
+msgstr "Scroll"
+
+#: templates/site/sections/process.html:9
+msgid "Процесс"
+msgstr "Process"
+
+#: templates/site/sections/process.html:12
+msgid "Как мы <span class=\"gradient-text\">начинаем работу</span>"
+msgstr "How we <span class=\"gradient-text\">get started</span>"
+
+#: templates/site/sections/process.html:17
+msgid "Начать с заявки"
+msgstr "Start with a request"
+
+#: templates/site/sections/projects.html:10
+msgid "Наши <span class=\"gradient-text\">проекты</span>"
+msgstr "Our <span class=\"gradient-text\">projects</span>"
+
+#: templates/site/sections/projects.html:13
+msgid "Цифровые продукты, которые мы разработали и запустили"
+msgstr "Digital products we have built and launched"
+
+#: templates/site/sections/projects.html:40
+msgid "Избранный кейс"
+msgstr "Featured case"
+
+#: templates/site/sections/projects.html:56
+msgid "Подробнее"
+msgstr "Learn more"
+
+#: templates/site/sections/projects.html:61
+msgid "Открыть"
+msgstr "Open"
+
+#: templates/site/sections/projects.html:84
+msgid "Задача"
+msgstr "Task"
+
+#: templates/site/sections/projects.html:90
+msgid "Решение"
+msgstr "Solution"
+
+#: templates/site/sections/projects.html:96
+msgid "Результат"
+msgstr "Result"
+
+#: templates/site/sections/projects.html:104
+msgid "Технологии"
+msgstr "Technologies"
+
+#: templates/site/sections/projects.html:116
+msgid "Открыть проект"
+msgstr "Open project"
+
+#: templates/site/sections/projects.html:121
+msgid "Нужен похожий проект"
+msgstr "I need a similar project"
+
+#: templates/site/sections/results.html:10
+msgid "Цифры"
+msgstr "Numbers"
+
+#: templates/site/sections/results.html:13
+msgid "ZEA <span class=\"gradient-text\">в цифрах</span>"
+msgstr "ZEA <span class=\"gradient-text\">in numbers</span>"
+
+#: templates/site/sections/results.html:47
+msgid "Партнёры"
+msgstr "Partners"
+
+#: templates/site/sections/results.html:50
+msgid "С кем <span class=\"gradient-text\">мы работаем</span>"
+msgstr "Who <span class=\"gradient-text\">we work with</span>"
+
+#: templates/site/sections/services.html:11
+msgid "Какие задачи <span class=\"gradient-text\">мы решаем</span>"
+msgstr "What problems <span class=\"gradient-text\">we solve</span>"
+
+#: templates/site/sections/services.html:14
+msgid "Сначала задача бизнеса — потом технология."
+msgstr "Business goals first — technology second."
+
+#: templates/site/sections/services.html:43
+msgid "Не нашли свою задачу?"
+msgstr "Don't see your task?"
+
+#: templates/site/sections/services.html:44
+msgid "Опишите её — подскажем, какое решение подойдёт."
+msgstr "Describe it and we'll suggest a suitable solution."
+
+#: templates/site/sections/services.html:47
+msgid "Обсудить задачу"
+msgstr "Discuss your task"
+
+#: templates/site/sections/services.html:54
+msgid "Технологии, с которыми работаем"
+msgstr "Technologies we work with"
+
+#: templates/site/sections/why.html:7
+msgid "Почему ZEA"
+msgstr "Why ZEA"
+
+#: templates/site/sections/why.html:10
+msgid "Почему выбирают <span class=\"gradient-text\">ZEA</span>"
+msgstr "Why companies <span class=\"gradient-text\">choose ZEA</span>"
+
+#: templates/site/sections/why.html:32
+msgid "Готовы обсудить задачу?"
+msgstr "Ready to discuss your task?"
+
+#: templates/site/sections/why.html:33
+msgid "Расскажите о бизнесе — предложим подходящий формат работы."
+msgstr ""
+"Tell us about your business and we'll suggest the right way to work "
+"together."

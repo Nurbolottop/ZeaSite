@@ -1,0 +1,175 @@
+{# Собственные стили сайта (dark / glass). Tailwind — отдельно, см. tailwind.config.js #}
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background:#0B0F19; font-family:'Inter',sans-serif; overflow-x:hidden; color:#fff; }
+
+        /* ── Glass ─────────────────────────── */
+        .glass { background:rgba(255,255,255,.04); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.09); }
+        .glass-nav { background:rgba(11,15,25,.75); backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); border-bottom:1px solid rgba(255,255,255,.07); }
+
+        /* ── Gradient text ──────────────────── */
+        .gradient-text { background:linear-gradient(135deg,#818cf8,#a78bfa,#22d3ee); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .text-glow { text-shadow:0 0 60px rgba(129,140,248,.35); }
+
+        /* ── Animated gradient ──────────────── */
+        .animated-gradient { background:linear-gradient(-45deg,#6366f1,#8b5cf6,#06b6d4,#3b82f6); background-size:400% 400%; animation:gradientShift 6s ease infinite; }
+        @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+
+        /* ── Ambient bg ─────────────────────── */
+        .ambient-bg { background: radial-gradient(ellipse at 15% 40%,rgba(99,102,241,.12) 0%,transparent 55%), radial-gradient(ellipse at 85% 15%,rgba(139,92,246,.09) 0%,transparent 55%), radial-gradient(ellipse at 55% 85%,rgba(6,182,212,.07) 0%,transparent 55%); }
+        .grid-bg { background-image:linear-gradient(rgba(99,102,241,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.04) 1px,transparent 1px); background-size:60px 60px; }
+
+        /* ── Float / glow ───────────────────── */
+        @keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-18px)} }
+        @keyframes floatB { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-14px) rotate(4deg)} }
+        @keyframes floatC { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-22px)} }
+        @keyframes glowPulse { 0%,100%{opacity:.4} 50%{opacity:.9} }
+        .float-a { animation:floatA 6s ease-in-out infinite; }
+        .float-b { animation:floatB 8s ease-in-out infinite; }
+        .float-c { animation:floatC 10s ease-in-out infinite; }
+        .glow-pulse { animation:glowPulse 3.5s ease-in-out infinite; }
+
+        /* ── Cards ──────────────────────────── */
+        .card { transition:transform .3s,background .3s,border-color .3s,box-shadow .3s; }
+        .card:hover { transform:translateY(-8px); background:rgba(99,102,241,.08); border-color:rgba(99,102,241,.35); box-shadow:0 20px 40px rgba(99,102,241,.15),0 0 0 1px rgba(99,102,241,.25); }
+        .project-card { transition:transform .3s,box-shadow .3s; }
+        .project-card:hover { transform:translateY(-6px); box-shadow:0 30px 60px rgba(0,0,0,.5); }
+
+        /* ── Buttons ────────────────────────── */
+        .btn-primary { background:linear-gradient(135deg,#6366f1,#8b5cf6); transition:transform .25s,box-shadow .25s; }
+        .btn-primary:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(99,102,241,.4); }
+        .btn-outline { background:transparent; border:1px solid rgba(255,255,255,.18); transition:transform .25s,border-color .25s,background .25s; }
+        .btn-outline:hover { border-color:rgba(99,102,241,.6); background:rgba(99,102,241,.1); transform:translateY(-2px); }
+
+        /* ── Nav link ───────────────────────── */
+        .nav-link { position:relative; transition:color .25s; }
+        .nav-link::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:2px; background:linear-gradient(135deg,#6366f1,#8b5cf6); transition:width .3s; }
+        .nav-link:hover::after, .nav-link.active::after { width:100%; }
+        .nav-link.active { color:#fff !important; }
+
+        /* ── Tech tags ──────────────────────── */
+        .tech-tag { transition:transform .25s,background .25s,border-color .25s,box-shadow .25s; }
+        .tech-tag:hover { transform:translateY(-3px); background:rgba(99,102,241,.15); border-color:rgba(99,102,241,.45); box-shadow:0 6px 20px rgba(99,102,241,.2); }
+
+        /* ── Mobile menu ────────────────────── */
+        .mobile-menu { transform:translateX(100%); transition:transform .35s cubic-bezier(.4,0,.2,1); }
+        .mobile-menu.open { transform:translateX(0); }
+
+        /* ── Divider ────────────────────────── */
+        .divider { height:1px; background:linear-gradient(90deg,transparent,rgba(99,102,241,.25),transparent); }
+
+        /* ── Color themes for cards ──────────── */
+        /* Each project/service card uses data-color attribute */
+        [data-color="indigo"] .c-grad  { background:linear-gradient(135deg,rgba(30,27,75,.7),rgba(30,58,138,.7)); }
+        [data-color="indigo"] .c-glow  { background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(59,130,246,.15)); }
+        [data-color="indigo"] .c-icon  { background:rgba(99,102,241,.25); color:#818cf8; }
+        [data-color="indigo"] .c-label { color:#818cf8; background:rgba(99,102,241,.12); }
+        [data-color="indigo"] .c-more  { color:#818cf8; }
+        [data-color="indigo"] .c-more:hover { color:#c7d2fe; }
+        [data-color="indigo"] .c-sicon { background:rgba(99,102,241,.2); }
+        [data-color="indigo"] .c-sicon i { color:#818cf8; }
+
+        [data-color="purple"] .c-grad  { background:linear-gradient(135deg,rgba(46,16,101,.7),rgba(88,28,135,.7)); }
+        [data-color="purple"] .c-glow  { background:linear-gradient(135deg,rgba(168,85,247,.15),rgba(236,72,153,.15)); }
+        [data-color="purple"] .c-icon  { background:rgba(168,85,247,.25); color:#c084fc; }
+        [data-color="purple"] .c-label { color:#c084fc; background:rgba(168,85,247,.12); }
+        [data-color="purple"] .c-more  { color:#c084fc; }
+        [data-color="purple"] .c-more:hover { color:#e9d5ff; }
+        [data-color="purple"] .c-sicon { background:rgba(168,85,247,.2); }
+        [data-color="purple"] .c-sicon i { color:#c084fc; }
+
+        [data-color="cyan"] .c-grad  { background:linear-gradient(135deg,rgba(8,51,68,.7),rgba(19,78,74,.7)); }
+        [data-color="cyan"] .c-glow  { background:linear-gradient(135deg,rgba(6,182,212,.15),rgba(20,184,166,.15)); }
+        [data-color="cyan"] .c-icon  { background:rgba(6,182,212,.25); color:#22d3ee; }
+        [data-color="cyan"] .c-label { color:#22d3ee; background:rgba(6,182,212,.12); }
+        [data-color="cyan"] .c-more  { color:#22d3ee; }
+        [data-color="cyan"] .c-more:hover { color:#a5f3fc; }
+        [data-color="cyan"] .c-sicon { background:rgba(6,182,212,.2); }
+        [data-color="cyan"] .c-sicon i { color:#22d3ee; }
+
+        [data-color="blue"] .c-grad  { background:linear-gradient(135deg,rgba(23,37,84,.7),rgba(30,58,138,.7)); }
+        [data-color="blue"] .c-glow  { background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(99,102,241,.15)); }
+        [data-color="blue"] .c-icon  { background:rgba(59,130,246,.25); color:#60a5fa; }
+        [data-color="blue"] .c-label { color:#60a5fa; background:rgba(59,130,246,.12); }
+        [data-color="blue"] .c-more  { color:#60a5fa; }
+        [data-color="blue"] .c-more:hover { color:#bfdbfe; }
+        [data-color="blue"] .c-sicon { background:rgba(59,130,246,.2); }
+        [data-color="blue"] .c-sicon i { color:#60a5fa; }
+
+        [data-color="green"] .c-grad  { background:linear-gradient(135deg,rgba(2,44,34,.7),rgba(6,78,59,.7)); }
+        [data-color="green"] .c-glow  { background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(16,185,129,.15)); }
+        [data-color="green"] .c-icon  { background:rgba(34,197,94,.25); color:#4ade80; }
+        [data-color="green"] .c-label { color:#4ade80; background:rgba(34,197,94,.12); }
+        [data-color="green"] .c-more  { color:#4ade80; }
+        [data-color="green"] .c-more:hover { color:#bbf7d0; }
+        [data-color="green"] .c-sicon { background:rgba(34,197,94,.2); }
+        [data-color="green"] .c-sicon i { color:#4ade80; }
+
+        [data-color="pink"] .c-grad  { background:linear-gradient(135deg,rgba(80,7,36,.7),rgba(112,26,117,.7)); }
+        [data-color="pink"] .c-glow  { background:linear-gradient(135deg,rgba(236,72,153,.15),rgba(217,70,239,.15)); }
+        [data-color="pink"] .c-icon  { background:rgba(236,72,153,.25); color:#f472b6; }
+        [data-color="pink"] .c-label { color:#f472b6; background:rgba(236,72,153,.12); }
+        [data-color="pink"] .c-more  { color:#f472b6; }
+        [data-color="pink"] .c-more:hover { color:#fbcfe8; }
+        [data-color="pink"] .c-sicon { background:rgba(236,72,153,.2); }
+        [data-color="pink"] .c-sicon i { color:#f472b6; }
+
+        [data-color="orange"] .c-grad  { background:linear-gradient(135deg,rgba(67,20,7,.7),rgba(124,45,18,.7)); }
+        [data-color="orange"] .c-glow  { background:linear-gradient(135deg,rgba(249,115,22,.15),rgba(234,179,8,.15)); }
+        [data-color="orange"] .c-icon  { background:rgba(249,115,22,.25); color:#fb923c; }
+        [data-color="orange"] .c-label { color:#fb923c; background:rgba(249,115,22,.12); }
+        [data-color="orange"] .c-more  { color:#fb923c; }
+        [data-color="orange"] .c-more:hover { color:#fed7aa; }
+        [data-color="orange"] .c-sicon { background:rgba(249,115,22,.2); }
+        [data-color="orange"] .c-sicon i { color:#fb923c; }
+
+        [data-color="yellow"] .c-grad  { background:linear-gradient(135deg,rgba(66,32,6,.7),rgba(113,63,18,.7)); }
+        [data-color="yellow"] .c-glow  { background:linear-gradient(135deg,rgba(234,179,8,.15),rgba(245,158,11,.15)); }
+        [data-color="yellow"] .c-icon  { background:rgba(234,179,8,.25); color:#facc15; }
+        [data-color="yellow"] .c-label { color:#facc15; background:rgba(234,179,8,.12); }
+        [data-color="yellow"] .c-more  { color:#facc15; }
+        [data-color="yellow"] .c-more:hover { color:#fef08a; }
+        [data-color="yellow"] .c-sicon { background:rgba(234,179,8,.2); }
+        [data-color="yellow"] .c-sicon i { color:#facc15; }
+
+        /* ── Scroll indicator ───────────────── */
+        @keyframes scrollBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+        .scroll-indicator { animation:scrollBounce 2s ease-in-out infinite; }
+
+        /* ── Scrollbar ──────────────────────── */
+        ::-webkit-scrollbar { width:5px; }
+        ::-webkit-scrollbar-track { background:#0B0F19; }
+        ::-webkit-scrollbar-thumb { background:#6366f1; border-radius:3px; }
+
+        /* ── Contact form ───────────────────── */
+        .cf-input { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); }
+        .cf-input:focus { border-color:rgba(99,102,241,.6); background:rgba(99,102,241,.06); }
+        .cf-input.cf-error { border-color:rgba(239,68,68,.5); }
+        select.cf-input option { background:#0D1120; color:#d1d5db; }
+
+        /* ── Секции: общий заголовок ────────── */
+        .eyebrow { color:#818cf8; }
+        .section-sub { color:#9ca3af; }
+
+        /* ── Основной формат сотрудничества ─── */
+        .format-primary { position:relative; background:linear-gradient(160deg,rgba(99,102,241,.14),rgba(139,92,246,.08) 45%,rgba(6,182,212,.06)); border:1px solid rgba(129,140,248,.45); box-shadow:0 30px 80px -30px rgba(99,102,241,.45); }
+        .format-primary::before { content:''; position:absolute; inset:0; border-radius:inherit; padding:1px; background:linear-gradient(135deg,rgba(129,140,248,.9),rgba(167,139,250,.4),rgba(34,211,238,.7)); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
+
+        /* ── Шаги процесса ──────────────────── */
+        .step-num { font-variant-numeric:tabular-nums; letter-spacing:-.04em; }
+        .step-card { transition:transform .3s,border-color .3s,background .3s; }
+        .step-card:hover { transform:translateY(-4px); border-color:rgba(99,102,241,.35); background:rgba(99,102,241,.06); }
+
+        /* ── Тип обращения (radio-pills) ────── */
+        .rt-option input { position:absolute; opacity:0; pointer-events:none; }
+        .rt-option span { transition:background .2s,border-color .2s,color .2s; }
+        .rt-option input:checked + span { background:rgba(99,102,241,.18); border-color:rgba(129,140,248,.7); color:#fff; }
+        .rt-option input:focus-visible + span { outline:2px solid #818cf8; outline-offset:2px; }
+
+        /* ── Модальное окно проекта ─────────── */
+        .modal { opacity:0; transition:opacity .25s; }
+        .modal.open { opacity:1; }
+        .modal-panel { transform:translateY(16px) scale(.98); transition:transform .3s cubic-bezier(.4,0,.2,1); }
+        .modal.open .modal-panel { transform:none; }
+        .modal-panel::-webkit-scrollbar { width:4px; }
+    </style>

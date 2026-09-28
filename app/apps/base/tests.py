@@ -1,8 +1,14 @@
 """Смоук-тесты публичного сайта zeastudio.su: он должен работать без авторизации
 и не зависеть от ZEA Hub."""
-from django.contrib.auth.models import User
-from django.test import Client, TestCase
+import json
+import re
+import tempfile
 
+from django.contrib.auth.models import User
+from django.test import Client, TestCase, override_settings
+
+from apps.base import views as site_views
+from apps.cms.models import Partner, Project, SiteSettings, Stat
 from apps.contacts.models import ContactMessage
 
 
@@ -52,3 +58,162 @@ class PublicSiteTests(TestCase):
         html = self.client.get('/').content.decode()
         self.assertNotIn('hub/hub.css', html)
         self.assertNotIn('bootstrap@', html)
+
+
+class PositioningTests(TestCase):
+    def html(self, url='/'):
+        return self.client.get(url).content.decode()
+
+    def test_hero_uses_cms_title_and_ctas(self):
+        html = self.html()
+        self.assertIn('технологический партнёр для бизнеса', html)
+        self.assertRegex(html, r'href="#contact" data-request-type="partnership"')
+        self.assertRegex(html, r'href="#contact" data-request-type="development"')
+        s = SiteSettings.get()
+        s.hero_title = s.hero_title_ru = 'Проверка — заголовка из CMS'
+        s.save()
+        self.assertIn('Проверка —', self.html())
+
+    def test_old_positioning_removed(self):
+        html = self.html()
+        for phrase in ('мини IT-студия', 'UI/UX мирового уровня', 'цифровое будущее',
+                       'KIKI Academy', 'разработка цифровых решений', 'Бишкек'):
+            self.assertNotIn(phrase, html, phrase)
+
+    def test_new_blocks_rendered(self):
+        html = self.html()
+        for text in ('Технологическое партнёрство', 'Разработка под заказ', 'Основной формат',
+                     'Условия и договор', 'Что мы берём на себя', 'Проектирование',
+                     'Мобильные приложения', 'Интеграции', 'Прозрачные условия',
+                     'Сначала задача бизнеса — потом технология.'):
+            self.assertIn(text, html, text)
+
+    def test_translations(self):
+        en, ky = self.html('/en/'), self.html('/ky/')
+        self.assertIn('a technology partner for business</span>', en)
+        self.assertIn('Technology partnership', en)
+        self.assertIn('to work together', en)
+        self.assertIn('Discuss a partnership', en)
+        self.assertIn('бизнес үчүн технологиялык өнөктөш', ky)
+        self.assertIn('Технологиялык өнөктөштүк', ky)
+        self.assertIn('Кайрылуунун түрү', ky)
+
+
+class OptionalSectionsTests(TestCase):
+    def html(self):
+        return self.client.get('/').content.decode()
+
+    def test_empty_sections_hidden(self):
+        html = self.html()
+        self.assertNotIn('id="projects"', html)
+        self.assertNotIn('href="#projects"', html)
+        self.assertNotIn('id="results"', html)
+        self.assertNotIn('id="project-modal"', html)
+        self.assertNotIn('не добавлены', html)
+
+    def test_projects_and_details(self):
+        Project.objects.create(name='Кейс А', description='Описание', project_type='CRM',
+                               technologies='Django', task='Задача А', solution='Решение А',
+                               result='Итог А', is_featured=True)
+        Project.objects.create(name='Скрытый', description='d', project_type='x', technologies='',
+                               is_active=False)
+        html = self.html()
+        self.assertIn('id="projects"', html)
+        self.assertIn('href="#projects"', html)
+        self.assertIn('id="project-modal"', html)
+        pk = Project.objects.get(name='Кейс А').pk
+        self.assertIn(f'<template id="project-detail-{pk}">', html)
+        self.assertEqual(html.count(f'data-project-open="{pk}"'), 2)  # карточка + hero
+        for text in ('Задача А', 'Решение А', 'Итог А'):
+            self.assertIn(text, html)
+        self.assertNotIn('Скрытый', html)
+
+    def test_stats_grid_and_is_active(self):
+        Stat.objects.create(value_text='7', label='лет', icon='rocket', is_counter=True, counter_target=7)
+        Stat.objects.create(value_text='9', label='скрытая', is_active=False)
+        html = self.html()
+        self.assertIn('id="results"', html)
+        self.assertIn('data-target="7">7<', html)
+        self.assertNotIn('скрытая', html)
+        self.assertNotIn('lg:col-span-4', html)
+
+    def test_partners(self):
+        Partner.objects.create(name='Партнёр Б', industry='Ритейл')
+        html = self.html()
+        self.assertIn('id="partners"', html)
+        self.assertIn('Партнёр Б', html)
+
+
+class ContactsVisibilityTests(TestCase):
+    def test_empty_contacts_not_rendered(self):
+        html = self.client.get('/').content.decode()
+        for needle in ('wa.me', 't.me/', 'instagram.com', 'mailto:', 'hello@zea.dev'):
+            self.assertNotIn(needle, html)
+
+    def test_filled_contact_rendered(self):
+        s = SiteSettings.get()
+        s.telegram_url = 'https://t.me/real_zea'
+        s.save()
+        html = self.client.get('/').content.decode()
+        self.assertIn('https://t.me/real_zea', html)
+        self.assertNotIn('wa.me', html)
+
+
+class SeoTests(TestCase):
+    def test_meta_and_https_urls(self):
+        html = self.client.get('/').content.decode()
+        self.assertIn('<title>ZEA — технологический партнёр для бизнеса · Разработка и сопровождение</title>', html)
+        self.assertIn('ZEA берёт на себя технологическую часть бизнеса', html)
+        self.assertIn('<link rel="canonical" href="https://zeastudio.su/">', html)
+        self.assertIn('<meta property="og:url" content="https://zeastudio.su/">', html)
+        self.assertIn('<meta property="og:locale" content="ru_RU">', html)
+        self.assertIn('<meta property="og:locale:alternate" content="ky_KG">', html)
+        self.assertIn('hreflang="en" href="https://zeastudio.su/en/"', html)
+
+    def test_localized_meta(self):
+        html = self.client.get('/en/').content.decode()
+        self.assertIn('<meta property="og:locale" content="en_US">', html)
+        self.assertIn('<link rel="canonical" href="https://zeastudio.su/en/">', html)
+        self.assertIn('ZEA — Technology Partner for Business', html)
+
+    def test_no_images_when_not_set(self):
+        html = self.client.get('/').content.decode()
+        self.assertNotIn('og:image', html)
+        self.assertNotIn('rel="icon"', html)
+        self.assertNotIn('"logo"', html)
+
+    def test_jsonld_valid(self):
+        html = self.client.get('/').content.decode()
+        raw = re.search(r'<script type="application/ld\+json">(.*?)</script>', html, re.S).group(1)
+        data = json.loads(raw)
+        self.assertEqual(data['@type'], 'Organization')
+        self.assertEqual(data['url'], 'https://zeastudio.su/')
+        self.assertNotIn('sameAs', data)
+
+    def test_robots_and_sitemap_https(self):
+        robots = self.client.get('/robots.txt').content.decode()
+        self.assertIn('Sitemap: https://zeastudio.su/sitemap.xml', robots)
+        self.assertIn('Disallow: /hub/', robots)
+        sitemap = self.client.get('/sitemap.xml').content.decode()
+        for loc in ('https://zeastudio.su/', 'https://zeastudio.su/ky/', 'https://zeastudio.su/en/'):
+            self.assertIn(f'<loc>{loc}</loc>', sitemap)
+        self.assertNotIn('http://zeastudio', sitemap)
+
+
+class TailwindTests(TestCase):
+    def setUp(self):
+        site_views._TAILWIND_CSS = None
+
+    def tearDown(self):
+        site_views._TAILWIND_CSS = None
+
+    def test_css_inlined(self):
+        html = self.client.get('/').content.decode()
+        self.assertIn('tailwindcss v3.4.17', html)
+        self.assertIn('.gap-5{', html)
+
+    def test_works_without_collectstatic(self):
+        """Чистый clone: STATIC_ROOT пустой — CSS берётся из app/static через finders."""
+        with tempfile.TemporaryDirectory() as empty_root, override_settings(STATIC_ROOT=empty_root):
+            site_views._TAILWIND_CSS = None
+            self.assertIn('tailwindcss v3.4.17', site_views._tailwind_inline())

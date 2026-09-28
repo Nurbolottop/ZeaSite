@@ -1,0 +1,47 @@
+{% load i18n %}
+<!-- ══════════ О ZEA + ЧТО МЫ БЕРЁМ НА СЕБЯ ══════════ -->
+<section id="about" class="py-24 md:py-32 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-12 gap-14 lg:gap-16 items-start">
+            <div class="lg:col-span-5 lg:sticky lg:top-32">
+                <div class="inline-flex items-center gap-2 glass px-3.5 py-1.5 rounded-full text-xs eyebrow mb-7" data-aos="fade-right">
+                    <i data-lucide="info" class="w-3.5 h-3.5"></i> {% trans "О ZEA" %}
+                </div>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-6 leading-tight"
+                    data-aos="fade-right" data-aos-delay="100">
+                    {% blocktrans %}IT-команда <span class="gradient-text">для развития вашего бизнеса</span>{% endblocktrans %}
+                </h2>
+                <p class="text-gray-400 text-lg leading-relaxed mb-8" data-aos="fade-right" data-aos-delay="200">
+                    {{ settings.about_text }}
+                </p>
+                <a href="#cooperation" class="btn-outline inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-sm"
+                   data-aos="fade-right" data-aos-delay="300">
+                    {% trans "Форматы сотрудничества" %} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            {% if commitments %}
+            <div class="lg:col-span-7">
+                <h3 class="text-sm uppercase tracking-[.18em] text-gray-400 font-semibold mb-6" data-aos="fade-up">
+                    {% trans "Что мы берём на себя" %}
+                </h3>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    {% for item in commitments %}
+                    <div class="glass card rounded-2xl p-6 border border-white/10" data-color="{{ item.color }}"
+                         data-aos="fade-up" data-aos-delay="{{ forloop.counter }}0">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-10 h-10 rounded-xl c-sicon flex items-center justify-center">
+                                <i data-lucide="{{ item.icon|default:'check-circle' }}" class="w-5 h-5"></i>
+                            </div>
+                            <span class="step-num text-xs font-bold text-gray-600">{{ forloop.counter|stringformat:"02d" }}</span>
+                        </div>
+                        <h4 class="text-white font-bold mb-1.5">{{ item.title }}</h4>
+                        <p class="text-gray-400 text-sm leading-relaxed">{{ item.description }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>

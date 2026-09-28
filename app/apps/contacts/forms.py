@@ -1,28 +1,28 @@
 from django import forms
+from django.utils import translation
 from django.utils.translation import gettext_lazy as _
+from .choices import REQUEST_TYPE_CHOICES, SERVICE_CHOICES
 from .models import ContactMessage
 
 
-SERVICE_CHOICES = [
-    ('', _('Выберите услугу')),
-    ('website',  _('Разработка сайта')),
-    ('crm',      _('CRM-система')),
-    ('bot',      _('Telegram-бот')),
-    ('design',   _('UI/UX Дизайн')),
-    ('backend',  _('Backend-разработка')),
-    ('other',    _('Другое')),
-]
-
-
 class ContactForm(forms.ModelForm):
-    service = forms.ChoiceField(
-        choices=SERVICE_CHOICES,
+    """Заявка с сайта. Тип обращения, направление, компания и сфера пока
+    не хранятся отдельными полями (без миграции contacts) — они дописываются
+    в начало message на русском, чтобы заявку было удобно читать в админке."""
+
+    request_type = forms.ChoiceField(
+        choices=REQUEST_TYPE_CHOICES,
         required=False,
-        label=_('Тип услуги'),
-        widget=forms.Select(attrs={
-            'class': 'form-select',
-        }),
+        label=_('Тип обращения'),
+        widget=forms.RadioSelect,
     )
+    service = forms.ChoiceField(
+        choices=[('', _('Выберите направление'))] + SERVICE_CHOICES,
+        required=False,
+        label=_('Направление'),
+    )
+    company = forms.CharField(max_length=150, required=False, label=_('Компания'))
+    industry = forms.CharField(max_length=150, required=False, label=_('Сфера бизнеса'))
 
     class Meta:
         model = ContactMessage
@@ -32,15 +32,6 @@ class ContactForm(forms.ModelForm):
             'phone':   _('Телефон / WhatsApp'),
             'email':   _('Email'),
             'message': _('Сообщение'),
-        }
-        widgets = {
-            'name':    forms.TextInput(attrs={'placeholder': _('Ваше имя')}),
-            'phone':   forms.TextInput(attrs={'placeholder': '+996 XXX XXX XXX'}),
-            'email':   forms.EmailInput(attrs={'placeholder': 'hello@example.com'}),
-            'message': forms.Textarea(attrs={
-                'placeholder': _('Опишите вашу задачу...'),
-                'rows': 4,
-            }),
         }
 
     def clean(self):
@@ -53,13 +44,24 @@ class ContactForm(forms.ModelForm):
             )
         return cleaned
 
+    def build_message(self):
+        data = self.cleaned_data
+        with translation.override('ru'):
+            request_type = data.get('request_type') or 'other'
+            tags = [str(dict(REQUEST_TYPE_CHOICES)[request_type])]
+            if data.get('service'):
+                tags.append(str(dict(SERVICE_CHOICES)[data['service']]))
+        lines = [' '.join(f'[{tag}]' for tag in tags)]
+        if data.get('company'):
+            lines.append(f'Компания: {data["company"].strip()}')
+        if data.get('industry'):
+            lines.append(f'Сфера: {data["industry"].strip()}')
+        return '\n'.join(lines) + '\n\n' + data['message']
+
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.source = 'form'
-        service = self.cleaned_data.get('service', '')
-        if service and instance.message:
-            label = dict(SERVICE_CHOICES).get(service, service)
-            instance.message = f'[{label}]\n{instance.message}'
+        instance.message = self.build_message()
         if commit:
             instance.save()
         return instance

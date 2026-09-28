@@ -1,0 +1,59 @@
+{% load i18n site_tags %}
+<!-- ══════════ HERO ══════════ -->
+<section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden ambient-bg grid-bg">
+    <div class="pointer-events-none absolute top-1/4 left-[20%] w-[500px] h-[500px] rounded-full bg-indigo-600/10 blur-[80px] glow-pulse"></div>
+    <div class="pointer-events-none absolute bottom-1/4 right-[20%] w-[400px] h-[400px] rounded-full bg-purple-600/10 blur-[80px] glow-pulse" style="animation-delay:1.8s"></div>
+
+    {# Плавающие карточки — только реальные избранные кейсы из CMS #}
+    {% for project in hero_projects %}
+    <button type="button" data-project-open="{{ project.pk }}"
+            class="{% if forloop.first %}float-a top-32 right-16{% else %}float-b bottom-36 left-16{% endif %} absolute hidden xl:block text-left">
+        <span class="glass rounded-2xl px-5 py-4 w-52 shadow-xl block hover:border-indigo-400/40 transition-colors">
+            <span class="flex items-center gap-2 mb-2">
+                <span class="w-2 h-2 rounded-full {% if forloop.first %}bg-green-400{% else %}bg-cyan-400{% endif %}"></span>
+                <span class="text-xs text-gray-400">{% trans "Кейс" %}</span>
+            </span>
+            <span class="block text-white text-sm font-bold">{{ project.name }}</span>
+            <span class="block text-gray-400 text-xs mt-0.5">{{ project.project_type }}</span>
+        </span>
+    </button>
+    {% endfor %}
+
+    <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-28 pb-16">
+        {% if settings.hero_badge %}
+        <div class="inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-sm text-gray-300 mb-8" data-aos="fade-down" data-aos-duration="800">
+            <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+            {{ settings.hero_badge }}
+        </div>
+        {% endif %}
+
+        {% with parts=settings.hero_title|split_accent %}
+        <h1 class="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-black text-white mb-7 leading-[1.08] tracking-tight text-glow"
+            data-aos="fade-up" data-aos-duration="900" data-aos-delay="100">
+            {% if parts.0 %}{{ parts.0 }}<br>{% endif %}<span class="gradient-text">{{ parts.1 }}</span>
+        </h1>
+        {% endwith %}
+
+        <p class="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto mb-10 leading-relaxed"
+           data-aos="fade-up" data-aos-duration="900" data-aos-delay="200">
+            {{ settings.hero_subtitle }}
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4"
+             data-aos="fade-up" data-aos-duration="900" data-aos-delay="300">
+            <a href="#contact" data-request-type="partnership"
+               class="btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-white font-semibold text-base">
+                <i data-lucide="handshake" class="w-5 h-5"></i> {% trans "Обсудить партнёрство" %}
+            </a>
+            <a href="#contact" data-request-type="development"
+               class="btn-outline w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-white font-semibold text-base">
+                <i data-lucide="code-2" class="w-5 h-5"></i> {% trans "Заказать разработку" %}
+            </a>
+        </div>
+
+        <div class="mt-20 flex flex-col items-center gap-2 text-gray-400 scroll-indicator" data-aos="fade-up" data-aos-delay="600">
+            <span class="text-[10px] uppercase tracking-[.2em]">{% trans "Scroll" %}</span>
+            <i data-lucide="chevron-down" class="w-5 h-5"></i>
+        </div>
+    </div>
+</section>

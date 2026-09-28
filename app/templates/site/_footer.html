@@ -1,0 +1,18 @@
+{% load i18n %}
+<!-- ══════════ FOOTER ══════════ -->
+<footer class="border-t border-white/10 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex flex-col items-center md:items-start gap-2">
+                <a href="#home" class="flex items-center gap-2.5">{% include "site/_brand.html" with size="sm" %}</a>
+                {% if settings.site_tagline %}<p class="text-gray-400 text-xs">{{ settings.site_tagline }}</p>{% endif %}
+            </div>
+            <nav class="flex flex-wrap justify-center gap-6" aria-label="{% trans 'Меню в подвале' %}">
+                {% for href, label in nav_items %}
+                <a href="{{ href }}" class="text-gray-400 hover:text-gray-200 text-sm transition-colors">{{ label }}</a>
+                {% endfor %}
+            </nav>
+            <p class="text-gray-400 text-sm">{% if settings.footer_text %}{{ settings.footer_text }}{% else %}© {% now "Y" %} {{ settings.site_name }}{% endif %}</p>
+        </div>
+    </div>
+</footer>

@@ -181,3 +181,6 @@ app/staticfiles/
 
 # Приватные файлы (договоры/документы) — никогда не коммитить
 private_media/
+
+# Node (сборка Tailwind)
+node_modules/

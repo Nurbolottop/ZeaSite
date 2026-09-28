@@ -1,6 +1,6 @@
 # ZEA — IT Studio
 
-Сайт-портфолио IT-студии **ZEA**: разработка сайтов, CRM-систем, Telegram-ботов и решений для автоматизации бизнеса.
+Публичный сайт **ZEA** — технологического партнёра для бизнеса (два формата: технологическое партнёрство и разработка под заказ) — и внутренняя система ZEA Hub (`/hub/`).
 
 Одностраничный сайт на Django с полноценной CMS-админкой, поддержкой 3 языков и профессиональной SEO-оптимизацией.
 
@@ -19,7 +19,7 @@
 ## Технологии
 
 - **Backend:** Django 5.2, PostgreSQL
-- **Frontend:** серверный рендеринг Django Templates + Tailwind CSS (CDN), Lucide icons, AOS
+- **Frontend:** серверный рендеринг Django Templates + Tailwind CSS v3 (собирается из репозитория, см. ниже), Lucide icons, AOS
 - **Изображения:** django-resized (автоконвертация в WebP)
 - **Контент:** django-ckeditor
 - **Инфраструктура:** Docker / docker-compose
@@ -43,7 +43,10 @@ ZEA/
 │   ├── templates/             # index.html, 404, 500, админ-шаблоны
 │   ├── locale/                # переводы ru/ky/en
 │   └── static/
+├── frontend/                  # исходник Tailwind + reference/ (копия прежнего production CSS)
 ├── docker/                    # Dockerfile + docker-compose (dev/prod)
+├── package.json               # сборка Tailwind (npm run build:css)
+├── tailwind.config.js         # content — только публичные шаблоны
 ├── scripts/entrypoint.sh
 ├── requirements.txt
 └── .envtest                   # пример переменных окружения
@@ -84,11 +87,53 @@ docker compose -f docker/docker-compose.prod.yml up --build -d
 После изменения строк в шаблонах/коде:
 
 ```bash
-python manage.py makemessages -l ru -l ky -l en --ignore=staticfiles --ignore=static
+python manage.py makemessages -l ru -l ky -l en --ignore=staticfiles --ignore=static \
+  --ignore='apps/hub/*' --ignore='apps/users/*' --ignore='apps/partners/*' \
+  --ignore='apps/contracts/*' --ignore='apps/projects/*' --ignore='apps/team/*' \
+  --ignore='templates/hub/*' --ignore='templates/partners/*' --ignore='templates/contracts/*' \
+  --ignore='templates/projects/*' --ignore='templates/team/*'
 python manage.py compilemessages
 ```
 
 Перевод полей моделей (услуги, проекты и т.д.) — через вкладки языков в админке.
+
+---
+
+## Публичный сайт: Tailwind CSS
+
+Стили главной — Tailwind **v3** (не v4). Собранный файл `app/static/css/tailwind.css`
+**хранится в git**, поэтому Node на сервере не нужен и стили есть на чистом clone.
+Вьюха встраивает его в `<style>`: сначала из `STATIC_ROOT` (после collectstatic),
+иначе из `app/static` через staticfiles finders.
+
+После изменения классов в публичных шаблонах (`templates/index.html`, `templates/site/**`):
+
+```bash
+npm ci                 # один раз (tailwindcss 3.4.17)
+npm run build:css      # → app/static/css/tailwind.css (минифицирован), закоммитить
+npm run watch:css      # при разработке
+```
+
+Шаблоны ZEA Hub (Bootstrap) в сборку не входят. `frontend/reference/` — копия CSS,
+который был на production до переноса сборки в репозиторий (для сравнения).
+
+---
+
+## Публичный сайт: контент
+
+- Структура главной: Hero → О ZEA + «Что мы берём на себя» → Форматы сотрудничества →
+  Как мы начинаем работу → Направления (+ стек) → Проекты* → Цифры* и Партнёры* →
+  Почему ZEA → Контакты и заявка. *Секции скрываются, пока нет активных записей.
+- Всё редактируется в админке: раздел «Публичный сайт (контент)».
+- Утверждённые тексты (RU/KY/EN) лежат в `apps/cms/site_content.py`. Миграция
+  `cms/0010` один раз заполняет ими пустые блоки; повторно —
+  `python manage.py populate_db` (создаёт недостающее) или `populate_db --update`
+  (перезаписывает тексты). **Ничего не удаляет.** Проекты, партнёров и статистику
+  не создаёт — только реальные данные вручную.
+- `load_zea.py` — черновики портфолио: создаёт проекты и партнёров **скрытыми**,
+  без удаления. Не запускать на production без отдельного решения.
+- Заявки: тип обращения, направление, компания и сфера пока дописываются в начало
+  текста заявки (без миграции `contacts`).
 
 ---
 

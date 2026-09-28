@@ -1,0 +1,167 @@
+{% load i18n %}
+<!-- ══════════ КОНТАКТЫ + ЗАЯВКА ══════════ -->
+<section id="contact" class="py-24 md:py-32 relative overflow-hidden">
+    <div class="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-indigo-600/10 blur-[100px] glow-pulse"></div>
+
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-14 lg:gap-20 items-start">
+
+            <!-- Левая колонка -->
+            <div data-aos="fade-right">
+                <div class="inline-flex items-center gap-2 glass px-3.5 py-1.5 rounded-full text-xs eyebrow mb-7">
+                    <i data-lucide="mail" class="w-3.5 h-3.5"></i> {% trans "Контакты" %}
+                </div>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                    {% blocktrans %}Расскажите <span class="gradient-text">о вашем бизнесе</span>{% endblocktrans %}
+                </h2>
+                <p class="text-gray-400 text-lg mb-10 leading-relaxed">
+                    {% trans "Обсудим задачу и предложим подходящий формат: партнёрство или разработку под заказ." %}
+                </p>
+
+                {% if settings.telegram_url or settings.whatsapp_url or settings.instagram_url or settings.email %}
+                <div class="flex flex-wrap gap-3">
+                    {% if settings.telegram_url %}
+                    <a href="{{ settings.telegram_url }}" target="_blank" rel="noopener"
+                       class="glass card flex items-center gap-3 px-5 py-3 rounded-xl border border-white/10 text-white font-semibold text-sm">
+                        <span class="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0"><i data-lucide="send" class="w-4 h-4 text-blue-400"></i></span>
+                        Telegram
+                    </a>
+                    {% endif %}
+                    {% if settings.whatsapp_url %}
+                    <a href="{{ settings.whatsapp_url }}" target="_blank" rel="noopener"
+                       class="glass card flex items-center gap-3 px-5 py-3 rounded-xl border border-white/10 text-white font-semibold text-sm">
+                        <span class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center flex-shrink-0"><i data-lucide="message-circle" class="w-4 h-4 text-green-400"></i></span>
+                        WhatsApp
+                    </a>
+                    {% endif %}
+                    {% if settings.instagram_url %}
+                    <a href="{{ settings.instagram_url }}" target="_blank" rel="noopener"
+                       class="glass card flex items-center gap-3 px-5 py-3 rounded-xl border border-white/10 text-white font-semibold text-sm">
+                        <span class="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-pink-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                            </svg>
+                        </span>
+                        Instagram
+                    </a>
+                    {% endif %}
+                    {% if settings.email %}
+                    <a href="mailto:{{ settings.email }}"
+                       class="glass card flex items-center gap-3 px-5 py-3 rounded-xl border border-white/10 text-white font-semibold text-sm">
+                        <span class="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0"><i data-lucide="mail" class="w-4 h-4 text-indigo-400"></i></span>
+                        {{ settings.email }}
+                    </a>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="flex items-start gap-3 text-gray-400 text-sm">
+                    <i data-lucide="phone-call" class="w-4 h-4 mt-0.5 text-indigo-300 flex-shrink-0"></i>
+                    <p>{% trans "Оставьте заявку — мы свяжемся с вами по телефону или email, который вы укажете." %}</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Правая колонка: форма -->
+            <div data-aos="fade-left" data-aos-delay="100">
+                <div class="glass rounded-2xl p-6 sm:p-8 border border-white/10">
+
+                    <div id="contact-success" class="hidden text-center py-8" role="status">
+                        <div class="w-16 h-16 animated-gradient rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <i data-lucide="check" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h3 class="text-white text-xl font-bold mb-2">{% trans "Заявка отправлена!" %}</h3>
+                        <p class="text-gray-400">{% trans "Мы свяжемся с вами в ближайшее время." %}</p>
+                    </div>
+
+                    <form id="contact-form" action="{% url 'contact_submit' %}" method="post" novalidate>
+                        {% csrf_token %}
+                        <h3 class="text-white text-xl font-bold mb-6">{% trans "Оставить заявку" %}</h3>
+
+                        <!-- Тип обращения -->
+                        <fieldset class="mb-5">
+                            <legend class="block text-sm text-gray-400 mb-2">{{ contact_form.request_type.label }}</legend>
+                            <div class="grid sm:grid-cols-3 gap-2">
+                                {% for value, label in contact_form.fields.request_type.choices %}
+                                <label class="rt-option relative cursor-pointer">
+                                    <input type="radio" name="request_type" value="{{ value }}" id="id_request_type_{{ value }}">
+                                    <span class="flex items-center justify-center text-center h-full min-h-[48px] px-3 py-2.5 rounded-xl border border-white/10 bg-white/5 text-gray-300 text-sm font-medium leading-snug">{{ label }}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </fieldset>
+
+                        <div class="mb-4">
+                            <label for="id_name" class="block text-sm text-gray-400 mb-1.5">{% trans "Имя" %}</label>
+                            <input type="text" name="name" id="id_name" maxlength="100" autocomplete="name"
+                                   placeholder="{% trans 'Ваше имя' %}"
+                                   class="cf-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none transition-colors">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_service" class="block text-sm text-gray-400 mb-1.5">{{ contact_form.service.label }}</label>
+                            <div class="relative">
+                                <select name="service" id="id_service"
+                                        class="cf-input w-full rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors appearance-none cursor-pointer"
+                                        style="-webkit-text-fill-color:#9ca3af; color:#9ca3af">
+                                    {% for value, label in contact_form.fields.service.choices %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label for="id_company" class="block text-sm text-gray-400 mb-1.5">{{ contact_form.company.label }}</label>
+                                <input type="text" name="company" id="id_company" maxlength="150" autocomplete="organization"
+                                       placeholder="{% trans 'Необязательно' %}"
+                                       class="cf-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none transition-colors">
+                            </div>
+                            <div>
+                                <label for="id_industry" class="block text-sm text-gray-400 mb-1.5">{{ contact_form.industry.label }}</label>
+                                <input type="text" name="industry" id="id_industry" maxlength="150"
+                                       placeholder="{% trans 'Например: логистика' %}"
+                                       class="cf-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none transition-colors">
+                            </div>
+                        </div>
+
+                        <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label for="id_phone" class="block text-sm text-gray-400 mb-1.5">{% trans "Телефон / WhatsApp" %}</label>
+                                <input type="tel" name="phone" id="id_phone" maxlength="30" autocomplete="tel"
+                                       placeholder="+996 XXX XXX XXX"
+                                       class="cf-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none transition-colors">
+                            </div>
+                            <div>
+                                <label for="id_email" class="block text-sm text-gray-400 mb-1.5">Email</label>
+                                <input type="email" name="email" id="id_email" autocomplete="email"
+                                       placeholder="name@company.com"
+                                       class="cf-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none transition-colors">
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label for="id_message" class="block text-sm text-gray-400 mb-1.5">{% trans "Сообщение" %}</label>
+                            <textarea name="message" id="id_message" rows="4"
+                                      placeholder="{% trans 'Опишите вашу задачу...' %}"
+                                      data-placeholder-partnership="{% trans 'Расскажите о бизнесе и задачах, которые хотите решить' %}"
+                                      data-placeholder-development="{% trans 'Опишите, что нужно разработать, и желаемые сроки' %}"
+                                      data-placeholder-other="{% trans 'Опишите ваш вопрос' %}"
+                                      class="cf-input w-full rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none transition-colors resize-none"></textarea>
+                        </div>
+
+                        <p id="contact-error" class="hidden text-red-400 text-sm mb-4" role="alert"></p>
+
+                        <button type="submit" id="contact-btn"
+                                class="btn-primary w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-white font-semibold text-sm">
+                            <i data-lucide="send" class="w-4 h-4" id="contact-btn-icon"></i>
+                            <span id="contact-btn-text">{% trans "Отправить заявку" %}</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
