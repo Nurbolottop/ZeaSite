@@ -70,7 +70,7 @@ class HubAuthTests(TestCase):
 
     def test_role_user_sees_placeholders(self):
         self.client.force_login(self.user)
-        resp = self.client.get('/hub/projects/')
+        resp = self.client.get('/hub/finance/')
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'в разработке')
 

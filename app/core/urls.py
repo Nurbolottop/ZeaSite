@@ -35,6 +35,8 @@ urlpatterns = [
     path('hub/candidates/', include(candidate_patterns)),
     path('hub/partners/', include(partner_patterns)),
     path('hub/contracts/', include('apps.contracts.urls')),
+    path('hub/projects/', include('apps.projects.urls')),
+    path('hub/team/', include('apps.team.urls')),
     path('hub/', include('apps.hub.urls')),
 ]
 

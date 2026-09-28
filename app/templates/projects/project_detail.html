@@ -1,0 +1,139 @@
+{% extends "projects/_base.html" %}
+{% load projects_tags hub_tags %}
+{% block title %}{{ project.name }}{% endblock %}
+{% block content %}
+<nav class="small mb-2">
+    <a href="{% url 'projects:list' %}" class="text-decoration-none">Проекты</a>
+    <span class="text-secondary">/ {{ project.code }}</span>
+</nav>
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+    <div>
+        <h1 class="hub-page-title d-flex flex-wrap align-items-center gap-2">{{ project.name }} {{ project.status|project_status_badge }}</h1>
+        <div class="text-secondary">
+            {{ project.code }} · {{ project.type_display }} ·
+            {% if can_open_company %}<a href="{{ project.company.get_absolute_url }}" class="fw-semibold text-decoration-none">{{ project.company.name }}</a>{% else %}<strong class="text-dark">{{ project.company.name }}</strong>{% endif %}
+            {% if not limited %} · {{ project.priority|priority_badge }}{% endif %}
+        </div>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        {% if can_edit %}<a href="{% url 'projects:edit' project.pk %}" class="btn btn-outline-secondary"><i class="bi bi-pencil me-1"></i>Редактировать</a>{% endif %}
+        {% if status_targets %}<a href="{% url 'projects:status' project.pk %}" class="btn btn-outline-primary"><i class="bi bi-arrow-left-right me-1"></i>Изменить статус</a>{% endif %}
+        {% if member_scope %}<a href="{% url 'projects:member_add' project.pk %}" class="btn btn-primary"><i class="bi bi-person-plus me-1"></i>Добавить участника</a>{% endif %}
+    </div>
+</div>
+
+{% if project.status == 'paused' %}
+    <div class="alert alert-secondary small"><i class="bi bi-pause-circle me-1"></i>Проект приостановлен {{ project.status_changed_at|date:"d.m.Y" }}. При возобновлении вернётся в «{{ project.get_paused_from_status_display }}».</div>
+{% elif project.status == 'cancelled' %}
+    <div class="alert alert-danger small"><i class="bi bi-x-octagon me-1"></i>Проект отменён {{ project.status_changed_at|date:"d.m.Y" }}. Карточка и история сохранены.</div>
+{% elif project.is_overdue and not limited %}
+    <div class="alert alert-warning small"><i class="bi bi-exclamation-triangle me-1"></i>Плановый срок {{ project.planned_end_date|date:"d.m.Y" }} прошёл.</div>
+{% endif %}
+
+<div class="row g-3">
+    <div class="col-12 col-xl-8 d-flex flex-column gap-3">
+        <div class="hub-card">
+            <div class="zh-section-title">Основная информация</div>
+            {% if project.description and not limited %}<p style="white-space: pre-line">{{ project.description }}</p>{% endif %}
+            <dl class="row zh-dl mb-0">
+                <div class="col-sm-6"><dt>Компания / партнёр</dt><dd>{{ project.company.name }}</dd></div>
+                <div class="col-sm-6"><dt>Тип проекта</dt><dd>{{ project.type_display }}</dd></div>
+                <div class="col-sm-6"><dt>Текущий этап</dt><dd>{{ project.get_status_display }}</dd></div>
+                <div class="col-sm-6"><dt>Дата запуска</dt><dd>{{ project.launch_date|date:"d.m.Y"|default:"ещё не запущен" }}</dd></div>
+                {% if not limited and can_open_contract %}
+                <div class="col-sm-6"><dt>Договор</dt><dd><a href="{{ project.contract.get_absolute_url }}" class="text-decoration-none">№ {{ project.contract.number }}</a> · {{ project.contract.get_status_display|lower }}</dd></div>
+                {% endif %}
+            </dl>
+        </div>
+
+        {% if not limited %}
+        <div class="hub-card">
+            <div class="zh-section-title">Сроки</div>
+            <dl class="row zh-dl mb-0">
+                <div class="col-sm-3"><dt>Начало</dt><dd>{{ project.start_date|date:"d.m.Y"|default:"—" }}</dd></div>
+                <div class="col-sm-3"><dt>Плановое завершение</dt><dd class="{% if project.is_overdue %}zh-overdue{% endif %}">{{ project.planned_end_date|date:"d.m.Y"|default:"—" }}</dd></div>
+                <div class="col-sm-3"><dt>Фактическое завершение</dt><dd>{{ project.actual_end_date|date:"d.m.Y"|default:"—" }}</dd></div>
+                <div class="col-sm-3"><dt>Запуск</dt><dd>{{ project.launch_date|date:"d.m.Y"|default:"—" }}</dd></div>
+            </dl>
+        </div>
+        {% endif %}
+
+        {% if can_view_technical %}
+        <div class="hub-card">
+            <div class="zh-section-title">Техническая информация
+                {% if can_edit_technical %}<a href="{% url 'projects:technical' project.pk %}" class="btn btn-sm btn-outline-primary">{% if tech %}Изменить{% else %}Заполнить{% endif %}</a>{% endif %}</div>
+            {% if tech %}
+            <dl class="row zh-dl mb-0">
+                {% if tech.repository_url %}<div class="col-md-4"><dt>Репозиторий</dt><dd><a href="{{ tech.repository_url }}" target="_blank" rel="noopener noreferrer">{{ tech.repository_url }}</a></dd></div>{% endif %}
+                {% if tech.production_url %}<div class="col-md-4"><dt>Production</dt><dd><a href="{{ tech.production_url }}" target="_blank" rel="noopener noreferrer">{{ tech.production_url }}</a></dd></div>{% endif %}
+                {% if tech.staging_url %}<div class="col-md-4"><dt>Staging</dt><dd><a href="{{ tech.staging_url }}" target="_blank" rel="noopener noreferrer">{{ tech.staging_url }}</a></dd></div>{% endif %}
+                {% if tech.technology_stack %}<div class="col-12"><dt>Стек</dt><dd>{{ tech.technology_stack }}</dd></div>{% endif %}
+                {% if tech.server_info %}<div class="col-md-6"><dt>Серверы и окружение</dt><dd>{{ tech.server_info }}</dd></div>{% endif %}
+                {% if tech.deployment_notes %}<div class="col-md-6"><dt>Деплой</dt><dd>{{ tech.deployment_notes }}</dd></div>{% endif %}
+                {% if tech.technical_notes %}<div class="col-12"><dt>Технические заметки</dt><dd>{{ tech.technical_notes }}</dd></div>{% endif %}
+            </dl>
+            {% else %}<p class="text-secondary mb-0">Техническая информация не заполнена.</p>{% endif %}
+            <div class="zh-muted mt-2"><i class="bi bi-shield-lock me-1"></i>Пароли, ключи и токены здесь не хранятся.</div>
+        </div>
+        {% endif %}
+
+        {% if can_view_notes %}
+        <div class="hub-card">
+            <div class="zh-section-title">Заметки
+                {% if can_edit %}<a href="{% url 'projects:edit' project.pk %}#id_notes" class="btn btn-sm btn-link text-decoration-none">Изменить</a>{% endif %}</div>
+            {% if project.notes %}<div style="white-space: pre-line">{{ project.notes }}</div>{% else %}<p class="text-secondary mb-0">Заметок нет.</p>{% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-12 col-xl-4 d-flex flex-column gap-3">
+        {% if can_view_team %}
+        <div class="hub-card">
+            <div class="zh-section-title">Ответственные</div>
+            <div class="zh-person"><span class="hub-avatar">{{ project.pm|initials }}</span>
+                <div><div class="fw-semibold">{{ project.pm|display_name }}</div><div class="zh-muted">PM</div></div></div>
+            <div class="zh-person"><span class="hub-avatar">{{ project.technical_lead|initials }}</span>
+                <div><div class="fw-semibold">{{ project.technical_lead|display_name }}</div><div class="zh-muted">Технический руководитель</div></div></div>
+        </div>
+
+        <div class="hub-card">
+            <div class="zh-section-title">Команда <span class="zh-muted fw-normal">{{ active_members|length }}</span>
+                {% if member_scope %}<a href="{% url 'projects:member_add' project.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-plus-lg"></i></a>{% endif %}</div>
+            {% for m in active_members %}
+                <div class="zh-person">
+                    <span class="hub-avatar">{{ m.member|initials }}</span>
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold">{{ m.member|display_name }}</div>
+                        <div class="zh-muted">{{ m.specialization }} · с {{ m.joined_at|date:"d.m.Y" }}{% if m.note %} · {{ m.note }}{% endif %}</div>
+                    </div>
+                    {% if member_scope == 'all' or member_scope == 'technical' and m.specialization.is_technical %}
+                    <form method="post" action="{% url 'projects:member_remove' project.pk m.pk %}"
+                          data-confirm="Вывести {{ m.member|display_name }} из команды проекта?">{% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="Вывести из проекта"><i class="bi bi-person-dash"></i></button>
+                    </form>
+                    {% endif %}
+                </div>
+            {% empty %}<p class="text-secondary mb-0">Участники не назначены.</p>{% endfor %}
+            {% if former_members %}
+                <details class="mt-3"><summary class="zh-muted">Ранее в проекте: {{ former_members|length }}</summary>
+                    {% for m in former_members %}<div class="zh-muted small mt-1">{{ m.member|display_name }} — {{ m.specialization }}, {{ m.joined_at|date:"d.m.Y" }}–{{ m.left_at|date:"d.m.Y" }}</div>{% endfor %}
+                </details>
+            {% endif %}
+        </div>
+
+        <div class="hub-card">
+            <div class="zh-section-title">История статусов</div>
+            <ul class="zh-timeline">
+                {% for entry in history %}
+                <li>
+                    <div>{% if entry.from_status %}{{ entry.from_status|project_status_badge }} <i class="bi bi-arrow-right mx-1 text-secondary"></i>{% endif %}{{ entry.to_status|project_status_badge }}</div>
+                    <div class="zh-muted mt-1">{{ entry.changed_at|date:"d.m.Y H:i" }}{% if entry.changed_by %} · {{ entry.changed_by|display_name }}{% endif %}</div>
+                    {% if entry.comment %}<div class="small mt-1" style="white-space: pre-line">{{ entry.comment }}</div>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

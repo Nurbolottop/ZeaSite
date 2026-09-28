@@ -1,0 +1,20 @@
+{% url 'projects:list' as projects_url %}
+<div class="hub-card">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="fw-bold">Проекты</span>
+        <a href="{{ projects_url }}" class="small text-decoration-none">все проекты →</a>
+    </div>
+    <div class="row text-center g-2">
+        <a class="col-3 text-decoration-none text-reset" href="{{ projects_url }}?status=active">
+            <div class="hub-stat-value text-dark">{{ project_stats.active }}</div><div class="small text-secondary">активные</div></a>
+        <a class="col-3 text-decoration-none text-reset" href="{{ projects_url }}?status=development">
+            <div class="hub-stat-value text-dark">{{ project_stats.development }}</div><div class="small text-secondary">в разработке</div></a>
+        <a class="col-3 text-decoration-none text-reset" href="{{ projects_url }}?status=testing">
+            <div class="hub-stat-value text-dark">{{ project_stats.testing }}</div><div class="small text-secondary">тестирование</div></a>
+        <a class="col-3 text-decoration-none text-reset" href="{{ projects_url }}?status=support">
+            <div class="hub-stat-value text-dark">{{ project_stats.support }}</div><div class="small text-secondary">сопровождение</div></a>
+    </div>
+    {% if project_stats.overdue %}
+    <a href="{{ projects_url }}?status=overdue" class="d-block small text-danger text-decoration-none mt-2"><i class="bi bi-exclamation-circle me-1"></i>Просрочен плановый срок: {{ project_stats.overdue }}</a>
+    {% endif %}
+</div>

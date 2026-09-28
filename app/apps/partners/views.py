@@ -105,7 +105,23 @@ class CompanyDetailView(RoleRequiredMixin, DetailView):
             'funnel': _funnel(company),
         })
         context.update(_contract_context(company, user))
+        context.update(_project_context(company, user))
         return context
+
+
+def _project_context(company, user):
+    """Блок «Проекты» у партнёра: только проекты, видимые пользователю."""
+    from apps.projects import permissions as project_perms
+    from apps.projects import selectors as project_selectors
+    from apps.users.access import can_access_module
+    if not company.is_partner or not can_access_module(user, 'projects'):
+        return {'show_projects': False}
+    return {
+        'show_projects': True,
+        'company_projects': list(project_selectors.company_projects(company, user)),
+        'can_create_project': (project_perms.can_create(user)
+                               and contract_selectors.active_contract(company) is not None),
+    }
 
 
 def _contract_context(company, user):

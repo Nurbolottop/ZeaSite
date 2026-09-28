@@ -1,5 +1,5 @@
 {% extends "partners/_base.html" %}
-{% load partners_tags hub_tags contracts_tags %}
+{% load partners_tags hub_tags contracts_tags projects_tags %}
 {% block title %}{{ company.name }}{% endblock %}
 {% block content %}
 {% url 'candidates:edit' company.pk as edit_url %}
@@ -96,10 +96,25 @@
         <div class="hub-card border-success-subtle">
             <div class="zh-section-title"><span><i class="bi bi-patch-check text-success me-1"></i>Партнёр ZEA</span>
                 <span class="zh-muted fw-normal">с {{ company.status_changed_at|date:"d.m.Y" }}</span></div>
-            <div class="row g-2 text-center">
-                <div class="col-6"><div class="border rounded-3 p-3 zh-muted"><i class="bi bi-kanban d-block fs-4 mb-1"></i>Проекты — скоро</div></div>
-                <div class="col-6"><div class="border rounded-3 p-3 zh-muted"><i class="bi bi-cash-stack d-block fs-4 mb-1"></i>Финансы — скоро</div></div>
-            </div>
+            <div class="border rounded-3 p-2 zh-muted text-center small"><i class="bi bi-cash-stack me-1"></i>Финансы партнёра — скоро</div>
+        </div>
+        {% endif %}
+
+        {% if show_projects %}
+        <div class="hub-card">
+            <div class="zh-section-title">Проекты
+                {% if can_create_project %}<a href="{% url 'projects:create' %}?company={{ company.pk }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-plus-lg"></i> Создать проект</a>{% endif %}</div>
+            {% if company_projects %}
+            <div class="table-responsive"><table class="table zh-table mb-0">
+                <thead><tr><th>Проект</th><th>Статус</th><th>PM</th><th>Сроки</th></tr></thead>
+                <tbody>{% for p in company_projects %}
+                    <tr><td><a class="zh-company" href="{{ p.get_absolute_url }}">{{ p.name }}</a><div class="zh-muted">{{ p.code }} · {{ p.type_display }}</div></td>
+                        <td>{{ p.status|project_status_badge }}</td>
+                        <td>{{ p.pm|display_name }}</td>
+                        <td class="zh-muted">{{ p.start_date|date:"d.m.Y"|default:"—" }} – <span class="{% if p.is_overdue %}zh-overdue{% endif %}">{{ p.planned_end_date|date:"d.m.Y"|default:"—" }}</span></td></tr>
+                {% endfor %}</tbody>
+            </table></div>
+            {% else %}<p class="text-secondary mb-0">{% if can_create_project %}Проектов пока нет.{% else %}Нет проектов, доступных вам.{% endif %}</p>{% endif %}
         </div>
         {% endif %}
 

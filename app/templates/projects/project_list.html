@@ -1,0 +1,71 @@
+{% extends "projects/_base.html" %}
+{% load projects_tags hub_tags %}
+{% block title %}Проекты{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+        <h1 class="hub-page-title">Проекты</h1>
+        <p class="text-secondary mb-0">{% if sees_all %}Проекты партнёров ZEA.{% else %}Проекты, в которых вы участвуете.{% endif %}</p>
+    </div>
+    {% if can_create %}<a href="{% url 'projects:create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Новый проект</a>{% endif %}
+</div>
+
+<form method="get" class="hub-card mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-12 col-lg-3"><label class="form-label small text-secondary mb-1" for="{{ filter_form.q.id_for_label }}">Поиск</label>{{ filter_form.q }}</div>
+        <div class="col-6 col-lg-2"><label class="form-label small text-secondary mb-1" for="{{ filter_form.company.id_for_label }}">Компания</label>{{ filter_form.company }}</div>
+        <div class="col-6 col-lg-2"><label class="form-label small text-secondary mb-1" for="{{ filter_form.status.id_for_label }}">Статус</label>{{ filter_form.status }}</div>
+        <div class="col-6 col-lg-2"><label class="form-label small text-secondary mb-1" for="{{ filter_form.type.id_for_label }}">Тип</label>{{ filter_form.type }}</div>
+        {% if not limited %}
+        <div class="col-6 col-lg-2"><label class="form-label small text-secondary mb-1" for="{{ filter_form.priority.id_for_label }}">Приоритет</label>{{ filter_form.priority }}</div>
+        <div class="col-6 col-lg-3"><label class="form-label small text-secondary mb-1" for="{{ filter_form.pm.id_for_label }}">PM</label>{{ filter_form.pm }}</div>
+        <div class="col-6 col-lg-3"><label class="form-label small text-secondary mb-1" for="{{ filter_form.lead.id_for_label }}">Тех. руководитель</label>{{ filter_form.lead }}</div>
+        {% endif %}
+        <div class="col-6 col-lg-2"><label class="form-label small text-secondary mb-1" for="{{ filter_form.sort.id_for_label }}">Сортировка</label>{{ filter_form.sort }}</div>
+        <div class="col-6 col-lg-1 d-flex gap-1">
+            <button type="submit" class="btn btn-primary flex-grow-1" title="Применить"><i class="bi bi-funnel"></i></button>
+            {% if querystring %}<a href="?" class="btn btn-outline-secondary" title="Сбросить"><i class="bi bi-x-lg"></i></a>{% endif %}
+        </div>
+    </div>
+</form>
+
+<div class="hub-card p-0 overflow-hidden">
+    {% if projects %}
+    <div class="table-responsive">
+        <table class="table zh-table table-hover">
+            <thead><tr>
+                <th class="ps-3">Проект</th><th>Компания</th><th>Тип</th><th>Статус</th>
+                {% if limited %}<th class="pe-3">Запуск</th>
+                {% else %}<th>PM</th><th>Тех. руководитель</th><th>Плановый срок</th><th class="pe-3">Приоритет</th>{% endif %}
+            </tr></thead>
+            <tbody>
+            {% for project in projects %}
+                <tr>
+                    <td class="ps-3"><a class="zh-company" href="{{ project.get_absolute_url }}">{{ project.name }}</a><div class="zh-muted">{{ project.code }}</div></td>
+                    <td>{{ project.company.name }}</td>
+                    <td class="zh-muted">{{ project.type_display }}</td>
+                    <td>{{ project.status|project_status_badge }}</td>
+                    {% if limited %}
+                        <td class="zh-muted pe-3">{{ project.launch_date|date:"d.m.Y"|default:"—" }}</td>
+                    {% else %}
+                        <td>{{ project.pm|display_name }}</td>
+                        <td>{{ project.technical_lead|display_name }}</td>
+                        <td class="{% if project.is_overdue %}zh-overdue{% else %}zh-muted{% endif %}">{{ project.planned_end_date|date:"d.m.Y"|default:"—" }}{% if project.is_overdue %} <i class="bi bi-exclamation-circle" title="Срок прошёл"></i>{% endif %}</td>
+                        <td class="pe-3">{{ project.priority|priority_badge }}</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="hub-empty">
+        <i class="bi bi-kanban d-block mb-2"></i>
+        {% if querystring %}<div class="fw-semibold text-dark">Ничего не найдено</div><div class="small"><a href="?">Сбросить фильтры</a></div>
+        {% elif sees_all %}<div class="fw-semibold text-dark">Проектов пока нет</div><div class="small">Проект создаётся для партнёра с действующим договором.</div>
+        {% else %}<div class="fw-semibold text-dark">Вы пока не участвуете в проектах</div>{% endif %}
+    </div>
+    {% endif %}
+</div>
+{% include "hub/_pagination.html" %}
+{% endblock %}

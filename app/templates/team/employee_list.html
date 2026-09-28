@@ -1,0 +1,43 @@
+{% extends "projects/_base.html" %}
+{% load hub_tags %}
+{% block title %}Команда{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div><h1 class="hub-page-title">Команда</h1><p class="text-secondary mb-0">Сотрудники ZEA, их специализации и текущая загрузка.</p></div>
+    {% if can_manage %}<a href="{% url 'team:create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Добавить сотрудника</a>{% endif %}
+</div>
+<form method="get" class="hub-card mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-12 col-lg-4"><label class="form-label small text-secondary mb-1" for="{{ filter_form.q.id_for_label }}">Поиск</label>{{ filter_form.q }}</div>
+        <div class="col-6 col-lg-3"><label class="form-label small text-secondary mb-1" for="{{ filter_form.specialization.id_for_label }}">Специализация</label>{{ filter_form.specialization }}</div>
+        <div class="col-6 col-lg-3 pb-2"><div class="form-check">{{ filter_form.inactive }}<label class="form-check-label" for="{{ filter_form.inactive.id_for_label }}">{{ filter_form.inactive.label }}</label></div></div>
+        <div class="col-12 col-lg-2 d-flex gap-1">
+            <button type="submit" class="btn btn-primary flex-grow-1"><i class="bi bi-funnel"></i></button>
+            {% if querystring %}<a href="?" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>{% endif %}
+        </div>
+    </div>
+</form>
+<div class="hub-card p-0 overflow-hidden">
+    {% if employees %}
+    <div class="table-responsive"><table class="table zh-table table-hover">
+        <thead><tr><th class="ps-3">Сотрудник</th><th>Специализации</th><th>Роли в Hub</th><th>Статус</th><th class="pe-3">Активных проектов</th></tr></thead>
+        <tbody>
+        {% for e in employees %}
+            <tr>
+                <td class="ps-3"><div class="zh-person"><span class="hub-avatar">{{ e.user|initials }}</span>
+                    <div><a class="zh-company" href="{% url 'team:detail' e.pk %}">{{ e.user|display_name }}</a><div class="zh-muted">{{ e.position|default:"—" }}</div></div></div></td>
+                <td>{% for s in e.specializations.all %}<span class="zh-chip">{{ s }}</span>{% empty %}<span class="zh-muted">—</span>{% endfor %}</td>
+                <td>{% for r in e.hub_roles %}<span class="hub-role-badge">{{ r }}</span> {% empty %}<span class="zh-muted">нет роли</span>{% endfor %}</td>
+                <td>{% if e.is_active and e.user.is_active %}<span class="text-success small fw-semibold">активен</span>{% else %}<span class="text-secondary small">не активен</span>{% endif %}</td>
+                <td class="pe-3"><span class="fw-semibold">Активных проектов: {{ e.active_projects_count }}</span>
+                    {% if e.active_projects %}<div class="zh-muted">{% for p in e.active_projects %}{{ p.code }}{% if not forloop.last %}, {% endif %}{% endfor %}</div>{% endif %}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table></div>
+    {% else %}
+    <div class="hub-empty"><i class="bi bi-people d-block mb-2"></i><div class="fw-semibold text-dark">Сотрудников нет</div>
+        {% if can_manage %}<div class="small">Добавьте профиль сотрудника для пользователя Hub.</div>{% endif %}</div>
+    {% endif %}
+</div>
+{% endblock %}

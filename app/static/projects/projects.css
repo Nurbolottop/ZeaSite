@@ -1,0 +1,24 @@
+/* Проекты и команда. Грузится на страницах модулей и в карточке партнёра. */
+.zh-pstatus-planning    { background: #f1f5f9; color: #475569; }
+.zh-pstatus-development { background: #e0e7ff; color: #4338ca; }
+.zh-pstatus-testing     { background: #fef3c7; color: #b45309; }
+.zh-pstatus-mvp         { background: #ede9fe; color: #6d28d9; }
+.zh-pstatus-launched    { background: #dcfce7; color: #15803d; }
+.zh-pstatus-support     { background: #ccfbf1; color: #0f766e; }
+.zh-pstatus-paused      { background: #e5e7eb; color: #374151; }
+.zh-pstatus-cancelled   { background: #fee2e2; color: #b91c1c; }
+
+.zh-priority { font-size: .75rem; font-weight: 600; white-space: nowrap; }
+.zh-priority::before { content: '●'; margin-right: .3rem; }
+.zh-priority-low      { color: #64748b; }
+.zh-priority-medium   { color: #0369a1; }
+.zh-priority-high     { color: #c2410c; }
+.zh-priority-critical { color: #b91c1c; }
+
+.zh-overdue { color: #b91c1c; font-weight: 600; }
+.zh-person { display: flex; align-items: center; gap: .6rem; }
+.zh-person + .zh-person { border-top: 1px solid #eef0f4; padding-top: .6rem; margin-top: .6rem; }
+.zh-chip { display: inline-block; font-size: .72rem; background: #f1f5f9; color: #334155;
+           border-radius: 6px; padding: .15rem .45rem; margin: 0 .2rem .2rem 0; }
+.zh-secret-warning { background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412;
+                     border-radius: 10px; padding: .75rem 1rem; font-size: .85rem; }

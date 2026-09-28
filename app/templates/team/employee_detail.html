@@ -1,0 +1,61 @@
+{% extends "projects/_base.html" %}
+{% load hub_tags projects_tags %}
+{% block title %}{{ employee.user|display_name }}{% endblock %}
+{% block content %}
+<nav class="small mb-2"><a href="{% url 'team:list' %}" class="text-decoration-none">Команда</a> <span class="text-secondary">/ {{ employee.user|display_name }}</span></nav>
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+    <div class="zh-person">
+        <span class="hub-avatar" style="width:52px;height:52px;font-size:1rem">{{ employee.user|initials }}</span>
+        <div><h1 class="hub-page-title mb-0">{{ employee.user|display_name }}</h1>
+            <div class="text-secondary">{{ employee.position|default:"Должность не указана" }} · {{ employee.get_employment_type_display }}
+                {% if not employee.is_active or not employee.user.is_active %} · <span class="text-danger">не активен</span>{% endif %}</div></div>
+    </div>
+    {% if can_manage %}<a href="{% url 'team:edit' employee.pk %}" class="btn btn-outline-secondary"><i class="bi bi-pencil me-1"></i>Редактировать</a>{% endif %}
+</div>
+<div class="row g-3">
+    <div class="col-12 col-xl-4 d-flex flex-column gap-3">
+        <div class="hub-card">
+            <div class="zh-section-title">Специализации</div>
+            {% for s in employee.specializations.all %}<span class="zh-chip">{{ s }}</span>{% empty %}<p class="text-secondary mb-0">Не указаны.</p>{% endfor %}
+            <div class="zh-section-title mt-3">Роли доступа в Hub</div>
+            {% for r in hub_roles %}<span class="hub-role-badge d-inline-block mb-1">{{ r }}</span> {% empty %}<p class="text-secondary mb-0">Роль не назначена.</p>{% endfor %}
+            <div class="zh-muted mt-2">Роли доступа определяют права в Hub и назначаются администратором; специализация — чем сотрудник занимается.</div>
+        </div>
+        <div class="hub-card">
+            <div class="zh-section-title">Данные</div>
+            <dl class="zh-dl mb-0">
+                <dt>В команде с</dt><dd>{{ employee.started_at|date:"d.m.Y"|default:"—" }}</dd>
+                {% if can_manage and employee.note %}<dt>Заметка</dt><dd>{{ employee.note }}</dd>{% endif %}
+            </dl>
+        </div>
+    </div>
+    <div class="col-12 col-xl-8 d-flex flex-column gap-3">
+        <div class="hub-card">
+            <div class="zh-section-title">Активных проектов: {{ projects|length }}</div>
+            {% for item in projects %}{% with p=item.project %}
+                <div class="zh-person">
+                    <div class="flex-grow-1">
+                        {% if item.linked %}<a class="fw-semibold text-decoration-none" href="{{ p.get_absolute_url }}">{{ p.name }}</a>{% else %}<span class="fw-semibold">{{ p.name }}</span>{% endif %}
+                        <div class="zh-muted">{{ p.code }} · {{ p.company.name }}{% if p.pm_id == employee.user_id %} · PM{% endif %}{% if p.technical_lead_id == employee.user_id %} · тех. руководитель{% endif %}</div>
+                    </div>
+                    {{ p.status|project_status_badge }}
+                </div>
+            {% endwith %}{% empty %}<p class="text-secondary mb-0">Сейчас не задействован в проектах.</p>{% endfor %}
+        </div>
+        <div class="hub-card">
+            <div class="zh-section-title">История участия в проектах</div>
+            {% if history %}
+            <div class="table-responsive"><table class="table zh-table mb-0">
+                <thead><tr><th>Проект</th><th>Роль</th><th>Период</th><th>Статус</th></tr></thead>
+                <tbody>{% for item in history %}{% with m=item.membership %}
+                    <tr><td>{% if item.linked %}<a href="{{ m.project.get_absolute_url }}" class="text-decoration-none">{{ m.project.name }}</a>{% else %}{{ m.project.name }}{% endif %}<div class="zh-muted">{{ m.project.company.name }}</div></td>
+                        <td>{{ m.specialization }}</td>
+                        <td class="zh-muted">{{ m.joined_at|date:"d.m.Y" }} – {% if m.is_active %}сейчас{% else %}{{ m.left_at|date:"d.m.Y" }}{% endif %}</td>
+                        <td>{% if m.is_active %}<span class="text-success small fw-semibold">в команде</span>{% else %}<span class="zh-muted">вышел</span>{% endif %}</td></tr>
+                {% endwith %}{% endfor %}</tbody>
+            </table></div>
+            {% else %}<p class="text-secondary mb-0">Участия в командах проектов пока нет.</p>{% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

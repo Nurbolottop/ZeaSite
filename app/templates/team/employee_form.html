@@ -1,0 +1,29 @@
+{% extends "projects/_base.html" %}
+{% block title %}Сотрудник{% endblock %}
+{% block content %}
+<nav class="small mb-2"><a href="{% url 'team:list' %}" class="text-decoration-none">Команда</a></nav>
+<h1 class="hub-page-title mb-4">{% if form.instance.pk %}Редактировать сотрудника{% else %}Новый сотрудник{% endif %}</h1>
+<form method="post" novalidate class="hub-card" style="max-width: 720px">
+    {% csrf_token %}
+    {% include "hub/_form_errors.html" %}
+    {% if form.user %}{% include "hub/_field.html" with field=form.user %}{% endif %}
+    <div class="row">
+        <div class="col-md-6">{% include "hub/_field.html" with field=form.position %}</div>
+        <div class="col-md-6">{% include "hub/_field.html" with field=form.employment_type %}</div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label fw-medium">{{ form.specializations.label }}</label>
+        <div class="row">{% for cb in form.specializations %}<div class="col-sm-6"><div class="form-check">{{ cb.tag }}<label class="form-check-label" for="{{ cb.id_for_label }}">{{ cb.choice_label }}</label></div></div>{% endfor %}</div>
+        <div class="form-text">Список специализаций расширяется в администрировании.</div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">{% include "hub/_field.html" with field=form.started_at %}</div>
+        <div class="col-md-6 pt-md-4">{% include "hub/_field.html" with field=form.is_active %}</div>
+    </div>
+    {% include "hub/_field.html" with field=form.note %}
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a href="{% if form.instance.pk %}{% url 'team:detail' form.instance.pk %}{% else %}{% url 'team:list' %}{% endif %}" class="btn btn-outline-secondary">Отмена</a>
+    </div>
+</form>
+{% endblock %}

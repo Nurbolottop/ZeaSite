@@ -25,6 +25,18 @@ PERMISSIONS = {
     'contracts.activate': (Role.HEAD,),
     # процент ZEA, база расчёта, условия оплаты, основной файл договора
     'contracts.view_financial_terms': (Role.HEAD, Role.BIZDEV),
+
+    # Проекты (apps.projects). Роль открывает раздел; КАКИЕ проекты видны и что
+    # с ними можно делать — объектные правила в apps/projects/permissions.py
+    'projects.view':    ALL_ROLES,
+    # видеть все проекты (остальные роли — только свои, где они PM / тех. руководитель / участник)
+    'projects.view_all': (Role.HEAD, Role.BIZDEV, Role.MARKETING),
+    # создание проекта, назначение PM и технического руководителя, отмена
+    'projects.manage_all': (Role.HEAD,),
+
+    # Команда (apps.team)
+    'team.view':   (Role.HEAD, Role.PM, Role.TECH_LEAD),
+    'team.manage': (Role.HEAD,),
 }
 
 # Доступ к модулям (разделам меню): ключ модуля → роли, которым он открыт.
@@ -35,8 +47,8 @@ MODULE_ACCESS = {
     'dashboard':  None,
     'candidates': PERMISSIONS['partners.view'],
     'partners':   PERMISSIONS['partners.view'],
-    'projects':   ALL_ROLES,
-    'team':       ALL_ROLES,
+    'projects':   PERMISSIONS['projects.view'],
+    'team':       PERMISSIONS['team.view'],
     'contracts':  PERMISSIONS['contracts.view'],
     'finance':    ALL_ROLES,
     'expenses':   ALL_ROLES,

@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.partners',
     'apps.contracts',
+    'apps.team',
+    'apps.projects',
 ]
 
 # =============================================================================

@@ -1,0 +1,28 @@
+{% extends "projects/_base.html" %}
+{% block title %}Техническая информация — {{ project.code }}{% endblock %}
+{% block content %}
+<nav class="small mb-2"><a href="{{ project.get_absolute_url }}" class="text-decoration-none"><i class="bi bi-arrow-left"></i> {{ project.name }}</a></nav>
+<h1 class="hub-page-title mb-3">Техническая информация</h1>
+<div class="zh-secret-warning mb-3" style="max-width: 900px">
+    <strong><i class="bi bi-shield-exclamation me-1"></i>Не храните здесь секреты.</strong>
+    Пароли, SSH-ключи, API-ключи, токены и пароли БД сюда не вносятся — для них используйте менеджер паролей
+    и секреты сервера. Строки, похожие на секреты, система не сохранит.
+</div>
+<form method="post" novalidate class="hub-card" style="max-width: 900px">
+    {% csrf_token %}
+    {% include "hub/_form_errors.html" %}
+    <div class="row">
+        <div class="col-md-4">{% include "hub/_field.html" with field=form.repository_url %}</div>
+        <div class="col-md-4">{% include "hub/_field.html" with field=form.production_url %}</div>
+        <div class="col-md-4">{% include "hub/_field.html" with field=form.staging_url %}</div>
+        <div class="col-12">{% include "hub/_field.html" with field=form.technology_stack %}</div>
+        <div class="col-md-6">{% include "hub/_field.html" with field=form.server_info %}</div>
+        <div class="col-md-6">{% include "hub/_field.html" with field=form.deployment_notes %}</div>
+        <div class="col-12">{% include "hub/_field.html" with field=form.technical_notes %}</div>
+    </div>
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a href="{{ project.get_absolute_url }}" class="btn btn-outline-secondary">Отмена</a>
+    </div>
+</form>
+{% endblock %}

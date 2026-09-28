@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 
 from apps.contracts import selectors as contract_selectors
 from apps.partners import selectors as partner_selectors
+from apps.projects import selectors as project_selectors
 from apps.users.access import can_access_module
 from apps.users.mixins import DENIED_MESSAGE, RoleRequiredMixin
 
@@ -12,7 +13,6 @@ from .navigation import NAV_BY_MODULE
 
 # Показатели модулей, которые ещё не разработаны
 FUTURE_CARDS = (
-    {'title': 'Проекты в работе', 'icon': 'kanban'},
     {'title': 'Выручка за месяц', 'icon': 'cash-stack'},
 )
 
@@ -26,6 +26,8 @@ class DashboardView(RoleRequiredMixin, TemplateView):
         # Цифры по кандидатам — только тем, кому открыт раздел
         if can_access_module(self.request.user, 'candidates'):
             context['partner_stats'] = partner_selectors.dashboard_stats()
+        if can_access_module(self.request.user, 'projects'):
+            context['project_stats'] = project_selectors.dashboard_stats(self.request.user)
         if can_access_module(self.request.user, 'contracts'):
             context['contract_stats'] = contract_selectors.dashboard_stats()
         context['future_cards'] = FUTURE_CARDS

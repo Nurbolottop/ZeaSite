@@ -1,0 +1,26 @@
+{% extends "projects/_base.html" %}
+{% block title %}{% if form.instance.pk %}{{ form.instance.name }}{% else %}Новый проект{% endif %}{% endblock %}
+{% block content %}
+<nav class="small mb-2">
+    <a href="{% url 'projects:list' %}" class="text-decoration-none">Проекты</a>
+    {% if form.instance.pk %}<span class="text-secondary">/</span> <a href="{{ form.instance.get_absolute_url }}" class="text-decoration-none">{{ form.instance.code }}</a>{% endif %}
+</nav>
+<h1 class="hub-page-title mb-1">{% if form.instance.pk %}Редактировать проект{% else %}Новый проект{% endif %}</h1>
+<p class="text-secondary mb-4">{% if form.instance.pk %}{{ form.instance.company.name }}{% else %}Проект открывается для партнёра на основании действующего договора и стартует со статуса «Планирование».{% endif %}</p>
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% include "hub/_form_errors.html" %}
+    <div class="row g-3">
+        {% for title, fields in form.sections %}
+        <div class="col-12 col-xl-6"><div class="hub-card h-100">
+            <div class="fw-bold mb-3">{{ title }}</div>
+            {% for field in fields %}{% include "hub/_field.html" %}{% endfor %}
+        </div></div>
+        {% endfor %}
+    </div>
+    <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">{% if form.instance.pk %}Сохранить{% else %}Создать проект{% endif %}</button>
+        <a href="{% if form.instance.pk %}{{ form.instance.get_absolute_url }}{% else %}{% url 'projects:list' %}{% endif %}" class="btn btn-outline-secondary">Отмена</a>
+    </div>
+</form>
+{% endblock %}

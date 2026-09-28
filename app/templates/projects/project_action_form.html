@@ -1,0 +1,21 @@
+{% extends "projects/_base.html" %}
+{% load projects_tags %}
+{% block title %}{{ title }} — {{ project.code }}{% endblock %}
+{% block content %}
+<nav class="small mb-2"><a href="{{ project.get_absolute_url }}" class="text-decoration-none"><i class="bi bi-arrow-left"></i> {{ project.name }}</a></nav>
+<h1 class="hub-page-title mb-1">{{ title }}</h1>
+<p class="text-secondary mb-4">{{ project.company.name }} · сейчас {{ project.status|project_status_badge }}</p>
+<div class="hub-card" style="max-width: 640px">
+    <form method="post" novalidate
+          {% if form.to_status %}data-confirm="Изменить статус проекта {{ project.code }}?" data-confirm-when="to_status=paused|cancelled"{% endif %}>
+        {% csrf_token %}
+        {% include "hub/_form_errors.html" %}
+        {% for field in form %}{% include "hub/_field.html" %}{% endfor %}
+        {% if form.to_status %}<div class="alert alert-light border small">Приостановленный проект возобновляется в тот статус, в котором был до паузы. Отменить проект может только руководитель.</div>{% endif %}
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">{{ submit_label }}</button>
+            <a href="{{ project.get_absolute_url }}" class="btn btn-outline-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
