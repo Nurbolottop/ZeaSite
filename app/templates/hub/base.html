@@ -3,6 +3,7 @@
 <head>
     {% include "hub/_head.html" %}
     <title>{% block title %}Dashboard{% endblock %} — ZEA Hub</title>
+    {% block extra_head %}{% endblock %}
 </head>
 <body class="hub">
 
@@ -67,6 +68,19 @@
 <script>
     document.getElementById('hub-sidebar-toggle').addEventListener('click', function () {
         document.getElementById('hub-sidebar').classList.toggle('show');
+    });
+    // Подтверждение опасных действий:
+    //   <form data-confirm="Текст">                      — всегда
+    //   <form data-confirm-when="to_status=rejected" ...> — только при выбранном значении
+    document.addEventListener('submit', function (event) {
+        var form = event.target, message = form.dataset.confirm;
+        if (!message) return;
+        var when = form.dataset.confirmWhen;
+        if (when) {
+            var parts = when.split('='), field = form.elements[parts[0]];
+            if (!field || field.value !== parts[1]) return;
+        }
+        if (!window.confirm(message)) event.preventDefault();
     });
 </script>
 </body>

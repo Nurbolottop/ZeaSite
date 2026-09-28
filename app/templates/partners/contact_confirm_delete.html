@@ -1,0 +1,16 @@
+{% extends "partners/_base.html" %}
+{% block title %}Удалить контакт — {{ company.name }}{% endblock %}
+{% block content %}
+<nav class="small mb-2">
+    <a href="{{ company.get_absolute_url }}" class="text-decoration-none"><i class="bi bi-arrow-left"></i> {{ company.name }}</a>
+</nav>
+<div class="hub-card" style="max-width: 520px">
+    <h1 class="h5 fw-bold">Удалить контакт?</h1>
+    <p class="mb-4">Контакт <strong>{{ contact.name }}</strong>{% if contact.position %} ({{ contact.position }}){% endif %} будет удалён из карточки «{{ company.name }}». Компания останется без изменений.</p>
+    <form method="post" data-confirm="Удалить контакт «{{ contact.name }}»?">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Удалить</button>
+        <a href="{{ company.get_absolute_url }}" class="btn btn-outline-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}

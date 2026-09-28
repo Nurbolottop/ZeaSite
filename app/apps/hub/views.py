@@ -2,17 +2,17 @@ from django.shortcuts import render
 from django.views import defaults
 from django.views.generic import TemplateView
 
+from apps.partners import selectors as partner_selectors
+from apps.users.access import can_access_module
 from apps.users.mixins import DENIED_MESSAGE, RoleRequiredMixin
 
 from .middleware import HUB_URL_PREFIX
 from .navigation import NAV_BY_MODULE
 
-# Карточки будущих показателей Dashboard (данные появятся с модулями)
-DASHBOARD_CARDS = (
-    {'title': 'Кандидаты в работе', 'icon': 'person-plus'},
-    {'title': 'Активные партнёры',  'icon': 'building'},
-    {'title': 'Проекты в работе',   'icon': 'kanban'},
-    {'title': 'Выручка за месяц',   'icon': 'cash-stack'},
+# Показатели модулей, которые ещё не разработаны
+FUTURE_CARDS = (
+    {'title': 'Проекты в работе', 'icon': 'kanban'},
+    {'title': 'Выручка за месяц', 'icon': 'cash-stack'},
 )
 
 
@@ -22,7 +22,10 @@ class DashboardView(RoleRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['cards'] = DASHBOARD_CARDS
+        # Цифры по кандидатам — только тем, кому открыт раздел
+        if can_access_module(self.request.user, 'candidates'):
+            context['partner_stats'] = partner_selectors.dashboard_stats()
+        context['future_cards'] = FUTURE_CARDS
         return context
 
 

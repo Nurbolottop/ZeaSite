@@ -1,0 +1,53 @@
+{% extends "partners/_base.html" %}
+{% block title %}{% if form.instance.pk %}{{ form.instance.name }}{% else %}Новый кандидат{% endif %}{% endblock %}
+{% block content %}
+<nav class="small mb-2">
+    <a href="{% url 'candidates:list' %}" class="text-decoration-none">Кандидаты</a>
+    {% if form.instance.pk %}<span class="text-secondary">/</span> <a href="{{ form.instance.get_absolute_url }}" class="text-decoration-none">{{ form.instance.name }}</a>{% endif %}
+</nav>
+<h1 class="hub-page-title mb-4">{% if form.instance.pk %}Редактировать компанию{% else %}Новый кандидат{% endif %}</h1>
+
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% include "hub/_form_errors.html" %}
+    <div class="row g-3">
+        <div class="col-12 col-xl-8 d-flex flex-column gap-3">
+            <div class="hub-card">
+                <div class="fw-bold mb-3">Компания</div>
+                <div class="row">
+                    <div class="col-md-6">{% include "hub/_field.html" with field=form.name %}</div>
+                    <div class="col-md-6">{% include "hub/_field.html" with field=form.legal_name %}</div>
+                    <div class="col-md-6">{% include "hub/_field.html" with field=form.company_type %}</div>
+                    <div class="col-md-6">{% include "hub/_field.html" with field=form.industry %}</div>
+                    <div class="col-12">{% include "hub/_field.html" with field=form.description %}</div>
+                </div>
+            </div>
+            <div class="hub-card">
+                <div class="fw-bold mb-3">Контакты компании</div>
+                <div class="row">
+                    <div class="col-md-6">{% include "hub/_field.html" with field=form.phone %}</div>
+                    <div class="col-md-6">{% include "hub/_field.html" with field=form.email %}</div>
+                    <div class="col-md-6">{% include "hub/_field.html" with field=form.website %}</div>
+                    <div class="col-md-6">{% include "hub/_field.html" with field=form.instagram %}</div>
+                    <div class="col-md-8">{% include "hub/_field.html" with field=form.address %}</div>
+                    <div class="col-md-4">{% include "hub/_field.html" with field=form.city %}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-xl-4 d-flex flex-column gap-3">
+            <div class="hub-card">
+                <div class="fw-bold mb-3">Работа с кандидатом</div>
+                {% include "hub/_field.html" with field=form.manager %}
+                {% include "hub/_field.html" with field=form.source %}
+                {% include "hub/_field.html" with field=form.source_details %}
+                {% include "hub/_field.html" with field=form.notes %}
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-grow-1">{% if form.instance.pk %}Сохранить{% else %}Добавить кандидата{% endif %}</button>
+                <a href="{% if form.instance.pk %}{{ form.instance.get_absolute_url }}{% else %}{% url 'candidates:list' %}{% endif %}" class="btn btn-outline-secondary">Отмена</a>
+            </div>
+            {% if not form.instance.pk %}<div class="zh-muted">Новая компания попадает в воронку со статусом «Новый».</div>{% endif %}
+        </div>
+    </div>
+</form>
+{% endblock %}

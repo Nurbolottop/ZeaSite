@@ -1,0 +1,179 @@
+{% extends "partners/_base.html" %}
+{% load partners_tags hub_tags %}
+{% block title %}{{ company.name }}{% endblock %}
+{% block content %}
+{% url 'candidates:edit' company.pk as edit_url %}
+
+<nav class="small mb-2">
+    {% if company.is_partner %}<a href="{% url 'partners:list' %}" class="text-decoration-none">Партнёры</a>
+    {% else %}<a href="{% url 'candidates:list' %}" class="text-decoration-none">Кандидаты</a>{% endif %}
+    <span class="text-secondary">/ {{ company.name }}</span>
+</nav>
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+    <div>
+        <h1 class="hub-page-title d-flex flex-wrap align-items-center gap-2">
+            {{ company.name }} {{ company.status|status_badge }}
+        </h1>
+        <div class="text-secondary">
+            {{ company.company_type|type_label }}{% if company.industry %} · {{ company.industry }}{% endif %}{% if company.city %} · {{ company.city }}{% endif %}
+            · ответственный: {% if company.manager %}<strong class="text-dark">{{ company.manager|display_name }}</strong>{% else %}не назначен{% endif %}
+        </div>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        {% if can_edit %}
+            <a href="{{ edit_url }}" class="btn btn-outline-secondary"><i class="bi bi-pencil me-1"></i>Редактировать</a>
+            {% if status_targets %}
+                <a href="{% url 'candidates:status' company.pk %}" class="btn btn-outline-primary"><i class="bi bi-arrow-left-right me-1"></i>Изменить статус</a>
+            {% endif %}
+        {% endif %}
+        {% if can_decide %}
+            <a href="{% url 'candidates:decision' company.pk %}" class="btn btn-primary"><i class="bi bi-check2-square me-1"></i>Решение команды</a>
+        {% endif %}
+    </div>
+</div>
+
+{% if company.status == 'rejected' %}
+    <div class="alert alert-danger d-flex gap-2"><i class="bi bi-x-octagon"></i>
+        <div>Кандидат отклонён {{ company.status_changed_at|date:"d.m.Y" }}. Карточка и история сохранены{% if can_edit %}; вернуть в работу можно через «Изменить статус»{% endif %}.</div>
+    </div>
+{% else %}
+    <div class="hub-card mb-3 py-3">
+        <div class="zh-funnel">
+            {% for step in funnel %}<div class="zh-funnel-step{% if step.done %} done{% endif %}{% if step.current %} current{% endif %}">{{ step.label }}</div>{% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+<div class="row g-3">
+    <div class="col-12 col-xl-8 d-flex flex-column gap-3">
+
+        {% if company.is_partner %}
+        <div class="hub-card border-success-subtle">
+            <div class="zh-section-title"><span><i class="bi bi-patch-check text-success me-1"></i>Партнёр ZEA</span>
+                <span class="zh-muted fw-normal">с {{ company.status_changed_at|date:"d.m.Y" }}</span></div>
+            <div class="row g-2 text-center">
+                <div class="col-4"><div class="border rounded-3 p-3 zh-muted"><i class="bi bi-file-earmark-text d-block fs-4 mb-1"></i>Договоры — скоро</div></div>
+                <div class="col-4"><div class="border rounded-3 p-3 zh-muted"><i class="bi bi-kanban d-block fs-4 mb-1"></i>Проекты — скоро</div></div>
+                <div class="col-4"><div class="border rounded-3 p-3 zh-muted"><i class="bi bi-cash-stack d-block fs-4 mb-1"></i>Финансы — скоро</div></div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="hub-card">
+            <div class="zh-section-title">Основная информация
+                {% if can_edit %}<a href="{{ edit_url }}" class="btn btn-sm btn-link text-decoration-none">Изменить</a>{% endif %}</div>
+            {% if company.description %}<p class="mb-3" style="white-space: pre-line">{{ company.description }}</p>{% endif %}
+            <dl class="row zh-dl mb-0">
+                <div class="col-sm-6"><dt>Юридическое название</dt><dd>{{ company.legal_name|default:"—" }}</dd></div>
+                <div class="col-sm-6"><dt>Источник</dt><dd>{{ company.get_source_display|default:"—" }}{% if company.source_details %} — {{ company.source_details }}{% endif %}</dd></div>
+                <div class="col-sm-6"><dt>Телефон</dt><dd>{% if company.phone %}<a href="tel:{{ company.phone }}">{{ company.phone }}</a>{% else %}—{% endif %}</dd></div>
+                <div class="col-sm-6"><dt>Email</dt><dd>{% if company.email %}<a href="mailto:{{ company.email }}">{{ company.email }}</a>{% else %}—{% endif %}</dd></div>
+                <div class="col-sm-6"><dt>Сайт</dt><dd>{% if company.website %}<a href="{{ company.website }}" target="_blank" rel="noopener noreferrer">{{ company.website }}</a>{% else %}—{% endif %}</dd></div>
+                <div class="col-sm-6"><dt>Instagram</dt><dd>{{ company.instagram|default:"—" }}</dd></div>
+                <div class="col-sm-12"><dt>Адрес</dt><dd>{% if company.address and company.city %}{{ company.address }}, {{ company.city }}{% else %}{{ company.address|default:company.city|default:"—" }}{% endif %}</dd></div>
+                <div class="col-sm-6"><dt>Добавлена</dt><dd>{{ company.created_at|date:"d.m.Y H:i" }}{% if company.created_by %} · {{ company.created_by|display_name }}{% endif %}</dd></div>
+                <div class="col-sm-6"><dt>Изменена</dt><dd>{{ company.updated_at|date:"d.m.Y H:i" }}{% if company.updated_by %} · {{ company.updated_by|display_name }}{% endif %}</dd></div>
+            </dl>
+        </div>
+
+        <div class="hub-card">
+            <div class="zh-section-title">Анализ кандидата
+                {% if can_edit %}<a href="{% url 'candidates:assessment' company.pk %}" class="btn btn-sm btn-outline-primary">
+                    {% if assessment %}Изменить анализ{% else %}Заполнить анализ{% endif %}</a>{% endif %}</div>
+            {% if assessment %}
+                <dl class="row zh-dl mb-0">
+                    {% if assessment.business_model %}<div class="col-md-6"><dt>Бизнес-модель</dt><dd>{{ assessment.business_model }}</dd></div>{% endif %}
+                    {% if assessment.products %}<div class="col-md-6"><dt>Продукт / услуги</dt><dd>{{ assessment.products }}</dd></div>{% endif %}
+                    {% if assessment.target_audience %}<div class="col-md-6"><dt>Целевая аудитория</dt><dd>{{ assessment.target_audience }}</dd></div>{% endif %}
+                    {% if assessment.team_info %}<div class="col-md-6"><dt>Команда</dt><dd>{{ assessment.team_info }}</dd></div>{% endif %}
+                    {% if assessment.market_analysis %}<div class="col-md-6"><dt>Анализ рынка</dt><dd>{{ assessment.market_analysis }}</dd></div>{% endif %}
+                    {% if assessment.development_plan %}<div class="col-md-6"><dt>План развития</dt><dd>{{ assessment.development_plan }}</dd></div>{% endif %}
+                    {% if assessment.it_state %}<div class="col-md-6"><dt>Текущее состояние IT</dt><dd>{{ assessment.it_state }}</dd></div>{% endif %}
+                    {% if assessment.problem %}<div class="col-md-6"><dt>Проблема</dt><dd>{{ assessment.problem }}</dd></div>{% endif %}
+                    {% if assessment.proposed_solution %}<div class="col-md-6"><dt>Наше IT-решение</dt><dd>{{ assessment.proposed_solution }}</dd></div>{% endif %}
+                    <div class="col-md-6"><dt>MVP</dt><dd>{{ assessment.get_mvp_state_display|default:"не указано" }}</dd></div>
+                    <div class="col-md-6"><dt>Выручка</dt><dd>{{ assessment.revenue|default:"не раскрыта" }}</dd></div>
+                    {% if assessment.financial_indicator %}<div class="col-md-6"><dt>Мин. доход / фин. показатель</dt><dd>{{ assessment.financial_indicator }}</dd></div>{% endif %}
+                    <div class="col-md-6"><dt>Прозрачность финансов</dt><dd>{{ assessment.get_financial_transparency_display|default:"не оценена" }}</dd></div>
+                    {% if assessment.legal_risks %}<div class="col-md-6"><dt>Налоговые / юридические риски</dt><dd>{{ assessment.legal_risks }}</dd></div>{% endif %}
+                    {% if assessment.reputation %}<div class="col-md-6"><dt>Репутация</dt><dd>{{ assessment.reputation }}</dd></div>{% endif %}
+                    {% if assessment.risks_for_zea %}<div class="col-md-6"><dt>Риски для ZEA</dt><dd>{{ assessment.risks_for_zea }}</dd></div>{% endif %}
+                    {% if assessment.manager_comment %}<div class="col-12"><dt>Комментарий менеджера</dt><dd>{{ assessment.manager_comment }}</dd></div>{% endif %}
+                </dl>
+                <div class="zh-muted mt-1">Обновлён {{ assessment.updated_at|date:"d.m.Y H:i" }}{% if assessment.updated_by %} · {{ assessment.updated_by|display_name }}{% endif %}</div>
+            {% else %}
+                <p class="text-secondary mb-0">Анализ ещё не заполнен.</p>
+            {% endif %}
+        </div>
+
+        <div class="hub-card">
+            <div class="zh-section-title">Решения команды
+                {% if can_decide %}<a href="{% url 'candidates:decision' company.pk %}" class="btn btn-sm btn-outline-primary">Добавить решение</a>{% endif %}</div>
+            {% for decision in decisions %}
+                <div class="zh-decision">
+                    <div class="d-flex justify-content-between flex-wrap gap-2">
+                        <strong class="{% if decision.decision == 'approve' %}text-success{% elif decision.decision == 'reject' %}text-danger{% else %}text-warning-emphasis{% endif %}">{{ decision.get_decision_display }}</strong>
+                        <span class="zh-muted">{{ decision.review_date|date:"d.m.Y" }}{% if decision.created_by %} · {{ decision.created_by|display_name }}{% endif %}</span>
+                    </div>
+                    {% if decision.comment %}<div class="mt-1" style="white-space: pre-line">{{ decision.comment }}</div>{% endif %}
+                </div>
+            {% empty %}
+                <p class="text-secondary mb-0">Решений пока нет. Решение фиксирует руководитель на стадии «Анализ» или «Обсуждение».</p>
+            {% endfor %}
+        </div>
+
+        <div class="hub-card">
+            <div class="zh-section-title">Заметки
+                {% if can_edit %}<a href="{{ edit_url }}#id_notes" class="btn btn-sm btn-link text-decoration-none">Изменить</a>{% endif %}</div>
+            {% if company.notes %}<div style="white-space: pre-line">{{ company.notes }}</div>
+            {% else %}<p class="text-secondary mb-0">Заметок нет.</p>{% endif %}
+        </div>
+    </div>
+
+    <div class="col-12 col-xl-4 d-flex flex-column gap-3">
+        <div class="hub-card">
+            <div class="zh-section-title">Контактные лица
+                {% if can_edit %}<a href="{% url 'candidates:contact_add' company.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-plus-lg"></i> Контакт</a>{% endif %}</div>
+            {% for contact in contacts %}
+                <div class="zh-contact">
+                    <div class="d-flex justify-content-between gap-2">
+                        <div>
+                            <strong>{{ contact.name }}</strong>
+                            {% if contact.is_primary %}<span class="badge text-bg-primary ms-1">основной</span>{% endif %}
+                            {% if contact.position %}<div class="zh-muted">{{ contact.position }}</div>{% endif %}
+                        </div>
+                        {% if can_edit %}
+                        <div class="text-nowrap">
+                            <a href="{% url 'candidates:contact_edit' company.pk contact.pk %}" class="btn btn-sm btn-link p-0 me-2" title="Изменить"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'candidates:contact_delete' company.pk contact.pk %}" class="btn btn-sm btn-link p-0 text-danger" title="Удалить"><i class="bi bi-trash"></i></a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="small mt-1 d-flex flex-column">
+                        {% if contact.phone %}<a href="tel:{{ contact.phone }}"><i class="bi bi-telephone me-1"></i>{{ contact.phone }}</a>{% endif %}
+                        {% if contact.email %}<a href="mailto:{{ contact.email }}"><i class="bi bi-envelope me-1"></i>{{ contact.email }}</a>{% endif %}
+                        {% if contact.telegram %}<span><i class="bi bi-telegram me-1"></i>{{ contact.telegram }}</span>{% endif %}
+                    </div>
+                    {% if contact.note %}<div class="zh-muted mt-1">{{ contact.note }}</div>{% endif %}
+                </div>
+            {% empty %}
+                <p class="text-secondary mb-0">Контактов пока нет.</p>
+            {% endfor %}
+        </div>
+
+        <div class="hub-card">
+            <div class="zh-section-title">История статусов</div>
+            <ul class="zh-timeline">
+                {% for entry in history %}
+                <li>
+                    <div>{% if entry.from_status %}{{ entry.from_status|status_badge }} <i class="bi bi-arrow-right mx-1 text-secondary"></i>{% endif %}{{ entry.to_status|status_badge }}</div>
+                    <div class="zh-muted mt-1">{{ entry.changed_at|date:"d.m.Y H:i" }}{% if entry.changed_by %} · {{ entry.changed_by|display_name }}{% endif %}</div>
+                    {% if entry.comment %}<div class="small mt-1" style="white-space: pre-line">{{ entry.comment }}</div>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

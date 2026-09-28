@@ -14,6 +14,7 @@
 }
 
 body.hub { background: var(--hub-bg); font-size: .925rem; }
+body.hub .progress { --bs-progress-bar-bg: #6366f1; }
 
 .btn-primary {
   --bs-btn-bg: #6366f1; --bs-btn-border-color: #6366f1;

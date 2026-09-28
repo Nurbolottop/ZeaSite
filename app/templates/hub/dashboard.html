@@ -10,8 +10,87 @@
     </p>
 </div>
 
+{% if partner_stats %}
+<div class="row g-3 mb-3">
+    {% url 'candidates:list' as candidates_url %}
+    <div class="col-12 col-sm-6 col-xl-3">
+        <a href="{{ candidates_url }}" class="hub-card h-100 d-block text-decoration-none text-reset">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="text-secondary fw-medium">Всего кандидатов</span>
+                <span class="hub-stat-icon"><i class="bi bi-person-plus"></i></span>
+            </div>
+            <div class="hub-stat-value text-dark">{{ partner_stats.candidates_total }}</div>
+            <div class="small text-secondary">в воронке, без отклонённых</div>
+        </a>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <a href="{{ candidates_url }}?status=analysis" class="hub-card h-100 d-block text-decoration-none text-reset">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="text-secondary fw-medium">На анализе</span>
+                <span class="hub-stat-icon"><i class="bi bi-search"></i></span>
+            </div>
+            <div class="hub-stat-value text-dark">{{ partner_stats.analysis }}</div>
+            <div class="small text-secondary">изучаем компанию</div>
+        </a>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <a href="{{ candidates_url }}?status=negotiation" class="hub-card h-100 d-block text-decoration-none text-reset">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="text-secondary fw-medium">На переговорах</span>
+                <span class="hub-stat-icon"><i class="bi bi-chat-dots"></i></span>
+            </div>
+            <div class="hub-stat-value text-dark">{{ partner_stats.negotiation }}</div>
+            <div class="small text-secondary">обсуждаем условия</div>
+        </a>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <a href="{% url 'partners:list' %}" class="hub-card h-100 d-block text-decoration-none text-reset">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="text-secondary fw-medium">Активные партнёры</span>
+                <span class="hub-stat-icon"><i class="bi bi-building"></i></span>
+            </div>
+            <div class="hub-stat-value text-dark">{{ partner_stats.partners }}</div>
+            <div class="small text-secondary">компании-партнёры ZEA</div>
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-12 col-xl-6">
+        <div class="hub-card h-100">
+            <div class="fw-bold mb-3">Кандидаты по стадиям</div>
+            {% for step in partner_stats.pipeline %}
+                <a href="{{ candidates_url }}?status={{ step.value }}" class="d-flex align-items-center gap-2 mb-2 text-decoration-none text-reset">
+                    <span class="small" style="width: 110px">{{ step.label }}</span>
+                    <div class="progress flex-grow-1" style="height: 8px">
+                        <div class="progress-bar" style="width: {% if partner_stats.candidates_total %}{% widthratio step.count partner_stats.candidates_total 100 %}{% else %}0{% endif %}%"></div>
+                    </div>
+                    <span class="small fw-semibold text-end" style="width: 28px">{{ step.count }}</span>
+                </a>
+            {% endfor %}
+            {% if partner_stats.rejected %}<div class="zh-muted small mt-2 text-secondary">Отклонено за всё время: {{ partner_stats.rejected }}</div>{% endif %}
+        </div>
+    </div>
+    <div class="col-12 col-xl-6">
+        <div class="row g-3 h-100">
+            {% for card in future_cards %}
+            <div class="col-12 col-sm-6">
+                <div class="hub-card h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="text-secondary fw-medium">{{ card.title }}</span>
+                        <span class="hub-stat-icon"><i class="bi bi-{{ card.icon }}"></i></span>
+                    </div>
+                    <div class="hub-stat-value">—</div>
+                    <div class="small text-secondary">Появится с модулем</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% else %}
 <div class="row g-3 mb-4">
-    {% for card in cards %}
+    {% for card in future_cards %}
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="hub-card h-100">
             <div class="d-flex justify-content-between align-items-start mb-3">
@@ -24,10 +103,10 @@
     </div>
     {% endfor %}
 </div>
-
 <div class="hub-card hub-empty">
     <i class="bi bi-rocket-takeoff d-block mb-2"></i>
     <div class="fw-semibold text-dark">ZEA Hub в разработке</div>
-    <div class="small">Здесь появится сводка по кандидатам, партнёрам, проектам и финансам.</div>
+    <div class="small">Здесь появятся показатели разделов, доступных вашей роли.</div>
 </div>
+{% endif %}
 {% endblock %}

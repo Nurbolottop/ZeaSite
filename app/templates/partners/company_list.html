@@ -1,0 +1,99 @@
+{% extends "partners/_base.html" %}
+{% load partners_tags hub_tags %}
+{% block title %}{% if section == 'partners' %}Партнёры{% else %}Кандидаты{% endif %}{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+        <h1 class="hub-page-title">{% if section == 'partners' %}Партнёры{% else %}Кандидаты{% endif %}</h1>
+        <p class="text-secondary mb-0">
+            {% if section == 'partners' %}Компании со статусом «Партнёр».
+            {% else %}Компании на пути к партнёрству: от первого контакта до договора.{% endif %}
+        </p>
+    </div>
+    {% if section == 'candidates' and can_edit %}
+        <a href="{% url 'candidates:create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Добавить кандидата</a>
+    {% endif %}
+</div>
+
+<form method="get" class="hub-card mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-12 col-lg-3">
+            <label class="form-label small text-secondary mb-1" for="{{ filter_form.q.id_for_label }}">Поиск</label>
+            {{ filter_form.q }}
+        </div>
+        {% if filter_form.status %}
+        <div class="col-6 col-lg-2">
+            <label class="form-label small text-secondary mb-1" for="{{ filter_form.status.id_for_label }}">Статус</label>
+            {{ filter_form.status }}
+        </div>
+        {% endif %}
+        <div class="col-6 col-lg-2">
+            <label class="form-label small text-secondary mb-1" for="{{ filter_form.type.id_for_label }}">Тип</label>
+            {{ filter_form.type }}
+        </div>
+        <div class="col-6 col-lg-2">
+            <label class="form-label small text-secondary mb-1" for="{{ filter_form.manager.id_for_label }}">Ответственный</label>
+            {{ filter_form.manager }}
+        </div>
+        <div class="col-6 col-lg-2">
+            <label class="form-label small text-secondary mb-1" for="{{ filter_form.sort.id_for_label }}">Сортировка</label>
+            {{ filter_form.sort }}
+        </div>
+        <div class="col-12 col-lg-1 d-flex gap-1">
+            <button type="submit" class="btn btn-primary flex-grow-1" title="Применить"><i class="bi bi-funnel"></i></button>
+            {% if querystring %}<a href="?" class="btn btn-outline-secondary" title="Сбросить"><i class="bi bi-x-lg"></i></a>{% endif %}
+        </div>
+    </div>
+</form>
+
+<div class="hub-card p-0 overflow-hidden">
+    {% if companies %}
+    <div class="table-responsive">
+        <table class="table zh-table table-hover">
+            <thead>
+                <tr>
+                    <th class="ps-3">Компания</th>
+                    <th>Тип</th>
+                    <th>Сфера</th>
+                    <th>Статус</th>
+                    <th>Ответственный</th>
+                    <th>Добавлен</th>
+                    <th class="pe-3">Изменён</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for company in companies %}
+                <tr>
+                    <td class="ps-3">
+                        <a class="zh-company" href="{{ company.get_absolute_url }}">{{ company.name }}</a>
+                        {% if company.city %}<div class="zh-muted">{{ company.city }}</div>{% endif %}
+                    </td>
+                    <td class="zh-muted">{{ company.company_type|type_label }}</td>
+                    <td>{{ company.industry|default:"—" }}</td>
+                    <td>{{ company.status|status_badge }}</td>
+                    <td>{% if company.manager %}{{ company.manager|display_name }}{% else %}<span class="zh-muted">—</span>{% endif %}</td>
+                    <td class="zh-muted">{{ company.created_at|date:"d.m.Y" }}</td>
+                    <td class="zh-muted pe-3">{{ company.updated_at|date:"d.m.Y H:i" }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="hub-empty">
+        <i class="bi bi-{% if section == 'partners' %}building{% else %}person-plus{% endif %} d-block mb-2"></i>
+        {% if querystring %}
+            <div class="fw-semibold text-dark">Ничего не найдено</div>
+            <div class="small">Измените условия поиска или <a href="?">сбросьте фильтры</a>.</div>
+        {% elif section == 'partners' %}
+            <div class="fw-semibold text-dark">Партнёров пока нет</div>
+            <div class="small">Компания становится партнёром после стадии «Договор».</div>
+        {% else %}
+            <div class="fw-semibold text-dark">Кандидатов пока нет</div>
+            {% if can_edit %}<div class="small">Нажмите «Добавить кандидата», чтобы начать.</div>{% endif %}
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% include "hub/_pagination.html" %}
+{% endblock %}

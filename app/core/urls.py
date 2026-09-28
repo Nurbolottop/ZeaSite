@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
 
 from apps.base.views import robots_txt
+from apps.partners.urls import candidate_patterns, partner_patterns
 from apps.base.sitemaps import StaticViewSitemap
 
 # ── Заголовки админки ──
@@ -31,6 +32,8 @@ urlpatterns = [
 
     # ZEA Hub — внутренняя система. Все внутренние URL только под /hub/
     # (HubLoginRequiredMiddleware закрывает этот префикс целиком).
+    path('hub/candidates/', include(candidate_patterns)),
+    path('hub/partners/', include(partner_patterns)),
     path('hub/', include('apps.hub.urls')),
 ]
 

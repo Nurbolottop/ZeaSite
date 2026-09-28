@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .access import can_access_module, has_role
+from .access import can_access_module, has_permission, has_role
 
 DENIED_MESSAGE = 'У вас нет доступа к этому разделу. Обратитесь к руководителю, чтобы получить нужную роль.'
 
@@ -11,6 +11,10 @@ class RoleRequiredMixin(LoginRequiredMixin):
         class CandidateListView(RoleRequiredMixin, ListView):
             module = 'candidates'              # роли берутся из MODULE_ACCESS
 
+        class CompanyUpdateView(RoleRequiredMixin, UpdateView):
+            module = 'candidates'
+            permission = 'partners.edit'       # действие из PERMISSIONS
+
         class SalaryView(RoleRequiredMixin, TemplateView):
             allowed_roles = (Role.HEAD,)       # точечное ограничение
 
@@ -19,11 +23,14 @@ class RoleRequiredMixin(LoginRequiredMixin):
     """
 
     module = None
+    permission = None
     allowed_roles = None
     permission_denied_message = DENIED_MESSAGE
 
     def has_access(self, user):
         if self.module is not None and not can_access_module(user, self.module):
+            return False
+        if self.permission is not None and not has_permission(user, self.permission):
             return False
         if self.allowed_roles is not None and not has_role(user, *self.allowed_roles):
             return False

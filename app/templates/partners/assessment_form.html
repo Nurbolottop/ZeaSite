@@ -1,0 +1,28 @@
+{% extends "partners/_base.html" %}
+{% block title %}Анализ — {{ company.name }}{% endblock %}
+{% block content %}
+<nav class="small mb-2">
+    <a href="{{ company.get_absolute_url }}" class="text-decoration-none"><i class="bi bi-arrow-left"></i> {{ company.name }}</a>
+</nav>
+<h1 class="hub-page-title mb-1">Анализ кандидата</h1>
+<p class="text-secondary mb-4">Заполните то, что известно — все поля необязательны.</p>
+
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% include "hub/_form_errors.html" %}
+    <div class="row g-3">
+        {% for title, fields in form.sections %}
+        <div class="col-12 {% if title == 'Итог' %}{% else %}col-xl-6{% endif %}">
+            <div class="hub-card h-100">
+                <div class="fw-bold mb-3">{{ title }}</div>
+                {% for field in fields %}{% include "hub/_field.html" %}{% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">Сохранить анализ</button>
+        <a href="{{ company.get_absolute_url }}" class="btn btn-outline-secondary">Отмена</a>
+    </div>
+</form>
+{% endblock %}

@@ -7,15 +7,25 @@ from django.core.exceptions import ImproperlyConfigured
 
 from .roles import ALL_ROLES, Role
 
-# Доступ к модулям: ключ модуля → роли, которым он открыт.
+# Действия внутри модулей: '<модуль>.<действие>' → роли.
+# Superuser проходит любую проверку (см. has_role).
+PERMISSIONS = {
+    # Кандидаты и партнёры (apps.partners)
+    'partners.view':   (Role.HEAD, Role.BIZDEV, Role.PM, Role.TECH_LEAD, Role.MARKETING),
+    # создание/редактирование компании, контакты, анализ, смена статусов
+    'partners.edit':   (Role.HEAD, Role.BIZDEV),
+    # решение команды по кандидату (одобрить / отклонить / на доработку)
+    'partners.decide': (Role.HEAD,),
+}
+
+# Доступ к модулям (разделам меню): ключ модуля → роли, которым он открыт.
 # None — любой авторизованный пользователь (даже без роли).
 #
-# ВНИМАНИЕ: матрица предварительная — пока все модули открыты всем 6 ролям.
-# Окончательно фиксируется при разработке каждого модуля.
+# Модули без утверждённой матрицы пока открыты всем 6 ролям.
 MODULE_ACCESS = {
     'dashboard':  None,
-    'candidates': ALL_ROLES,
-    'partners':   ALL_ROLES,
+    'candidates': PERMISSIONS['partners.view'],
+    'partners':   PERMISSIONS['partners.view'],
     'projects':   ALL_ROLES,
     'team':       ALL_ROLES,
     'contracts':  ALL_ROLES,
@@ -65,3 +75,10 @@ def can_access_module(user, module):
     if roles is None:
         return True
     return has_role(user, *roles)
+
+
+def has_permission(user, permission):
+    """Право на действие по матрице PERMISSIONS."""
+    if permission not in PERMISSIONS:
+        raise ImproperlyConfigured(f'Право «{permission}» не описано в PERMISSIONS')
+    return has_role(user, *PERMISSIONS[permission])

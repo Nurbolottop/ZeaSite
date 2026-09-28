@@ -36,7 +36,8 @@ ZEA/
 │   │   ├── cms/               # модели контента + админка + переводы
 │   │   ├── contacts/          # форма заявок
 │   │   ├── hub/               # ZEA Hub: layout, меню, Dashboard, защита /hub/
-│   │   └── users/             # ZEA Hub: роли (Groups), HubProfile, проверка доступа
+│   │   ├── users/             # ZEA Hub: роли (Groups), HubProfile, проверка доступа
+│   │   └── partners/          # ZEA Hub: компании — кандидаты и партнёры (/hub/candidates/, /hub/partners/)
 │   ├── core/settings/         # base / dev / prod
 │   ├── templates/             # index.html, 404, 500, админ-шаблоны
 │   ├── locale/                # переводы ru/ky/en
@@ -108,6 +109,9 @@ python manage.py compilemessages
 - Пользователь — стандартный `auth.User` (AUTH_USER_MODEL не меняется), данные сотрудника — `users.HubProfile`.
 - Роли — 6 Django Groups (миграция `users/0002_create_roles`), имена в `apps/users/roles.py`.
   Матрица доступа к разделам — `MODULE_ACCESS` в `apps/users/access.py`; во view — `RoleRequiredMixin`.
+- Бизнес-логика модулей — в `services.py` / `selectors.py`, views тонкие. Статус компании меняется только
+  через `apps.partners.services.change_status()` (проверка перехода + история).
+- Права на действия — `PERMISSIONS` в `apps/users/access.py` (`partners.view/edit/decide`).
 - Шаблоны Hub — `templates/hub/`, стили — `static/hub/hub.css` (Bootstrap 5 с CDN). На сайт не подключаются.
 - Приватные файлы (договоры) — `private_media/` вне `MEDIA_ROOT`, без публичного URL (`apps.hub.storage`).
   Для этой папки **не** настраивать отдачу через nginx.

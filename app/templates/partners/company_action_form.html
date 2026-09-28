@@ -1,0 +1,34 @@
+{% extends "partners/_base.html" %}
+{% load partners_tags %}
+{% block title %}{{ title }} — {{ company.name }}{% endblock %}
+{% block content %}
+<nav class="small mb-2">
+    <a href="{{ company.get_absolute_url }}" class="text-decoration-none"><i class="bi bi-arrow-left"></i> {{ company.name }}</a>
+</nav>
+<h1 class="hub-page-title mb-1">{{ title }}</h1>
+<p class="text-secondary mb-4">{{ company.name }} · сейчас {{ company.status|status_badge }}</p>
+
+<div class="hub-card" style="max-width: 640px">
+    <form method="post" novalidate
+          {% if form.to_status %}data-confirm="Отклонить кандидата «{{ company.name }}»?" data-confirm-when="to_status=rejected"{% endif %}
+          {% if form.decision %}data-confirm="Зафиксировать отклонение кандидата «{{ company.name }}»?" data-confirm-when="decision=reject"{% endif %}>
+        {% csrf_token %}
+        {% include "hub/_form_errors.html" %}
+        {% for field in form %}{% include "hub/_field.html" %}{% endfor %}
+        {% if form.decision %}
+            <div class="alert alert-light border small">
+                «Одобрить» переводит кандидата в «Одобрен» (только со стадии «Обсуждение»).
+                Партнёром компания становится после переговоров и договора.
+                «На доработку» из «Обсуждения» возвращает в «Анализ».
+            </div>
+        {% endif %}
+        {% if form.to_status %}
+            <div class="alert alert-light border small">«Одобрен» устанавливается только решением команды.</div>
+        {% endif %}
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">{{ submit_label }}</button>
+            <a href="{{ company.get_absolute_url }}" class="btn btn-outline-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
