@@ -178,3 +178,6 @@ cython_debug/
 
 # Collected static
 app/staticfiles/
+
+# Приватные файлы (договоры/документы) — никогда не коммитить
+private_media/

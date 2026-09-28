@@ -30,6 +30,7 @@ services:
     volumes:
       - ../app/static:/app/static
       - ../app/media:/app/media
+      - ../app/private_media:/app/private_media
       - ../app/staticfiles:/app/staticfiles
     env_file:
       - ../.env

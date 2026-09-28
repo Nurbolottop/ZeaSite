@@ -1,0 +1,73 @@
+{% load hub_tags %}<!DOCTYPE html>
+<html lang="ru">
+<head>
+    {% include "hub/_head.html" %}
+    <title>{% block title %}Dashboard{% endblock %} — ZEA Hub</title>
+</head>
+<body class="hub">
+
+<header class="hub-topbar">
+    <button class="btn btn-link text-dark d-lg-none me-2 p-1" type="button" id="hub-sidebar-toggle" aria-label="Меню">
+        <i class="bi bi-list fs-4"></i>
+    </button>
+    <a class="hub-brand" href="{% url 'hub:dashboard' %}">
+        <span class="hub-logo">Z</span>
+        <span>ZEA <small>Hub</small></span>
+    </a>
+
+    <div class="hub-user">
+        <div class="text-end d-none d-sm-block">
+            <div class="hub-user-name">{{ user|display_name }}</div>
+            <div class="d-flex flex-wrap justify-content-end gap-1 mt-1">
+                {% if user.is_superuser %}<span class="hub-role-badge">Суперпользователь</span>{% endif %}
+                {% for role in current_roles %}<span class="hub-role-badge">{{ role }}</span>{% endfor %}
+                {% if not current_roles and not user.is_superuser %}<span class="hub-role-badge text-danger bg-danger-subtle">Роль не назначена</span>{% endif %}
+            </div>
+        </div>
+        {% if hub_profile.avatar %}
+            <img class="hub-avatar" src="{{ hub_profile.avatar.url }}" alt="">
+        {% else %}
+            <span class="hub-avatar">{{ user|initials }}</span>
+        {% endif %}
+        <form method="post" action="{% url 'hub:logout' %}" class="m-0">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-secondary btn-sm" title="Выйти">
+                <i class="bi bi-box-arrow-right"></i><span class="d-none d-md-inline ms-1">Выйти</span>
+            </button>
+        </form>
+    </div>
+</header>
+
+<nav class="hub-sidebar" id="hub-sidebar">
+    <div class="hub-nav-label">Разделы</div>
+    {% for entry in nav_menu %}
+        <a href="{% url entry.item.url_name %}" class="hub-nav-link{% if entry.active %} active{% endif %}">
+            <i class="bi bi-{{ entry.item.icon }}"></i>
+            <span>{{ entry.item.title }}</span>
+            {% if not entry.item.ready %}<span class="hub-soon">скоро</span>{% endif %}
+        </a>
+    {% endfor %}
+    {% if user.is_staff %}
+        <div class="hub-nav-label mt-4">Система</div>
+        <a href="{% url 'admin:index' %}" class="hub-nav-link"><i class="bi bi-gear"></i><span>Администрирование</span></a>
+    {% endif %}
+</nav>
+
+<main class="hub-main">
+    {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags|default:'info' }}{% endif %} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+        </div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById('hub-sidebar-toggle').addEventListener('click', function () {
+        document.getElementById('hub-sidebar').classList.toggle('show');
+    });
+</script>
+</body>
+</html>

@@ -51,7 +51,21 @@ INSTALLED_APPS = [
     'apps.base',
     'apps.cms',
     'apps.contacts',
+
+    # ZEA Hub (внутренняя система, /hub/)
+    'apps.hub',
+    'apps.users',
 ]
+
+# =============================================================================
+# ZEA HUB — АВТОРИЗАЦИЯ
+# =============================================================================
+# Пользователь — стандартный django.contrib.auth User (AUTH_USER_MODEL не меняем:
+# prod-БД сайта уже на auth.User). Данные сотрудника — apps.users.HubProfile.
+
+LOGIN_URL = 'hub:login'
+LOGIN_REDIRECT_URL = 'hub:dashboard'
+LOGOUT_REDIRECT_URL = 'hub:login'
 
 # =============================================================================
 # MIDDLEWARE (ПРОМЕЖУТОЧНЫЕ ОБРАБОТЧИКИ)
@@ -64,6 +78,8 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # Авторизация обязательна только для /hub/* — публичный сайт не затрагивается
+    'apps.hub.middleware.HubLoginRequiredMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -91,6 +107,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
+                'apps.hub.context_processors.navigation',
             ],
         },
     },
@@ -159,6 +176,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Приватные файлы ZEA Hub (договоры, документы) — ВНЕ MEDIA_ROOT, без публичного URL.
+# Отдаются только через view с проверкой прав (см. apps.hub.storage).
+PRIVATE_MEDIA_ROOT = os.path.join(BASE_DIR, 'private_media')
 
 # =============================================================================
 # DEFAULTS (ЗНАЧЕНИЯ ПО УМОЛЧАНИЮ)

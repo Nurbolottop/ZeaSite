@@ -1,0 +1,10 @@
+{% extends "hub/base.html" %}
+{% block title %}Нет доступа{% endblock %}
+{% block content %}
+<div class="hub-card hub-empty">
+    <i class="bi bi-shield-lock d-block mb-2"></i>
+    <div class="fw-semibold text-dark fs-5 mb-1">Нет доступа</div>
+    <div class="mb-3">{{ message }}</div>
+    <a href="{% url 'hub:dashboard' %}" class="btn btn-primary btn-sm">На Dashboard</a>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "hub/base.html" %}
+{% block title %}{{ nav_item.title }}{% endblock %}
+{% block content %}
+<h1 class="hub-page-title mb-4">{{ nav_item.title }}</h1>
+<div class="hub-card hub-empty">
+    <i class="bi bi-{{ nav_item.icon }} d-block mb-2"></i>
+    <div class="fw-semibold text-dark">Раздел «{{ nav_item.title }}» в разработке</div>
+    <div class="small">Он появится на одном из следующих этапов.</div>
+</div>
+{% endblock %}

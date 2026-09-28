@@ -1,0 +1,33 @@
+{% extends "hub/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="mb-4">
+    <h1 class="hub-page-title">Добро пожаловать, {{ user.first_name|default:user.username }}!</h1>
+    <p class="text-secondary mb-0">
+        {% if user.is_superuser %}Суперпользователь — полный доступ ко всем разделам.
+        {% elif current_roles %}Ваша роль: {{ current_roles|join:", " }}.
+        {% else %}Роль пока не назначена — разделы откроются после назначения роли руководителем.{% endif %}
+    </p>
+</div>
+
+<div class="row g-3 mb-4">
+    {% for card in cards %}
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="hub-card h-100">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <span class="text-secondary fw-medium">{{ card.title }}</span>
+                <span class="hub-stat-icon"><i class="bi bi-{{ card.icon }}"></i></span>
+            </div>
+            <div class="hub-stat-value">—</div>
+            <div class="small text-secondary">Данные появятся после запуска модуля</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="hub-card hub-empty">
+    <i class="bi bi-rocket-takeoff d-block mb-2"></i>
+    <div class="fw-semibold text-dark">ZEA Hub в разработке</div>
+    <div class="small">Здесь появится сводка по кандидатам, партнёрам, проектам и финансам.</div>
+</div>
+{% endblock %}

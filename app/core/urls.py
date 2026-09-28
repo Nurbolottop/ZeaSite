@@ -14,6 +14,8 @@ admin.site.site_header = 'ZEA — Панель управления'
 admin.site.site_title  = 'ZEA Admin'
 admin.site.index_title = 'Управление сайтом'
 
+handler403 = 'apps.hub.views.permission_denied'
+
 sitemaps = {
     'static': StaticViewSitemap,
 }
@@ -26,6 +28,10 @@ urlpatterns = [
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
     path('robots.txt', robots_txt, name='robots_txt'),
     path('', include('apps.contacts.urls')),
+
+    # ZEA Hub — внутренняя система. Все внутренние URL только под /hub/
+    # (HubLoginRequiredMiddleware закрывает этот префикс целиком).
+    path('hub/', include('apps.hub.urls')),
 ]
 
 # ── Маршруты С языковым префиксом (/ для ru, /ky/, /en/) ──

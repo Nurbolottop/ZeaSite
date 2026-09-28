@@ -1,19 +1,20 @@
 version: '3.8'
+name: zea-hub
 
 services:
 
   # ─── PostgreSQL ───────────────────────────────────────────────────
-  db_zea:
+  db_hub:
     image: postgres:14
-    container_name: postgres_db_zea
+    container_name: postgres_db_hub
     env_file:
       - ../.env
     ports:
-      - "5433:5432"          # локальный доступ: localhost:5433
+      - "5434:5432"          # локальный доступ: localhost:5434
     volumes:
-      - postgres_data_zea:/var/lib/postgresql/data
+      - postgres_data_hub:/var/lib/postgresql/data
     networks:
-      - zea_network
+      - hub_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
@@ -21,35 +22,36 @@ services:
       retries: 10
 
   # ─── Django (dev) ─────────────────────────────────────────────────
-  web_zea:
+  web_hub:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    container_name: django_web_zea
+    container_name: django_web_hub
     entrypoint: /entrypoint.sh
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ../app:/app
       - ../app/static:/app/static
       - ../app/media:/app/media
+      - ../app/private_media:/app/private_media
     env_file:
       - ../.env
     environment:
       - DJANGO_SETTINGS_MODULE=core.settings.dev
       # Перекрываем .env для связи внутри Docker-сети
-      - POSTGRES_HOST=db_zea
+      - POSTGRES_HOST=db_hub
       - POSTGRES_PORT=5432
     depends_on:
-      db_zea:
+      db_hub:
         condition: service_healthy
     ports:
-      - "8085:8000"          # http://localhost:8085
+      - "8086:8000"          # http://localhost:8086
     networks:
-      - zea_network
+      - hub_network
 
 networks:
-  zea_network:
+  hub_network:
     driver: bridge
 
 volumes:
-  postgres_data_zea:
+  postgres_data_hub:

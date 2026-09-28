@@ -65,6 +65,7 @@ def robots_txt(request):
         'User-agent: *',
         'Allow: /',
         'Disallow: /admin/',
+        'Disallow: /hub/',
         'Disallow: /ckeditor/',
         'Disallow: /i18n/',
         '',

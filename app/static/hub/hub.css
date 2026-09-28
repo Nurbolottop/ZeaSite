@@ -1,0 +1,116 @@
+/* ZEA Hub — layout поверх Bootstrap 5. Подключается ТОЛЬКО в templates/hub/*, публичный сайт его не грузит. */
+:root {
+  --hub-topbar-h: 60px;
+  --hub-sidebar-w: 240px;
+  --hub-sidebar-bg: #0f172a;
+  --hub-sidebar-fg: #94a3b8;
+  --hub-sidebar-active: #6366f1;
+  --hub-bg: #f4f6fb;
+  --bs-primary: #6366f1;
+  --bs-primary-rgb: 99, 102, 241;
+  --bs-link-color: #4f46e5;
+  --bs-link-hover-color: #4338ca;
+  --bs-body-font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+body.hub { background: var(--hub-bg); font-size: .925rem; }
+
+.btn-primary {
+  --bs-btn-bg: #6366f1; --bs-btn-border-color: #6366f1;
+  --bs-btn-hover-bg: #4f46e5; --bs-btn-hover-border-color: #4f46e5;
+  --bs-btn-active-bg: #4338ca; --bs-btn-active-border-color: #4338ca;
+}
+
+/* ── Topbar ─────────────────────────────────────────────── */
+.hub-topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1030;
+  height: var(--hub-topbar-h);
+  background: #fff; border-bottom: 1px solid #e5e7eb;
+  display: flex; align-items: center; padding: 0 1rem;
+}
+.hub-brand {
+  display: flex; align-items: center; gap: .6rem;
+  font-weight: 800; font-size: 1.1rem; color: #0f172a; text-decoration: none;
+  width: calc(var(--hub-sidebar-w) - 1rem);
+}
+.hub-brand:hover { color: #0f172a; }
+.hub-logo {
+  width: 32px; height: 32px; border-radius: 9px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: #fff; font-weight: 900; font-size: .9rem;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.hub-brand small { font-weight: 500; color: #6366f1; }
+
+.hub-user { display: flex; align-items: center; gap: .75rem; margin-left: auto; }
+.hub-user-name { font-weight: 600; line-height: 1.1; }
+.hub-avatar {
+  width: 36px; height: 36px; border-radius: 50%; object-fit: cover;
+  background: #e0e7ff; color: #4338ca; font-weight: 700; font-size: .8rem;
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.hub-role-badge {
+  font-size: .7rem; font-weight: 500;
+  background: #eef2ff; color: #4338ca; border-radius: 6px; padding: .15rem .45rem;
+}
+
+/* ── Sidebar ────────────────────────────────────────────── */
+.hub-sidebar {
+  position: fixed; top: var(--hub-topbar-h); bottom: 0; left: 0;
+  width: var(--hub-sidebar-w); background: var(--hub-sidebar-bg);
+  padding: 1rem .75rem; overflow-y: auto;
+}
+.hub-nav-label {
+  color: #475569; font-size: .7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .08em; padding: .25rem .75rem .5rem;
+}
+.hub-nav-link {
+  display: flex; align-items: center; gap: .7rem;
+  padding: .55rem .75rem; margin-bottom: 2px; border-radius: 8px;
+  color: var(--hub-sidebar-fg); text-decoration: none; font-weight: 500;
+}
+.hub-nav-link i { font-size: 1.05rem; }
+.hub-nav-link:hover { color: #fff; background: rgba(255,255,255,.06); }
+.hub-nav-link.active { color: #fff; background: var(--hub-sidebar-active); }
+.hub-nav-link .hub-soon {
+  margin-left: auto; font-size: .62rem; color: #64748b;
+  border: 1px solid #334155; border-radius: 5px; padding: 0 .3rem;
+}
+.hub-nav-link.active .hub-soon { color: #e0e7ff; border-color: rgba(255,255,255,.35); }
+
+/* ── Content ────────────────────────────────────────────── */
+.hub-main {
+  margin-left: var(--hub-sidebar-w); padding: calc(var(--hub-topbar-h) + 1.75rem) 2rem 2rem;
+  min-height: 100vh;
+}
+.hub-page-title { font-weight: 700; font-size: 1.5rem; margin-bottom: .25rem; }
+.hub-card {
+  background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 1.25rem;
+}
+.hub-stat-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: #eef2ff; color: #4f46e5; font-size: 1.15rem;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.hub-stat-value { font-size: 1.6rem; font-weight: 700; color: #cbd5e1; }
+.hub-empty { text-align: center; padding: 3.5rem 1rem; color: #64748b; }
+.hub-empty i { font-size: 2.5rem; color: #c7d2fe; }
+
+/* ── Мобильная версия: sidebar как offcanvas ───────────── */
+@media (max-width: 991.98px) {
+  .hub-sidebar { transform: translateX(-100%); transition: transform .2s; z-index: 1040; }
+  .hub-sidebar.show { transform: none; }
+  .hub-main { margin-left: 0; padding: calc(var(--hub-topbar-h) + 1.25rem) 1rem 1.5rem; }
+  .hub-brand { width: auto; }
+}
+
+/* ── Страница входа / ошибки для гостей ─────────────────── */
+.hub-auth {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+  background: radial-gradient(ellipse at 20% 20%, rgba(99,102,241,.18), transparent 55%),
+              radial-gradient(ellipse at 80% 80%, rgba(139,92,246,.14), transparent 55%), #0f172a;
+}
+.hub-auth-card {
+  width: 100%; max-width: 400px; background: #fff; border-radius: 18px;
+  padding: 2.25rem 2rem; box-shadow: 0 25px 60px rgba(0,0,0,.35);
+}

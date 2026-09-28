@@ -1,0 +1,29 @@
+{% extends "hub/auth_base.html" %}
+{% block title %}Вход{% endblock %}
+{% block content %}
+<h1 class="h4 fw-bold mb-1">Вход в систему</h1>
+<p class="text-secondary mb-4">Внутренняя платформа команды ZEA</p>
+
+{% if form.non_field_errors %}
+    <div class="alert alert-danger py-2">
+        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+    </div>
+{% elif next and next != '/' %}
+    <div class="alert alert-info py-2">Войдите, чтобы продолжить.</div>
+{% endif %}
+
+<form method="post" novalidate>
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <div class="mb-3">
+        <label class="form-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+        {{ form.username }}
+    </div>
+    <div class="mb-4">
+        <label class="form-label" for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+        {{ form.password }}
+    </div>
+    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">Войти</button>
+</form>
+<p class="text-secondary small mt-4 mb-0">Учётные записи создаёт руководитель. Нет доступа — обратитесь к нему.</p>
+{% endblock %}
