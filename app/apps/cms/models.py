@@ -232,7 +232,7 @@ class SiteSettings(models.Model):
 
     # ── Аналитика и индексация ───────────────────────────────
     site_domain      = models.URLField('Домен сайта', blank=True,
-                           help_text='https://zea.kg — для canonical, sitemap, Open Graph')
+                           help_text='https://zeastudio.su — для canonical, sitemap, Open Graph')
     ga4_id           = models.CharField('Google Analytics 4 ID', max_length=20, blank=True,
                            help_text='G-XXXXXXXXXX')
     gsc_verification = models.CharField('Google Search Console — код', max_length=100, blank=True,
