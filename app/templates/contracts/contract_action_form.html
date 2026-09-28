@@ -1,0 +1,29 @@
+{% extends "contracts/_base.html" %}
+{% load contracts_tags %}
+{% block title %}{{ title }} — № {{ contract.number }}{% endblock %}
+{% block content %}
+<nav class="small mb-2">
+    <a href="{{ contract.get_absolute_url }}" class="text-decoration-none"><i class="bi bi-arrow-left"></i> Договор № {{ contract.number }}</a>
+</nav>
+<h1 class="hub-page-title mb-1">{{ title }}</h1>
+<p class="text-secondary mb-4">{{ contract.company.name }} · сейчас {{ contract.status|contract_status_badge }}</p>
+
+<div class="hub-card" style="max-width: 640px">
+    <form method="post" enctype="multipart/form-data" novalidate
+          {% if form.to_status %}data-confirm="Изменить статус договора № {{ contract.number }}? Активацию и расторжение нельзя отменить." data-confirm-when="to_status=active|terminated"{% endif %}>
+        {% csrf_token %}
+        {% include "hub/_form_errors.html" %}
+        {% for field in form %}{% include "hub/_field.html" %}{% endfor %}
+        {% if form.to_status %}
+            <div class="alert alert-light border small">
+                «Действует» и «Расторгнут» устанавливает только руководитель.
+                Для «Действует» нужны процент, база расчёта, даты начала и подписания и PDF подписанного договора.
+            </div>
+        {% endif %}
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">{{ submit_label }}</button>
+            <a href="{{ contract.get_absolute_url }}" class="btn btn-outline-secondary">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

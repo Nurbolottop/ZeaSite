@@ -1,0 +1,29 @@
+{% extends "contracts/_base.html" %}
+{% block title %}{% if form.instance.pk %}Договор № {{ form.instance.number }}{% else %}Новый договор{% endif %}{% endblock %}
+{% block content %}
+<nav class="small mb-2">
+    <a href="{% url 'contracts:list' %}" class="text-decoration-none">Договоры</a>
+    {% if form.instance.pk %}<span class="text-secondary">/</span> <a href="{{ form.instance.get_absolute_url }}" class="text-decoration-none">№ {{ form.instance.number }}</a>{% endif %}
+</nav>
+<h1 class="hub-page-title mb-1">{% if form.instance.pk %}Редактировать договор{% else %}Новый договор{% endif %}</h1>
+<p class="text-secondary mb-4">{% if form.instance.pk %}{{ form.instance.company.name }}{% else %}Договор создаётся черновиком. Условия можно дополнять до подписания.{% endif %}</p>
+
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% include "hub/_form_errors.html" %}
+    <div class="row g-3">
+        {% for title, fields in form.sections %}
+        <div class="col-12 col-xl-6">
+            <div class="hub-card h-100">
+                <div class="fw-bold mb-3">{{ title }}{% if title == 'Финансовые условия' %} <i class="bi bi-lock text-secondary small" title="Видят руководитель и менеджер по развитию"></i>{% endif %}</div>
+                {% for field in fields %}{% include "hub/_field.html" %}{% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">{% if form.instance.pk %}Сохранить{% else %}Создать черновик{% endif %}</button>
+        <a href="{% if form.instance.pk %}{{ form.instance.get_absolute_url }}{% else %}{% url 'contracts:list' %}{% endif %}" class="btn btn-outline-secondary">Отмена</a>
+    </div>
+</form>
+{% endblock %}

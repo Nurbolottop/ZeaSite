@@ -2,7 +2,7 @@
 from django.contrib.auth import get_user_model
 from django.db.models import Case, Count, IntegerField, Q, Value, When
 
-from apps.users.access import PERMISSIONS
+from apps.users.roles import Role
 
 from .models import Company, CompanyStatus
 from .services import PIPELINE_STATUSES
@@ -78,11 +78,14 @@ def candidate_status_filter_choices():
     ]
 
 
+# Ответственным за кандидата может быть только Руководитель или Менеджер по развитию
+MANAGER_ROLES = (Role.HEAD, Role.BIZDEV)
+
+
 def manager_choices():
-    """Кого можно назначить ответственным: руководитель и менеджеры по развитию."""
+    """Кого можно назначить ответственным (активные пользователи с MANAGER_ROLES)."""
     return (get_user_model().objects
-            .filter(is_active=True)
-            .filter(Q(groups__name__in=PERMISSIONS['partners.edit']) | Q(is_superuser=True))
+            .filter(is_active=True, groups__name__in=MANAGER_ROLES)
             .distinct()
             .order_by('first_name', 'last_name', 'username'))
 

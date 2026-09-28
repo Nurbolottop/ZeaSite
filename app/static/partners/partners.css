@@ -1,8 +1,4 @@
 /* Кандидаты и партнёры. Грузится только на страницах модуля. */
-.zh-status {
-  display: inline-block; font-size: .75rem; font-weight: 600; line-height: 1;
-  padding: .35rem .6rem; border-radius: 999px; white-space: nowrap;
-}
 .zh-status-new         { background: #f1f5f9; color: #475569; }
 .zh-status-analysis    { background: #e0f2fe; color: #0369a1; }
 .zh-status-discussion  { background: #ede9fe; color: #6d28d9; }
@@ -11,14 +7,6 @@
 .zh-status-contract    { background: #ffedd5; color: #c2410c; }
 .zh-status-partner     { background: #dcfce7; color: #15803d; }
 .zh-status-rejected    { background: #fee2e2; color: #b91c1c; }
-
-.zh-table { margin: 0; }
-.zh-table th { font-size: .72rem; text-transform: uppercase; letter-spacing: .05em; color: #64748b;
-               font-weight: 600; background: #f8fafc; border-bottom-width: 1px; white-space: nowrap; }
-.zh-table td { vertical-align: middle; }
-.zh-table a.zh-company { font-weight: 600; color: #0f172a; text-decoration: none; }
-.zh-table a.zh-company:hover { color: #4f46e5; }
-.zh-muted { color: #64748b; font-size: .82rem; }
 
 /* Прогресс воронки в карточке */
 .zh-funnel { display: flex; gap: 4px; }
@@ -29,16 +17,5 @@
 .zh-funnel-step.current { color: #4338ca; font-weight: 700; }
 .zh-funnel-step.current::before { background: #6366f1; }
 
-.zh-section-title { font-weight: 700; font-size: 1rem; margin-bottom: .9rem;
-                    display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
-.zh-dl dt { font-size: .75rem; color: #64748b; font-weight: 500; }
-.zh-dl dd { margin-bottom: .75rem; white-space: pre-line; word-break: break-word; }
-
-.zh-timeline { list-style: none; padding: 0; margin: 0; }
-.zh-timeline li { position: relative; padding: 0 0 1rem 1.25rem; border-left: 2px solid #e2e8f0; }
-.zh-timeline li:last-child { padding-bottom: 0; }
-.zh-timeline li::before { content: ''; position: absolute; left: -6px; top: 3px; width: 10px; height: 10px;
-                          border-radius: 50%; background: #6366f1; }
 .zh-contact + .zh-contact { border-top: 1px solid #eef0f4; padding-top: .75rem; margin-top: .75rem; }
 .zh-decision + .zh-decision { border-top: 1px solid #eef0f4; padding-top: .75rem; margin-top: .75rem; }
-.zh-form-section + .zh-form-section { margin-top: 1.5rem; }

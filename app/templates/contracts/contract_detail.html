@@ -1,0 +1,116 @@
+{% extends "contracts/_base.html" %}
+{% load contracts_tags hub_tags %}
+{% block title %}Договор № {{ contract.number }}{% endblock %}
+{% block content %}
+<nav class="small mb-2">
+    <a href="{% url 'contracts:list' %}" class="text-decoration-none">Договоры</a>
+    <span class="text-secondary">/ № {{ contract.number }}</span>
+</nav>
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+    <div>
+        <h1 class="hub-page-title d-flex flex-wrap align-items-center gap-2">Договор № {{ contract.number }} {{ contract.status|contract_status_badge }}</h1>
+        <div class="text-secondary">{{ contract.title }} · <a href="{{ contract.company.get_absolute_url }}" class="fw-semibold text-decoration-none">{{ contract.company.name }}</a></div>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        {% if can_edit_terms %}<a href="{% url 'contracts:edit' contract.pk %}" class="btn btn-outline-secondary"><i class="bi bi-pencil me-1"></i>Редактировать</a>{% endif %}
+        {% if status_targets %}<a href="{% url 'contracts:status' contract.pk %}" class="btn btn-outline-primary"><i class="bi bi-arrow-left-right me-1"></i>Изменить статус</a>{% endif %}
+        {% if can_manage %}<a href="{% url 'contracts:document_add' contract.pk %}" class="btn btn-primary"><i class="bi bi-paperclip me-1"></i>Добавить документ</a>{% endif %}
+    </div>
+</div>
+
+{% if contract.status == 'ready' and missing_for_active %}
+    <div class="alert alert-warning small">Для перевода в «Действует» не хватает: {{ missing_for_active|join:", " }}.</div>
+{% endif %}
+{% if not can_edit_terms and can_manage and contract.status == 'active' %}
+    <div class="alert alert-light border small mb-3">Действующий договор не редактируется — изменения оформляются дополнительным соглашением в разделе «Документы».</div>
+{% endif %}
+
+<div class="row g-3">
+    <div class="col-12 col-xl-8 d-flex flex-column gap-3">
+        <div class="hub-card">
+            <div class="zh-section-title">Финансовые условия</div>
+            {% if show_financial %}
+                <dl class="row zh-dl mb-0">
+                    <div class="col-sm-4"><dt>Процент ZEA</dt><dd class="fs-4 fw-bold">{{ contract.share_percent|percent }}</dd></div>
+                    <div class="col-sm-8"><dt>База расчёта</dt><dd>{{ contract.calculation_base_type|base_label }}</dd></div>
+                    <div class="col-12"><dt>От чего именно ZEA получает процент</dt><dd>{{ contract.calculation_base_description|default:"—" }}</dd></div>
+                    <div class="col-12"><dt>Условия оплаты</dt><dd>{{ contract.payment_terms|default:"—" }}</dd></div>
+                </dl>
+            {% else %}
+                <div class="zh-hidden-terms"><i class="bi bi-lock me-1"></i>Финансовые условия (процент, база расчёта, оплата) доступны руководителю и менеджеру по развитию.</div>
+            {% endif %}
+        </div>
+
+        <div class="hub-card">
+            <div class="zh-section-title">Условия договора</div>
+            {% if contract.description %}<p style="white-space: pre-line">{{ contract.description }}</p>{% endif %}
+            <dl class="row zh-dl mb-0">
+                <div class="col-md-6"><dt>Обязанности ZEA</dt><dd>{{ contract.zea_obligations|default:"—" }}</dd></div>
+                <div class="col-md-6"><dt>Обязанности партнёра</dt><dd>{{ contract.partner_obligations|default:"—" }}</dd></div>
+                <div class="col-md-6"><dt>Условия прекращения</dt><dd>{{ contract.termination_terms|default:"—" }}</dd></div>
+                <div class="col-md-6"><dt>Дополнительные условия</dt><dd>{{ contract.additional_terms|default:"—" }}</dd></div>
+            </dl>
+        </div>
+
+        <div class="hub-card">
+            <div class="zh-section-title">Документы
+                {% if can_manage %}<a href="{% url 'contracts:document_add' contract.pk %}" class="btn btn-sm btn-outline-primary"><i class="bi bi-plus-lg"></i> Документ</a>{% endif %}</div>
+            {% for doc in documents %}
+                <div class="zh-file">
+                    <i class="bi bi-file-earmark"></i>
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold">{{ doc.title }}</div>
+                        <div class="zh-muted">{{ doc.get_document_type_display }} · {{ doc.size|filesize }} · {{ doc.uploaded_at|date:"d.m.Y" }}{% if doc.uploaded_by %} · {{ doc.uploaded_by|display_name }}{% endif %}</div>
+                        {% if doc.note %}<div class="small mt-1">{{ doc.note }}</div>{% endif %}
+                    </div>
+                    <a href="{% url 'contracts:document_download' doc.uid %}" class="btn btn-sm btn-outline-secondary" title="Скачать"><i class="bi bi-download"></i></a>
+                </div>
+            {% empty %}
+                <p class="text-secondary mb-0">{% if hidden_documents %}Нет документов, доступных вашей роли.{% else %}Документов нет.{% endif %}</p>
+            {% endfor %}
+            {% if hidden_documents and documents %}<div class="zh-muted mt-2"><i class="bi bi-lock me-1"></i>Ещё {{ hidden_documents }} документ(а) с финансовыми условиями скрыто.</div>{% endif %}
+        </div>
+    </div>
+
+    <div class="col-12 col-xl-4 d-flex flex-column gap-3">
+        <div class="hub-card">
+            <div class="zh-section-title">Сроки</div>
+            <dl class="zh-dl mb-0">
+                <dt>Действует</dt><dd>{% if contract.start_date %}с {{ contract.start_date|date:"d.m.Y" }}{% else %}дата начала не указана{% endif %} {% if contract.end_date %}по {{ contract.end_date|date:"d.m.Y" }}{% else %}· бессрочно{% endif %}</dd>
+                <dt>Подписан</dt><dd>{{ contract.signed_date|date:"d.m.Y"|default:"не подписан" }}</dd>
+                <dt>Создан</dt><dd>{{ contract.created_at|date:"d.m.Y" }}{% if contract.created_by %} · {{ contract.created_by|display_name }}{% endif %}</dd>
+            </dl>
+        </div>
+
+        <div class="hub-card">
+            <div class="zh-section-title">Подписанный договор
+                {% if can_edit_terms %}<a href="{% url 'contracts:file_upload' contract.pk %}" class="btn btn-sm btn-outline-primary">{% if contract.file %}Заменить{% else %}Загрузить{% endif %}</a>{% endif %}</div>
+            {% if not show_financial %}
+                <div class="zh-hidden-terms"><i class="bi bi-lock me-1"></i>Файл договора содержит финансовые условия.</div>
+            {% elif contract.file %}
+                <div class="zh-file">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                    <div class="flex-grow-1 text-truncate"><div class="fw-semibold text-truncate">{{ contract.file_original_name }}</div>
+                        <div class="zh-muted">загружен {{ contract.file_uploaded_at|date:"d.m.Y H:i" }}</div></div>
+                    <a href="{% url 'contracts:file_download' contract.pk %}" class="btn btn-sm btn-outline-secondary" title="Скачать"><i class="bi bi-download"></i></a>
+                </div>
+            {% else %}
+                <p class="text-secondary mb-0">Файл не загружен.</p>
+            {% endif %}
+        </div>
+
+        <div class="hub-card">
+            <div class="zh-section-title">История статусов</div>
+            <ul class="zh-timeline">
+                {% for entry in history %}
+                <li>
+                    <div>{% if entry.from_status %}{{ entry.from_status|contract_status_badge }} <i class="bi bi-arrow-right mx-1 text-secondary"></i>{% endif %}{{ entry.to_status|contract_status_badge }}</div>
+                    <div class="zh-muted mt-1">{{ entry.changed_at|date:"d.m.Y H:i" }}{% if entry.changed_by %} · {{ entry.changed_by|display_name }}{% endif %}</div>
+                    {% if entry.comment %}<div class="small mt-1" style="white-space: pre-line">{{ entry.comment }}</div>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,3 +1,5 @@
+import os
+
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
@@ -10,9 +12,18 @@ class PrivateMediaStorage(FileSystemStorage):
     """
 
     def __init__(self, **kwargs):
-        kwargs.setdefault('location', settings.PRIVATE_MEDIA_ROOT)
         kwargs['base_url'] = None
         super().__init__(**kwargs)
+
+    # Путь читается из настроек при каждом обращении (а не один раз при импорте),
+    # чтобы работали override_settings в тестах и смена PRIVATE_MEDIA_ROOT
+    @property
+    def base_location(self):
+        return self._location or settings.PRIVATE_MEDIA_ROOT
+
+    @property
+    def location(self):
+        return os.path.abspath(self.base_location)
 
     def url(self, name):
         raise NotImplementedError(

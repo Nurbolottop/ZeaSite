@@ -34,6 +34,7 @@ urlpatterns = [
     # (HubLoginRequiredMiddleware закрывает этот префикс целиком).
     path('hub/candidates/', include(candidate_patterns)),
     path('hub/partners/', include(partner_patterns)),
+    path('hub/contracts/', include('apps.contracts.urls')),
     path('hub/', include('apps.hub.urls')),
 ]
 

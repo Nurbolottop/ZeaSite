@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.utils import timezone
 
 from apps.hub.forms import BootstrapFormMixin
@@ -36,7 +38,12 @@ class CompanyForm(BootstrapFormMixin, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['manager'].queryset = selectors.manager_choices()
+        queryset = selectors.manager_choices()
+        if self.instance.manager_id:
+            # текущий ответственный остаётся в списке, даже если потерял роль
+            queryset = get_user_model().objects.filter(
+                Q(pk__in=queryset.values('pk')) | Q(pk=self.instance.manager_id))
+        self.fields['manager'].queryset = queryset
 
 
 class ContactForm(BootstrapFormMixin, forms.ModelForm):

@@ -2,8 +2,11 @@ from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
+from django.views import View
 from django.views.generic import DetailView, FormView, ListView, TemplateView
 
+from apps.contracts import selectors as contract_selectors
+from apps.contracts.services import COMPANY_STATUSES_FOR_CONTRACT
 from apps.users.access import has_permission
 from apps.users.mixins import RoleRequiredMixin
 
@@ -101,7 +104,30 @@ class CompanyDetailView(RoleRequiredMixin, DetailView):
             'status_targets': services.allowed_transitions(company),
             'funnel': _funnel(company),
         })
+        context.update(_contract_context(company, user))
         return context
+
+
+def _contract_context(company, user):
+    """Блок «Договоры» в карточке компании (виден только с contracts.view)."""
+    if not has_permission(user, 'contracts.view'):
+        return {'show_contracts': False}
+    contracts = list(contract_selectors.company_contracts(company))
+    active = next((c for c in contracts if c.status == 'active'), None)
+    state_value, state_label = contract_selectors.company_contract_state(contracts)
+    return {
+        'show_contracts': True,
+        'contracts': contracts,
+        'contract_state': state_label,
+        'contract_state_value': state_value,
+        'show_contract_financial': has_permission(user, 'contracts.view_financial_terms'),
+        'can_add_contract': (has_permission(user, 'contracts.manage')
+                             and company.status in COMPANY_STATUSES_FOR_CONTRACT),
+        'can_make_partner': (company.status == CompanyStatus.CONTRACT and active is not None
+                             and has_permission(user, 'partners.edit')),
+        'active_contract': active,
+        'partner_without_contract': company.is_partner and active is None,
+    }
 
 
 def _funnel(company):
@@ -282,3 +308,20 @@ class ContactDeleteView(CompanyActionMixin, TemplateView):
         services.delete_contact(contact=self.get_contact())
         self.success_message = 'Контакт удалён.'
         return self.done()
+
+
+class MakePartnerView(CompanyActionMixin, View):
+    """«Оформить как партнёра»: POST после подтверждения в карточке.
+
+    Проверку ACTIVE-договора делает services.change_status().
+    """
+
+    def post(self, request, *args, **kwargs):
+        try:
+            services.make_partner(company=self.company, user=request.user)
+        except ValidationError as error:
+            messages.error(request, ' '.join(error.messages))
+            return redirect(self.company.get_absolute_url())
+        self.company.refresh_from_db()
+        messages.success(request, f'«{self.company.name}» оформлена как партнёр ZEA.')
+        return redirect(self.company.get_absolute_url())

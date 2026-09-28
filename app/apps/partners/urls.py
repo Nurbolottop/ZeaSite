@@ -15,6 +15,7 @@ candidate_patterns = ([
     path('<int:pk>/edit/', views.CompanyUpdateView.as_view(), name='edit'),
     path('<int:pk>/status/', views.StatusChangeView.as_view(), name='status'),
     path('<int:pk>/decision/', views.DecisionCreateView.as_view(), name='decision'),
+    path('<int:pk>/make-partner/', views.MakePartnerView.as_view(), name='make_partner'),
     path('<int:pk>/assessment/', views.AssessmentUpdateView.as_view(), name='assessment'),
     path('<int:pk>/contacts/add/', views.ContactCreateView.as_view(), name='contact_add'),
     path('<int:pk>/contacts/<int:contact_pk>/edit/', views.ContactUpdateView.as_view(),

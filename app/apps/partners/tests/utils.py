@@ -27,6 +27,9 @@ def move_to(company, target, user):
     for status in PATH[start:PATH.index(target) + 1]:
         if status == S.APPROVED:
             services.make_decision(company=company, decision='approve', user=user)
+        elif status == S.PARTNER:
+            give_active_contract(company, user)
+            services.make_partner(company=company, user=user)
         else:
             services.change_status(company=company, to_status=status, user=user)
     company.refresh_from_db()
@@ -35,3 +38,15 @@ def move_to(company, target, user):
 
 def head(username='head'):
     return make_user(username, Role.HEAD, first_name='Руководитель')
+
+
+def give_active_contract(company, user, number=None):
+    """Фикстура: действующий договор напрямую в БД (полный процесс — в тестах contracts)."""
+    from datetime import date
+
+    from apps.contracts.models import Contract, ContractStatus
+    return Contract.objects.create(
+        company=company, number=number or f'T-{company.pk}', title='Договор партнёрства',
+        status=ContractStatus.ACTIVE, share_percent='10', calculation_base_type='total_revenue',
+        start_date=date(2026, 1, 1), signed_date=date(2026, 1, 1), created_by=user, updated_by=user,
+    )

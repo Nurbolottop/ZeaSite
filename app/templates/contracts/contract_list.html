@@ -1,0 +1,76 @@
+{% extends "contracts/_base.html" %}
+{% load contracts_tags hub_tags %}
+{% block title %}Договоры{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+        <h1 class="hub-page-title">Договоры</h1>
+        <p class="text-secondary mb-0">Договоры технологического партнёрства ZEA.</p>
+    </div>
+    {% if can_manage %}
+        <a href="{% url 'contracts:create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>Новый договор</a>
+    {% endif %}
+</div>
+
+<form method="get" class="hub-card mb-3">
+    <div class="row g-2 align-items-end">
+        <div class="col-12 col-lg-3">
+            <label class="form-label small text-secondary mb-1" for="{{ filter_form.q.id_for_label }}">Поиск</label>{{ filter_form.q }}
+        </div>
+        <div class="col-6 col-lg-3">
+            <label class="form-label small text-secondary mb-1" for="{{ filter_form.company.id_for_label }}">Компания</label>{{ filter_form.company }}
+        </div>
+        <div class="col-6 col-lg-2">
+            <label class="form-label small text-secondary mb-1" for="{{ filter_form.status.id_for_label }}">Статус</label>{{ filter_form.status }}
+        </div>
+        <div class="col-6 col-lg-3">
+            <label class="form-label small text-secondary mb-1">Период действия</label>
+            <div class="d-flex gap-1">{{ filter_form.date_from }}{{ filter_form.date_to }}</div>
+        </div>
+        <div class="col-6 col-lg-1 d-flex gap-1">
+            <button type="submit" class="btn btn-primary flex-grow-1" title="Применить"><i class="bi bi-funnel"></i></button>
+            {% if querystring %}<a href="?" class="btn btn-outline-secondary" title="Сбросить"><i class="bi bi-x-lg"></i></a>{% endif %}
+        </div>
+    </div>
+</form>
+
+<div class="hub-card p-0 overflow-hidden">
+    {% if contracts %}
+    <div class="table-responsive">
+        <table class="table zh-table table-hover">
+            <thead><tr>
+                <th class="ps-3">Номер</th><th>Компания</th><th>Статус</th>
+                <th>Процент</th><th>База расчёта</th><th>Начало</th><th>Окончание</th><th class="pe-3">Создал</th>
+            </tr></thead>
+            <tbody>
+            {% for contract in contracts %}
+                <tr>
+                    <td class="ps-3"><a class="zh-company" href="{{ contract.get_absolute_url }}">№ {{ contract.number }}</a>
+                        <div class="zh-muted">{{ contract.title }}</div></td>
+                    <td><a href="{{ contract.company.get_absolute_url }}" class="text-decoration-none">{{ contract.company.name }}</a></td>
+                    <td>{{ contract.status|contract_status_badge }}</td>
+                    {% if show_financial %}
+                        <td class="fw-semibold">{{ contract.share_percent|percent }}</td>
+                        <td class="zh-muted">{{ contract.calculation_base_type|base_label }}</td>
+                    {% else %}
+                        <td class="zh-muted" colspan="2"><i class="bi bi-lock me-1"></i>скрыто</td>
+                    {% endif %}
+                    <td class="zh-muted">{{ contract.start_date|date:"d.m.Y"|default:"—" }}</td>
+                    <td class="zh-muted">{{ contract.end_date|date:"d.m.Y"|default:"бессрочно" }}</td>
+                    <td class="zh-muted pe-3">{% if contract.created_by %}{{ contract.created_by|display_name }}{% else %}—{% endif %}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="hub-empty">
+        <i class="bi bi-file-earmark-text d-block mb-2"></i>
+        {% if querystring %}<div class="fw-semibold text-dark">Ничего не найдено</div><div class="small"><a href="?">Сбросить фильтры</a></div>
+        {% else %}<div class="fw-semibold text-dark">Договоров пока нет</div>
+            <div class="small">Договор создаётся для одобренной компании — из её карточки или кнопкой «Новый договор».</div>{% endif %}
+    </div>
+    {% endif %}
+</div>
+{% include "hub/_pagination.html" %}
+{% endblock %}

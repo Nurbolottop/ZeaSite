@@ -16,6 +16,15 @@ PERMISSIONS = {
     'partners.edit':   (Role.HEAD, Role.BIZDEV),
     # решение команды по кандидату (одобрить / отклонить / на доработку)
     'partners.decide': (Role.HEAD,),
+
+    # Договоры (apps.contracts)
+    'contracts.view':   (Role.HEAD, Role.BIZDEV, Role.PM, Role.TECH_LEAD),
+    # создание/редактирование, файлы и документы, подготовка (Черновик → Готов)
+    'contracts.manage': (Role.HEAD, Role.BIZDEV),
+    # перевод в «Действует» и расторжение
+    'contracts.activate': (Role.HEAD,),
+    # процент ZEA, база расчёта, условия оплаты, основной файл договора
+    'contracts.view_financial_terms': (Role.HEAD, Role.BIZDEV),
 }
 
 # Доступ к модулям (разделам меню): ключ модуля → роли, которым он открыт.
@@ -28,7 +37,7 @@ MODULE_ACCESS = {
     'partners':   PERMISSIONS['partners.view'],
     'projects':   ALL_ROLES,
     'team':       ALL_ROLES,
-    'contracts':  ALL_ROLES,
+    'contracts':  PERMISSIONS['contracts.view'],
     'finance':    ALL_ROLES,
     'expenses':   ALL_ROLES,
     'reports':    ALL_ROLES,

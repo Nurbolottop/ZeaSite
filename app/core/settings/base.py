@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'apps.hub',
     'apps.users',
     'apps.partners',
+    'apps.contracts',
 ]
 
 # =============================================================================

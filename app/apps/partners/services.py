@@ -27,6 +27,10 @@ TRANSITIONS = {
 # (кандидат уже был одобрен ранее) остаётся ручным.
 DECISION_ONLY_TRANSITIONS = {(S.DISCUSSION, S.APPROVED)}
 
+# Оформление партнёрства — отдельное действие «Оформить как партнёра»
+# (make_partner), а не пункт обычной смены статуса. Требует ACTIVE-договор.
+PARTNER_TRANSITION = (S.CONTRACT, S.PARTNER)
+
 # Статусы, в которых команда рассматривает кандидата.
 DECISION_STATUSES = {S.ANALYSIS, S.DISCUSSION}
 
@@ -38,8 +42,22 @@ def allowed_transitions(company, *, manual=True):
     """Статусы, в которые можно перевести компанию из текущего."""
     targets = TRANSITIONS.get(company.status, ())
     if manual:
-        targets = tuple(t for t in targets if (company.status, t) not in DECISION_ONLY_TRANSITIONS)
+        targets = tuple(t for t in targets
+                        if (company.status, t) not in DECISION_ONLY_TRANSITIONS
+                        and (company.status, t) != PARTNER_TRANSITION)
     return targets
+
+
+def _check_manager(company):
+    from .selectors import manager_choices
+    if company.manager_id and not manager_choices().filter(pk=company.manager_id).exists():
+        raise ValidationError({'manager': 'Ответственным может быть только Руководитель '
+                                          'или Менеджер по развитию.'})
+
+
+def has_active_contract(company) -> bool:
+    from apps.contracts.selectors import active_contract
+    return active_contract(company) is not None
 
 
 def _log_status(company, from_status, to_status, user, comment, at):
@@ -58,6 +76,7 @@ def create_company(*, company: Company, user) -> Company:
     company.created_by = user
     company.updated_by = user
     company.full_clean()
+    _check_manager(company)
     company.save()
     _log_status(company, '', S.NEW, user, 'Компания добавлена', now)
     return company
@@ -67,6 +86,11 @@ def update_company(*, company: Company, user) -> Company:
     """Сохранение основных данных. Статус здесь не меняется."""
     company.updated_by = user
     company.full_clean()
+    # Проверяем только смену ответственного: бывший менеджер, лишённый роли,
+    # не должен блокировать правку остальных полей
+    previous = Company.objects.filter(pk=company.pk).values_list('manager_id', flat=True).first()
+    if company.manager_id != previous:
+        _check_manager(company)
     company.save()
     return company
 
@@ -95,6 +119,9 @@ def change_status(*, company: Company, to_status: str, user, comment: str = '',
         )})
     if to_status == S.REJECTED and not comment:
         raise ValidationError({'comment': 'Укажите причину отклонения.'})
+    if to_status == S.PARTNER and not has_active_contract(locked):
+        raise ValidationError({'to_status': 'Партнёром компания становится только при '
+                                            'действующем (ACTIVE) договоре.'})
 
     now = timezone.now()
     locked.status = to_status
@@ -108,6 +135,17 @@ def change_status(*, company: Company, to_status: str, user, comment: str = '',
     company.updated_by = user
     company.updated_at = locked.updated_at
     return _log_status(company, from_status, to_status, user, comment, now)
+
+
+def make_partner(*, company: Company, user, comment: str = '') -> CompanyStatusHistory:
+    """«Оформить как партнёра»: CONTRACT → PARTNER после подтверждения пользователем.
+
+    Наличие ACTIVE-договора проверяет change_status().
+    """
+    if company.status != S.CONTRACT:
+        raise ValidationError('Оформить партнёрство можно только на стадии «Договор».')
+    return change_status(company=company, to_status=S.PARTNER, user=user,
+                         comment=comment or 'Партнёрство оформлено по действующему договору')
 
 
 @transaction.atomic

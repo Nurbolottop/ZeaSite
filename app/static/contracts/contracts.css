@@ -1,0 +1,13 @@
+/* Договоры. Грузится на страницах договоров и в карточке компании. */
+.zh-cstatus-draft      { background: #f1f5f9; color: #475569; }
+.zh-cstatus-review     { background: #fef3c7; color: #b45309; }
+.zh-cstatus-ready      { background: #e0f2fe; color: #0369a1; }
+.zh-cstatus-active     { background: #dcfce7; color: #15803d; }
+.zh-cstatus-expired    { background: #e5e7eb; color: #374151; }
+.zh-cstatus-terminated { background: #fee2e2; color: #b91c1c; }
+.zh-hidden-terms { background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px;
+                   padding: .75rem 1rem; color: #64748b; font-size: .85rem; }
+.zh-file { display: flex; align-items: center; gap: .6rem; padding: .6rem .75rem;
+           border: 1px solid #e5e7eb; border-radius: 10px; }
+.zh-file + .zh-file { margin-top: .5rem; }
+.zh-file i.bi { font-size: 1.3rem; color: #6366f1; }

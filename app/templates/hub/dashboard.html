@@ -73,6 +73,24 @@
     </div>
     <div class="col-12 col-xl-6">
         <div class="row g-3 h-100">
+            {% if contract_stats %}
+            <div class="col-12">
+                <div class="hub-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold">Договоры</span>
+                        <a href="{% url 'contracts:list' %}" class="small text-decoration-none">все договоры →</a>
+                    </div>
+                    <div class="row text-center g-2">
+                        <a class="col-4 text-decoration-none text-reset" href="{% url 'contracts:list' %}?status=review">
+                            <div class="hub-stat-value text-dark">{{ contract_stats.review }}</div><div class="small text-secondary">на согласовании</div></a>
+                        <a class="col-4 text-decoration-none text-reset" href="{% url 'contracts:list' %}?status=ready">
+                            <div class="hub-stat-value text-dark">{{ contract_stats.ready }}</div><div class="small text-secondary">ждут подписания</div></a>
+                        <a class="col-4 text-decoration-none text-reset" href="{% url 'contracts:list' %}?status=active">
+                            <div class="hub-stat-value text-dark">{{ contract_stats.active }}</div><div class="small text-secondary">действуют</div></a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
             {% for card in future_cards %}
             <div class="col-12 col-sm-6">
                 <div class="hub-card h-100">

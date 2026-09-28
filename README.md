@@ -37,7 +37,8 @@ ZEA/
 │   │   ├── contacts/          # форма заявок
 │   │   ├── hub/               # ZEA Hub: layout, меню, Dashboard, защита /hub/
 │   │   ├── users/             # ZEA Hub: роли (Groups), HubProfile, проверка доступа
-│   │   └── partners/          # ZEA Hub: компании — кандидаты и партнёры (/hub/candidates/, /hub/partners/)
+│   │   ├── partners/          # ZEA Hub: компании — кандидаты и партнёры (/hub/candidates/, /hub/partners/)
+│   │   └── contracts/         # ZEA Hub: договоры партнёрства и документы (/hub/contracts/)
 │   ├── core/settings/         # base / dev / prod
 │   ├── templates/             # index.html, 404, 500, админ-шаблоны
 │   ├── locale/                # переводы ru/ky/en
@@ -111,10 +112,13 @@ python manage.py compilemessages
   Матрица доступа к разделам — `MODULE_ACCESS` в `apps/users/access.py`; во view — `RoleRequiredMixin`.
 - Бизнес-логика модулей — в `services.py` / `selectors.py`, views тонкие. Статус компании меняется только
   через `apps.partners.services.change_status()` (проверка перехода + история).
-- Права на действия — `PERMISSIONS` в `apps/users/access.py` (`partners.view/edit/decide`).
+- Права на действия — `PERMISSIONS` в `apps/users/access.py` (`partners.*`, `contracts.view/manage/activate/
+  view_financial_terms`). Критичные для денег проверки (активация, финансовые поля) — ещё и в services.
+- Партнёром компания становится только действием «Оформить как партнёра» при ACTIVE-договоре.
 - Шаблоны Hub — `templates/hub/`, стили — `static/hub/hub.css` (Bootstrap 5 с CDN). На сайт не подключаются.
 - Приватные файлы (договоры) — `private_media/` вне `MEDIA_ROOT`, без публичного URL (`apps.hub.storage`).
-  Для этой папки **не** настраивать отдачу через nginx.
+  Физические имена — UUID, скачивание только через `/hub/contracts/.../download/` с проверкой прав.
+  Для этой папки **не** настраивать отдачу через nginx. Лимит файла — 20 МБ (учесть `client_max_body_size` в nginx).
 
 Локальная разработка Hub: `docker compose -f docker/docker-compose.yml up --build` →
 http://localhost:8086 (сайт) и http://localhost:8086/hub/ (Hub), БД `localhost:5434`.

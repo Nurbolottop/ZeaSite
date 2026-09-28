@@ -72,13 +72,14 @@
     // Подтверждение опасных действий:
     //   <form data-confirm="Текст">                      — всегда
     //   <form data-confirm-when="to_status=rejected" ...> — только при выбранном значении
+    //   значения через «|»: data-confirm-when="to_status=active|terminated"
     document.addEventListener('submit', function (event) {
         var form = event.target, message = form.dataset.confirm;
         if (!message) return;
         var when = form.dataset.confirmWhen;
         if (when) {
             var parts = when.split('='), field = form.elements[parts[0]];
-            if (!field || field.value !== parts[1]) return;
+            if (!field || parts[1].split('|').indexOf(field.value) === -1) return;
         }
         if (!window.confirm(message)) event.preventDefault();
     });

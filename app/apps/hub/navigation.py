@@ -23,7 +23,7 @@ NAVIGATION = (
     NavItem('partners',   'Партнёры',   'building',         'partners:list', ready=True),
     NavItem('projects',   'Проекты',    'kanban',           'hub:projects'),
     NavItem('team',       'Команда',    'people',           'hub:team'),
-    NavItem('contracts',  'Договоры',   'file-earmark-text', 'hub:contracts'),
+    NavItem('contracts',  'Договоры',   'file-earmark-text', 'contracts:list', ready=True),
     NavItem('finance',    'Финансы',    'cash-stack',       'hub:finance'),
     NavItem('expenses',   'Расходы',    'receipt',          'hub:expenses'),
     NavItem('reports',    'Отчёты',     'bar-chart-line',   'hub:reports'),
