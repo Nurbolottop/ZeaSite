@@ -180,6 +180,16 @@ class RedesignSectionsTests(TestCase):
         self.assertIn('ЗАДАНИЕ', html)                 # этапы до сдачи
         self.assertNotIn('Два формата', html)
 
+    def test_cards_show_cover_and_modal_shows_product(self):
+        p = Project.objects.create(name='Продукт', description='d', project_type='CRM', technologies='Django',
+                                   image='projects/shot.webp')
+        html = self.html()
+        card = html.split('<template id="project-detail-%d">' % p.pk)[0]
+        self.assertNotIn('projects/shot.webp', card)        # на главной — обложка
+        self.assertIn('class="cover grain"', card)
+        detail = html.split('<template id="project-detail-%d">' % p.pk)[1].split('</template>')[0]
+        self.assertIn('projects/shot.webp', detail)         # в «Подробнее» — сам продукт
+
     def test_more_projects_button(self):
         for i in range(9):
             Project.objects.create(name=f'Кейс {i}', description='d', project_type='CRM', technologies='Django')

@@ -1,5 +1,5 @@
-{% load i18n site_tags %}{# Обложка проекта: реальный скриншот в рамке браузера или типографская обложка из данных проекта (без вымышленных скриншотов) #}
-{% if project.image %}
+{% load i18n site_tags %}{# Обложка проекта. На главной (cover_only) — всегда типографская обложка; в «Подробнее» — реальный скриншот в рамке браузера, если он есть #}
+{% if project.image and not cover_only %}
 <div class="browser">
     <div class="browser-bar"><i></i><i></i><i></i><span>{% if project.live_url %}{{ project.live_url|cut:"https://"|cut:"http://" }}{% else %}{{ project.name }}{% endif %}</span></div>
     <img src="{{ project.image.url }}" alt="{{ project.name }}" loading="lazy" width="1200" height="800">

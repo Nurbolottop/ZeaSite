@@ -13,7 +13,7 @@
         {% if forloop.first %}
         {# Главный кейс #}
         <article class="p-card p-feature mb-14 md:mb-20" data-color="{{ project.color }}" data-reveal>
-            <div class="p-media min-w-0 lg:order-2">{% include "site/_project_media.html" with monogram=True %}</div>
+            <div class="p-media min-w-0 lg:order-2">{% include "site/_project_media.html" with monogram=True cover_only=True %}</div>
             <div class="min-w-0 lg:order-1">
                 <div class="flex flex-wrap items-center gap-2 mb-5">
                     <span class="sticker" style="background:var(--tone)">{{ project.project_type }}</span>
@@ -41,12 +41,12 @@
         {% if forloop.revcounter0 %}<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">{% endif %}
         {% else %}
         <article class="p-card{% if forloop.counter > 7 %} p-more{% endif %}" data-color="{{ project.color }}"{% if forloop.counter > 7 %} hidden{% endif %} data-reveal style="--d:{{ forloop.counter0|divisibleby:3|yesno:'0,80' }}ms">
-            <div class="p-media">{% include "site/_project_media.html" %}</div>
+            <div class="p-media">{% include "site/_project_media.html" with cover_only=True %}</div>
             <div class="grid gap-2.5">
                 <div class="flex flex-wrap items-center gap-2">
                     <span class="mono text-xs text-muted">{{ project.project_type }} · <span class="tnum">{{ project.year }}</span></span>
                 </div>
-                <h3 class="h-card text-xl{% if not project.image %} sr-only{% endif %}">{{ project.name }}</h3>
+                <h3 class="h-card text-xl sr-only">{{ project.name }}</h3>
                 <p class="text-muted text-[.95rem] leading-relaxed line-clamp-2">{{ project.description }}</p>
                 <div class="flex items-center gap-5 mt-1">
                     <button type="button" data-project-open="{{ project.pk }}" class="link-arrow">

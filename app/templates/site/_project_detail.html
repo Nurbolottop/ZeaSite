@@ -1,7 +1,7 @@
 {% load i18n %}{# Содержимое окна «Подробнее» #}
 <template id="project-detail-{{ project.pk }}">
-    <div class="p-5 md:p-8 pb-0 md:pb-0">{% include "site/_project_media.html" %}</div>
-    <div class="p-6 md:p-9">
+    {% if not project.gallery.all %}<div class="p-5 md:p-8 pb-0 md:pb-0">{% include "site/_project_media.html" %}</div>{% endif %}
+    <div class="p-6 md:p-9{% if project.gallery.all %} pt-14 md:pt-16{% endif %}">
         <div class="flex flex-wrap items-center gap-2 mb-4">
             <span class="sticker" data-color="{{ project.color }}" style="background:var(--tone)">{{ project.project_type }}</span>
             <span class="mono text-xs text-muted tnum">{{ project.year }}</span>
