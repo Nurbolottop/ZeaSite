@@ -1,7 +1,7 @@
 {% extends "site/base.html" %}{% load i18n %}
 {% block content %}
 <main>
-<section class="relative pt-28 md:pt-36 pb-16 md:pb-24 overflow-hidden" data-color="{{ partner.color }}">
+<section class="relative pt-28 md:pt-36 pb-14 md:pb-20 overflow-hidden" data-color="{{ partner.color }}">
     <div class="absolute inset-x-0 top-0 h-96 dot-grid opacity-70 pointer-events-none [mask-image:linear-gradient(#000,transparent)]" aria-hidden="true"></div>
     <div class="relative max-w-site mx-auto px-4 sm:px-6 lg:px-8">
         <nav class="mono text-xs text-muted mb-8" aria-label="{% trans 'Навигация' %}">
@@ -9,11 +9,10 @@
             <a href="{% url 'site_partners' %}" class="hover:text-ink">{% trans "Партнёры" %}</a> / {{ partner.name }}
         </nav>
 
-        <div class="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-            {# Карточка партнёрства — то же, что уходит в превью ссылки #}
-            <article class="pcard grain lg:col-span-8" data-reveal>
-                <div class="pcard-rings" aria-hidden="true">{% include "site/illustrations/partnership.html" %}</div>
-                <div class="relative z-[1] grid gap-6">
+        {# Карточка партнёрства — то же, что уходит в превью ссылки #}
+        <article class="pcard grain" data-reveal>
+            <div class="pcard-main">
+                <div class="grid gap-6 content-start min-w-0">
                     <div class="flex items-center gap-4">
                         <span class="brand-mark pcard-mark" aria-hidden="true">{{ settings.site_name|first }}</span>
                         <span class="text-3xl font-bold" aria-hidden="true">×</span>
@@ -21,70 +20,45 @@
                     </div>
                     <div>
                         <p class="eyebrow mb-3">{% trans "Технологический партнёр" %} {{ settings.site_name }}</p>
-                        <h1 class="h-display text-[2.4rem] sm:text-5xl md:text-6xl">{{ partner.name }}</h1>
+                        <h1 class="h-display text-[2.4rem] sm:text-5xl md:text-6xl xl:text-7xl">{{ partner.name }}</h1>
                     </div>
-                    {% if partner.industry %}<span class="sticker justify-self-start w-fit" style="background:var(--tone)">{{ partner.industry }}</span>{% endif %}
-                    {% if stats.projects or stats.since %}
-                    <dl class="pcard-stats">
-                        {% if stats.projects %}<div><dt>{% trans "Проекты" %}</dt><dd class="tnum">{{ stats.projects }}</dd></div>{% endif %}
-                        {% if stats.since %}<div><dt>{% trans "Вместе с" %}</dt><dd class="tnum">{{ stats.since }}</dd></div>{% endif %}
-                        {% if stats.technologies %}<div><dt>{% trans "Технологии" %}</dt><dd class="tnum">{{ stats.technologies|length }}</dd></div>{% endif %}
-                    </dl>
-                    {% endif %}
-                </div>
-            </article>
-
-            <aside class="lg:col-span-4 grid gap-5" data-reveal style="--d:120ms">
-                {% if partner.about %}<p class="lead">{{ partner.about }}</p>{% endif %}
-                <div class="panel p-5 grid gap-3">
-                    <p class="eyebrow">{% trans "Поделиться" %}</p>
-                    <div class="grid grid-cols-2 gap-2">
-                        <a class="share-btn" target="_blank" rel="noopener"
-                           href="https://t.me/share/url?url={{ canonical_url|urlencode:'' }}&text={{ partner.name|urlencode:'' }}%20%C3%97%20{{ settings.site_name|urlencode:'' }}">
-                            <i data-lucide="send"></i> Telegram</a>
-                        <a class="share-btn" target="_blank" rel="noopener"
-                           href="https://wa.me/?text={{ partner.name|urlencode:'' }}%20%C3%97%20{{ settings.site_name|urlencode:'' }}%20{{ canonical_url|urlencode:'' }}">
-                            <i data-lucide="message-circle"></i> WhatsApp</a>
+                    <div class="flex flex-wrap gap-2">
+                        {% if partner.industry %}<span class="sticker" style="background:var(--tone)">{{ partner.industry }}</span>{% endif %}
+                        {% for t in stats.types %}<span class="sticker">{{ t }}</span>{% endfor %}
                     </div>
-                    <div class="flex gap-2">
-                        <button type="button" class="share-btn flex-1 min-w-0" data-share-copy="{{ canonical_url }}"
-                                data-done="{% trans 'Ссылка скопирована' %}"><i data-lucide="link"></i> <span>{% trans "Скопировать ссылку" %}</span></button>
-                        <button type="button" class="share-btn" data-share-native="{{ canonical_url }}" data-title="{{ partner.name }} × {{ settings.site_name }}"
-                                aria-label="{% trans 'Ещё' %}" hidden><i data-lucide="share-2"></i></button>
-                    </div>
+                    {% if partner.about %}<p class="lead max-w-xl">{{ partner.about }}</p>{% endif %}
                 </div>
-                {% if partner.instagram_username %}
-                <div class="panel ig-panel">
-                    <div class="flex items-center justify-between gap-3 px-5 py-3 border-b-[1.5px] border-ink">
-                        <span class="flex items-center gap-2 font-extrabold min-w-0"><i data-lucide="instagram" class="w-4 h-4 flex-none"></i><span class="truncate">@{{ partner.instagram_username }}</span></span>
-                        <a href="{{ partner.instagram }}" target="_blank" rel="noopener" class="mono text-xs text-muted hover:text-ink flex-none">{% trans "Открыть" %} ↗</a>
-                    </div>
-                    <iframe src="https://www.instagram.com/{{ partner.instagram_username }}/embed/" title="Instagram @{{ partner.instagram_username }}"
-                            loading="lazy" scrolling="no" allowtransparency="true"></iframe>
-                </div>
-                {% endif %}
-                <div class="flex flex-wrap gap-3">
-                    {% if partner.website %}<a href="{{ partner.website }}" target="_blank" rel="noopener" class="btn btn-ink">{% trans "Сайт партнёра" %} <i data-lucide="arrow-up-right"></i></a>{% endif %}
-                    {% if projects %}<a href="#partner-projects" class="btn btn-ghost">{% trans "Проекты" %} <span class="mono text-xs tnum">({{ projects|length }})</span></a>{% endif %}
-                </div>
-            </aside>
-        </div>
-
-        {% if stats.types or partner.quote %}
-        <div class="grid lg:grid-cols-12 gap-8 lg:gap-10 mt-12 md:mt-16">
-            {% if stats.types %}
-            <div class="lg:col-span-7 grid gap-6" data-reveal>
-                {% if stats.types %}<div><p class="eyebrow mb-3">{% trans "Что сделали" %}</p>
-                    <div class="flex flex-wrap gap-2">{% for t in stats.types %}<span class="sticker" style="background:var(--tone)">{{ t }}</span>{% endfor %}</div></div>{% endif %}
+                <div class="pcard-art" aria-hidden="true">{% include "site/illustrations/partnership.html" %}</div>
             </div>
-            {% endif %}
-            {% if partner.quote %}
-            <figure class="lg:col-span-5 m-0 panel p-6 md:p-8 bg-lime-soft grain" data-reveal style="--d:120ms">
-                <blockquote class="h-card text-xl md:text-2xl leading-snug m-0">«{{ partner.quote }}»</blockquote>
-                {% if partner.quote_author %}<figcaption class="mono text-xs text-muted mt-4">— {{ partner.quote_author }}, {{ partner.name }}</figcaption>{% endif %}
-            </figure>
-            {% endif %}
-        </div>
+
+            <div class="pcard-foot">
+                {% if stats.projects or stats.since %}
+                <dl class="pcard-stats">
+                    {% if stats.projects %}<div><dt>{% trans "Проекты" %}</dt><dd class="tnum">{{ stats.projects }}</dd></div>{% endif %}
+                    {% if stats.since %}<div><dt>{% trans "Вместе с" %}</dt><dd class="tnum">{{ stats.since }}</dd></div>{% endif %}
+                    {% if stats.technologies %}<div><dt>{% trans "Технологии" %}</dt><dd class="tnum">{{ stats.technologies|length }}</dd></div>{% endif %}
+                </dl>
+                {% endif %}
+                <div class="pcard-actions">
+                    <span class="eyebrow">{% trans "Поделиться" %}</span>
+                    <a class="share-icon" target="_blank" rel="noopener" aria-label="Telegram" title="Telegram"
+                       href="https://t.me/share/url?url={{ canonical_url|urlencode:'' }}&text={{ partner.name|urlencode:'' }}%20%C3%97%20{{ settings.site_name|urlencode:'' }}"><i data-lucide="send"></i></a>
+                    <a class="share-icon" target="_blank" rel="noopener" aria-label="WhatsApp" title="WhatsApp"
+                       href="https://wa.me/?text={{ partner.name|urlencode:'' }}%20%C3%97%20{{ settings.site_name|urlencode:'' }}%20{{ canonical_url|urlencode:'' }}"><i data-lucide="message-circle"></i></a>
+                    <button type="button" class="share-btn" data-share-copy="{{ canonical_url }}" data-done="{% trans 'Ссылка скопирована' %}">
+                        <i data-lucide="link"></i> <span>{% trans "Скопировать ссылку" %}</span></button>
+                    <button type="button" class="share-icon" data-share-native="{{ canonical_url }}" data-title="{{ partner.name }} × {{ settings.site_name }}"
+                            aria-label="{% trans 'Ещё' %}" title="{% trans 'Ещё' %}" hidden><i data-lucide="share-2"></i></button>
+                    {% if partner.website %}<a href="{{ partner.website }}" target="_blank" rel="noopener" class="btn btn-ink btn-sm">{% trans "Сайт партнёра" %} <i data-lucide="arrow-up-right"></i></a>{% endif %}
+                </div>
+            </div>
+        </article>
+
+        {% if partner.quote %}
+        <figure class="m-0 mt-10 panel p-6 md:p-10 bg-lime-soft grain max-w-4xl" data-reveal>
+            <blockquote class="h-card text-xl md:text-3xl leading-snug m-0">«{{ partner.quote }}»</blockquote>
+            {% if partner.quote_author %}<figcaption class="mono text-xs text-muted mt-5">— {{ partner.quote_author }}, {{ partner.name }}</figcaption>{% endif %}
+        </figure>
         {% endif %}
     </div>
 </section>
@@ -100,7 +74,26 @@
 </section>
 {% endif %}
 
-<section class="py-16 md:py-20 {% if projects %}bg-milk{% else %}bg-white{% endif %} border-t-[1.5px] border-ink">
+{% if partner.instagram_username %}
+<section class="py-16 md:py-24 border-t-[1.5px] border-ink">
+    <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-12 gap-10 items-center">
+        <div class="lg:col-span-5" data-reveal>
+            <span class="eyebrow mb-5">Instagram</span>
+            <h2 class="h-display text-2xl sm:text-3xl xl:text-4xl mb-5 [overflow-wrap:anywhere]">@{{ partner.instagram_username }}</h2>
+            <p class="lead mb-8">{% trans "Новости, работы и жизнь партнёра." %}</p>
+            <a href="{{ partner.instagram }}" target="_blank" rel="noopener" class="btn btn-ink"><i data-lucide="instagram"></i> {% trans "Открыть Instagram" %}</a>
+        </div>
+        <div class="lg:col-span-7" data-reveal style="--d:120ms">
+            <div class="panel ig-panel">
+                <iframe src="https://www.instagram.com/{{ partner.instagram_username }}/embed/" title="Instagram @{{ partner.instagram_username }}"
+                        loading="lazy" scrolling="no" allowtransparency="true"></iframe>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="py-16 md:py-20 bg-white border-t-[1.5px] border-ink">
     <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
         <div class="panel grain p-6 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-lime-soft mb-14">
             <p class="h-card text-2xl md:text-3xl max-w-xl">{% trans "Станьте нашим партнёром" %}</p>

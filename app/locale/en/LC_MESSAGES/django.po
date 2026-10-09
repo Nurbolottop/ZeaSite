@@ -710,3 +710,9 @@ msgstr "More"
 
 msgid "Что сделали"
 msgstr "What we built"
+
+msgid "Новости, работы и жизнь партнёра."
+msgstr "News, work and life of our partner."
+
+msgid "Открыть Instagram"
+msgstr "Open Instagram"
