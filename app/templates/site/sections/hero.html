@@ -12,7 +12,7 @@
             {% endif %}
 
             {% with parts=settings.hero_title|split_accent %}
-            <h1 class="h-display hyphens-auto text-[2.1rem] leading-[1.08] sm:text-[2.8rem] lg:text-[2.7rem] xl:text-[3.25rem] mb-7" data-reveal style="--d:80ms">
+            <h1 class="h-display text-[2.1rem] leading-[1.08] sm:text-[2.8rem] lg:text-[2.7rem] xl:text-[3.25rem] mb-7" data-reveal style="--d:80ms">
                 {% if parts.0 %}{{ parts.0 }} {% endif %}<span class="mark">{{ parts.1 }}</span>
             </h1>
             {% endwith %}
