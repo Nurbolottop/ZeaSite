@@ -1,0 +1,22 @@
+{% load i18n %}{# Карточка проекта в сетке: обложка + коротко + «Подробнее» (окно) #}
+        <article class="p-card{% if more and more > 7 %} p-more{% endif %}" data-color="{{ project.color }}"{% if more and more > 7 %} hidden{% endif %} data-reveal style="--d:0ms">
+            <div class="p-media">{% include "site/_project_media.html" with cover_only=True %}</div>
+            <div class="grid gap-2.5">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="mono text-xs text-muted">{{ project.project_type }} · <span class="tnum">{{ project.year }}</span></span>
+                </div>
+                <h3 class="h-card text-xl sr-only">{{ project.name }}</h3>
+                <p class="text-muted text-[.95rem] leading-relaxed line-clamp-2">{{ project.description }}</p>
+                <div class="flex items-center gap-5 mt-1">
+                    <button type="button" data-project-open="{{ project.pk }}" class="link-arrow">
+                        {% trans "Подробнее" %} <i data-lucide="arrow-right"></i>
+                    </button>
+                    {% if project.live_url %}
+                    <a href="{{ project.live_url }}" target="_blank" rel="noopener" class="mono text-xs text-muted hover:text-ink inline-flex items-center gap-1">
+                        {% trans "Открыть" %} ↗
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% include "site/_project_detail.html" %}
+        </article>

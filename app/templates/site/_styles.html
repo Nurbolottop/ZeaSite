@@ -158,6 +158,17 @@
         .marquee-track { display:flex; gap:.6rem; width:max-content; animation:marquee 38s linear infinite; }
         .marquee:hover .marquee-track { animation-play-state:paused; }
         .marquee-reverse { animation-direction:reverse; animation-duration:46s; }
+        a.partner { color:var(--ink); text-decoration:none; transition:transform .25s var(--ease), box-shadow .25s; }
+        a.partner:hover { transform:translateY(-2px); box-shadow:0 3px 0 var(--ink); }
+        .partner-tile { display:grid; gap:1rem; align-content:start; border:1.5px solid var(--ink); border-radius:1.5rem; padding:1.4rem;
+                        background:var(--paper); color:var(--ink); text-decoration:none; transition:transform .35s var(--ease), box-shadow .35s; min-width:0; }
+        .partner-tile:hover { transform:translateY(-4px); box-shadow:0 6px 0 var(--ink); }
+        .partner-tile .pt-logo, .pd-logo { border:1.5px solid var(--ink); background:#fff; display:grid; place-items:center; overflow:hidden; }
+        .partner-tile .pt-logo { width:4.5rem; height:4.5rem; border-radius:1.2rem; }
+        .pd-logo { width:clamp(7rem,5rem + 8vw,11rem); height:clamp(7rem,5rem + 8vw,11rem); border-radius:2rem; box-shadow:0 6px 0 var(--ink); }
+        .pt-logo img, .pd-logo img { width:100%; height:100%; object-fit:contain; padding:.5rem; }
+        .pt-logo svg { width:1.6rem; height:1.6rem; } .pd-logo svg { width:2.6rem; height:2.6rem; }
+        .partner-tile, .pd-logo { background-color:var(--paper); }
         .partners-band .partner { padding:.55rem 1.4rem .55rem .55rem; gap:1rem; background:var(--milk); }
         .partners-band .partner-logo { width:3.6rem; height:3.6rem; border-radius:1rem; background:#fff; }
         .partners-band .partner-logo img { object-fit:contain; padding:.3rem; }
@@ -182,6 +193,10 @@
         .cover { position:relative; aspect-ratio:3/2; border:1.5px solid var(--ink); border-radius:1.1rem; overflow:hidden;
                  background:var(--tone-bg); display:flex; flex-direction:column; justify-content:space-between; padding:1.2rem; }
         .cover-name { font:600 clamp(1.4rem,1rem + 1.6vw,2.4rem)/1.05 var(--f-display); letter-spacing:-.035em; position:relative; z-index:1; overflow-wrap:anywhere; }
+        .cover-logo { flex:none; width:3.6rem; height:3.6rem; border:1.5px solid var(--ink); border-radius:1rem; background:#fff;
+                      display:grid; place-items:center; overflow:hidden; box-shadow:0 3px 0 var(--ink); }
+        .cover-logo img { width:100%; height:100%; object-fit:contain; padding:.35rem; }
+        .p-feature .cover-logo { width:clamp(4.2rem,3rem + 3vw,6rem); height:clamp(4.2rem,3rem + 3vw,6rem); border-radius:1.3rem; }
         .cover-mono { font-size:clamp(4.5rem,3rem + 6vw,9rem); line-height:.85; letter-spacing:-.06em; }
         .cover-ball { position:absolute; right:-8%; bottom:-18%; width:56%; aspect-ratio:1; border-radius:50%; border:1.5px solid var(--ink);
                       background:radial-gradient(circle at 34% 30%, #fff 0%, var(--tone) 46%, var(--tone-deep,var(--sky-deep)) 100%); }
@@ -292,6 +307,10 @@
         .shot-desktop { width:min(88%,34rem); }
         .shot-mobile { width:clamp(9.5rem,30%,12rem); }
         .shot .browser img { aspect-ratio:16/10; }
+        .shot-image { width:clamp(13rem,46%,20rem); }
+        .shot-img { display:block; border:1.5px solid var(--ink); border-radius:1.2rem; overflow:hidden; }
+        .shot-img img { display:block; width:100%; aspect-ratio:1; object-fit:cover; }
+        .shot:hover .shot-img { box-shadow:0 4px 0 var(--ink); }
         .phone-frame { display:block; border:7px solid var(--ink); border-radius:1.7rem; overflow:hidden; background:var(--ink); }
         .phone-frame img { display:block; width:100%; aspect-ratio:390/844; object-fit:cover; object-position:top; border-radius:1.15rem; }
         .shot-cap { font:500 .72rem/1.35 var(--f-mono); color:var(--muted); }

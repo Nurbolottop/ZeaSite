@@ -1,0 +1,33 @@
+{% extends "site/base.html" %}{% load i18n %}
+{% block content %}
+<main>
+<section class="relative pt-32 md:pt-40 pb-20 md:pb-28">
+    <div class="absolute inset-x-0 top-0 h-80 dot-grid opacity-70 pointer-events-none [mask-image:linear-gradient(#000,transparent)]" aria-hidden="true"></div>
+    <div class="relative max-w-site mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="mono text-xs text-muted mb-6" aria-label="{% trans 'Навигация' %}"><a href="{% url 'index' %}" class="hover:text-ink">{{ settings.site_name }}</a> / {% trans "Партнёры" %}</nav>
+        <h1 class="h-section mb-12 md:mb-16 max-w-3xl" data-reveal>{% trans "Наши партнёры и организации" %}</h1>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for partner in partners %}
+            <a href="{{ partner.get_absolute_url }}" class="partner-tile grain" data-color="{{ partner.color }}" data-reveal style="--d:{{ forloop.counter0 }}0ms">
+                <span class="flex items-start justify-between gap-3">
+                    <span class="pt-logo">{% if partner.logo %}<img src="{{ partner.logo.url }}" alt="" loading="lazy">{% else %}<i data-lucide="{{ partner.icon|default:'building-2' }}"></i>{% endif %}</span>
+                    {% with n=partner.projects.all|length %}{% if n %}<span class="chip tnum">{% trans "Проекты" %} · {{ n }}</span>{% endif %}{% endwith %}
+                </span>
+                <span>
+                    <span class="block h-card text-xl">{{ partner.name }}</span>
+                    {% if partner.industry %}<span class="block mono text-xs text-muted mt-1">{{ partner.industry }}</span>{% endif %}
+                </span>
+                <span class="link-arrow text-sm">{% trans "Страница партнёра" %} <i data-lucide="arrow-right"></i></span>
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="mt-16 panel grain p-6 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-lime-soft">
+            <p class="h-card text-2xl md:text-3xl max-w-xl">{% trans "Станьте нашим партнёром" %}</p>
+            <a href="{% url 'index' %}?request=partnership#contact" class="btn btn-ink self-start md:self-auto">{% trans "Обсудить партнёрство" %} <i data-lucide="arrow-right" class="i-arrow"></i></a>
+        </div>
+    </div>
+</section>
+</main>
+{% endblock %}

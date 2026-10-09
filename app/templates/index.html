@@ -1,87 +1,5 @@
-{% load static i18n %}<!DOCTYPE html>
-{% get_current_language as LANGUAGE_CODE %}
-<html lang="{{ LANGUAGE_CODE }}">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Title & SEO -->
-    <title>{{ meta_title }}</title>
-    <meta name="description" content="{{ meta_description }}">
-    {% if settings.meta_keywords %}<meta name="keywords" content="{{ settings.meta_keywords }}">{% endif %}
-    <meta name="robots" content="index, follow, max-image-preview:large">
-
-    <!-- Canonical + hreflang (мультиязычность для поиска) -->
-    <link rel="canonical" href="{{ canonical_url }}">
-    {% for code, url in alt_lang_urls.items %}
-    <link rel="alternate" hreflang="{{ code }}" href="{{ url }}">
-    {% endfor %}
-    <link rel="alternate" hreflang="x-default" href="{{ alt_lang_urls.ru }}">
-
-    <!-- Open Graph (соцсети) -->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="{{ settings.site_name }}">
-    <meta property="og:url" content="{{ canonical_url }}">
-    <meta property="og:title" content="{{ meta_title }}">
-    <meta property="og:description" content="{{ meta_description }}">
-    <meta property="og:locale" content="{{ og_locale }}">
-    {% for loc in og_locale_alternates %}<meta property="og:locale:alternate" content="{{ loc }}">
-    {% endfor %}
-    {% if settings.og_image %}<meta property="og:image" content="{{ base_url }}{{ settings.og_image.url }}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">{% endif %}
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="{% if settings.og_image %}summary_large_image{% else %}summary{% endif %}">
-    <meta name="twitter:title" content="{{ meta_title }}">
-    <meta name="twitter:description" content="{{ meta_description }}">
-    {% if settings.og_image %}<meta name="twitter:image" content="{{ base_url }}{{ settings.og_image.url }}">{% endif %}
-
-    <!-- Google Search Console -->
-    {% if settings.gsc_verification %}<meta name="google-site-verification" content="{{ settings.gsc_verification }}">{% endif %}
-
-    <!-- Favicon (только если загружен в настройках) -->
-    {% if settings.favicon %}
-    <link rel="icon" type="image/webp" href="{{ settings.favicon.url }}">
-    <link rel="apple-touch-icon" href="{{ settings.favicon.url }}">
-    {% endif %}
-
-    <!-- Structured Data (Organization) -->
-    <script type="application/ld+json">{{ organization_jsonld|safe }}</script>
-
-    <!-- Google Analytics 4 -->
-    {% if settings.ga4_id %}
-    <link rel="preconnect" href="https://www.googletagmanager.com">
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ settings.ga4_id }}"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '{{ settings.ga4_id }}');
-    </script>
-    {% endif %}
-
-    <!-- Tailwind: собирается из репозитория (npm run build:css) и встраивается в страницу -->
-    <style>{{ tailwind_inline|safe }}</style>
-
-    <!-- Шрифты — асинхронно, не блокируют первую отрисовку (все три с cyrillic-ext: ң ө ү) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
-          onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
-    <!-- Анимации появления включаются только при работающем JS -->
-    <script>document.documentElement.classList.add('js');</script>
-
-    {% include "site/_styles.html" %}
-</head>
-
-<body>
-
-{% include "site/_header.html" %}
-
-{% include "site/illustrations/_defs.html" %}
-
+{% extends "site/base.html" %}
+{% block content %}
 <main>
     {% include "site/sections/hero.html" %}
     {% if partners %}{% include "site/sections/partners.html" %}{% endif %}
@@ -92,14 +10,5 @@
     {% include "site/sections/cooperation.html" %}
     {% include "site/sections/contact.html" %}
 </main>
-
-{% include "site/_footer.html" %}
-
-{% if projects %}{% include "site/_project_modal.html" %}{% endif %}
-
-<!-- JS в конце body — не блокирует отрисовку; lucide здесь, до первого вызова createIcons().
-     Версия закреплена: @latest может сломать иконки без нашего ведома. -->
-<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
-{% include "site/_scripts.html" %}
-</body>
-</html>
+{% endblock %}
+{% block modals %}{% if projects %}{% include "site/_project_modal.html" %}{% endif %}{% endblock %}

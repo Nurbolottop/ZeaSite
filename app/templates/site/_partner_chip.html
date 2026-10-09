@@ -1,8 +1,8 @@
-{# Партнёр в бегущей строке: логотип (или иконка) + название + сфера #}
-<span class="partner" data-color="{{ partner.color }}"{% if hidden %} aria-hidden="true"{% endif %}>
+{# Партнёр в бегущей строке: ссылка на его страницу — логотип (или иконка) + название + сфера #}
+<a href="{% if partner.slug %}{{ partner.get_absolute_url }}{% else %}#{% endif %}" class="partner" data-color="{{ partner.color }}"{% if hidden %} aria-hidden="true" tabindex="-1"{% endif %}>
     <span class="partner-logo">
         {% if partner.logo %}<img src="{{ partner.logo.url }}" alt="" loading="lazy">
         {% else %}<i data-lucide="{{ partner.icon|default:'building-2' }}"></i>{% endif %}
     </span>
     <span><span class="partner-name">{{ partner.name }}</span>{% if partner.industry %}<span class="partner-industry">{{ partner.industry }}</span>{% endif %}</span>
-</span>
+</a>

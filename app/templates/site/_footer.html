@@ -4,7 +4,7 @@
     <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-8">
         <div class="flex flex-col md:flex-row md:items-start justify-between gap-8">
             <div class="grid gap-3 max-w-sm">
-                <a href="#home" class="flex items-center gap-2.5 text-ink">{% include "site/_brand.html" with size="sm" %}</a>
+                <a href="{{ home_url }}" class="flex items-center gap-2.5 text-ink">{% include "site/_brand.html" with size="sm" %}</a>
                 {% if settings.site_tagline %}<p class="text-muted text-sm">{{ settings.site_tagline }}</p>{% endif %}
             </div>
             <nav class="flex flex-wrap gap-x-6 gap-y-3" aria-label="{% trans 'Меню в подвале' %}">
@@ -16,7 +16,7 @@
         <div class="footer-word mt-10 -mb-4" aria-hidden="true">{{ settings.site_name }}</div>
         <div class="flex flex-col sm:flex-row justify-between gap-2 pt-6 border-t border-ink/15 relative">
             <p class="mono text-xs text-muted">{% if settings.footer_text %}{{ settings.footer_text }}{% else %}© {% now "Y" %} {{ settings.site_name }}{% endif %}</p>
-            <a href="#home" class="mono text-xs text-muted hover:text-ink">{% trans "Наверх" %} ↑</a>
+            <a href="#" class="mono text-xs text-muted hover:text-ink">{% trans "Наверх" %} ↑</a>
         </div>
     </div>
 </footer>

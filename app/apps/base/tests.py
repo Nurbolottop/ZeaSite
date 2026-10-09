@@ -198,6 +198,39 @@ class RedesignSectionsTests(TestCase):
         self.assertEqual(html.count('class="p-card p-more"'), 2)
 
 
+class PartnerPagesTests(TestCase):
+    def setUp(self):
+        self.p = Partner.objects.create(name='Тёплый город', industry='Ритейл', about='Магазин отопления',
+                                        website='https://example.kg')
+        Project.objects.create(name='Магазин', description='d', project_type='Сайт', technologies='Django',
+                               partner=self.p)
+        Partner.objects.create(name='Скрытый', industry='x', is_active=False)
+
+    def test_slug_generated_from_cyrillic(self):
+        self.assertEqual(self.p.slug, 'teplyy-gorod')
+        self.assertEqual(self.p.get_absolute_url(), '/partners/teplyy-gorod/')
+
+    def test_list_and_detail(self):
+        html = self.client.get('/partners/').content.decode()
+        self.assertIn('href="/partners/teplyy-gorod/"', html)
+        self.assertNotIn('Скрытый', html)
+        detail = self.client.get('/partners/teplyy-gorod/')
+        self.assertEqual(detail.status_code, 200)
+        page = detail.content.decode()
+        for text in ('Магазин отопления', 'https://example.kg', '<template id="project-detail-', 'id="project-modal"'):
+            self.assertIn(text, page)
+        self.assertIn('href="/en/partners/teplyy-gorod/"', page)   # язык переключает эту же страницу
+        self.assertIn('href="/#contact"', page)                    # меню ведёт на главную
+
+    def test_inactive_partner_404(self):
+        hidden = Partner.objects.get(name='Скрытый')
+        self.assertEqual(self.client.get(f'/partners/{hidden.slug}/').status_code, 404)
+
+    def test_menu_and_sitemap(self):
+        self.assertIn('href="/partners/"', self.client.get('/').content.decode())
+        self.assertIn('/partners/teplyy-gorod/', self.client.get('/sitemap.xml').content.decode())
+
+
 class ContactsVisibilityTests(TestCase):
     def test_empty_contacts_not_rendered(self):
         html = self.client.get('/').content.decode()

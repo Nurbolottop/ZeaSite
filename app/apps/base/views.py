@@ -1,6 +1,6 @@
 import json
 import os
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from django.urls import reverse
 from django.utils import translation
@@ -49,13 +49,13 @@ def _tailwind_inline():
     return css
 
 
-def _alt_lang_urls(request, base_url):
-    """URL текущей страницы для каждого языка (для hreflang / og:locale)."""
-    urls = {}
+def _lang_paths(url_name='index', **kwargs):
+    """Путь текущей страницы на каждом языке (переключатель языка, hreflang)."""
+    paths = {}
     for code, _name in dj_settings.LANGUAGES:
         with translation.override(code):
-            urls[code] = base_url + reverse('index')
-    return urls
+            paths[code] = reverse(url_name, kwargs=kwargs or None)
+    return paths
 
 
 def _organization_jsonld(site, base_url, description):
@@ -98,29 +98,55 @@ def _bento(services):
     return cells
 
 
-def index(request):
+def _site_context(request, *, url_name='index', url_kwargs=None, meta_title='', meta_description=''):
+    """Общий контекст публичных страниц: настройки, меню, SEO, языки."""
     site = SiteSettings.get()
     base_url = site.get_base_url(request)
     lang = translation.get_language()
+    on_index = url_name == 'index'
+    home = '' if on_index else reverse('index')
 
-    projects = list(Project.objects.filter(is_active=True).order_by('-is_featured', 'order')
-                    .prefetch_related('gallery'))
-    partners = list(Partner.objects.filter(is_active=True))
-    stats = list(Stat.objects.filter(is_active=True))
+    has_projects = Project.objects.filter(is_active=True).exists()
+    has_partners = Partner.objects.filter(is_active=True).exists()
+    nav_items = [(home + '#services', _('Направления'))]
+    if has_projects:
+        nav_items.append((home + '#projects', _('Проекты')))
+    if has_partners:
+        nav_items.append((reverse('site_partners'), _('Партнёры')))
+    nav_items += [(home + '#about', _('О нас')), (home + '#cooperation', _('Сотрудничество')),
+                  (home + '#contact', _('Контакты'))]
 
-    nav_items = [('#services', _('Направления'))]
-    if projects:
-        nav_items.append(('#projects', _('Проекты')))
-    nav_items += [('#about', _('О нас')), ('#cooperation', _('Сотрудничество')),
-                  ('#contact', _('Контакты'))]
-
-    meta_title = site.meta_title or f'{site.site_name} — {site.site_tagline}'
-    meta_description = site.meta_description or site.hero_subtitle
-
-    context = {
+    meta_title = str(meta_title or site.meta_title or f'{site.site_name} — {site.site_tagline}')
+    meta_description = str(meta_description or site.meta_description or site.hero_subtitle)
+    lang_paths = _lang_paths(url_name, **(url_kwargs or {}))
+    return {
         'settings':        site,
         'tailwind_inline': _tailwind_inline(),
         'nav_items':       nav_items,
+        'home_url':        home + '#home' if home else '#home',
+        'contact_url':     home + '#contact',
+        'lang_paths':      lang_paths,
+        # ── SEO ──
+        'meta_title':       meta_title,
+        'meta_description': meta_description,
+        'base_url':         base_url,
+        'canonical_url':    base_url + request.path,
+        'alt_lang_urls':    {code: base_url + path for code, path in lang_paths.items()},
+        'og_locale':        OG_LOCALES.get(lang, lang),
+        'og_locale_alternates': [v for k, v in OG_LOCALES.items() if k != lang],
+        'organization_jsonld': _organization_jsonld(site, base_url, meta_description),
+    }
+
+
+def _active_projects():
+    return list(Project.objects.filter(is_active=True).order_by('-is_featured', 'order')
+                .prefetch_related('gallery'))
+
+
+def index(request):
+    projects = _active_projects()
+    context = _site_context(request)
+    context.update({
         'commitments':     Commitment.objects.filter(is_active=True),
         'formats':         CooperationFormat.objects.filter(is_active=True),
         'process_steps':   ProcessStep.objects.filter(is_active=True),
@@ -128,22 +154,37 @@ def index(request):
         'team':            TeamMember.objects.filter(is_active=True),
         'projects':        projects,
         'hero_projects':   [p for p in projects if p.is_featured][:2],
-        'partners':        partners,
+        'partners':        list(Partner.objects.filter(is_active=True)),
         'tech_stack':      TechStack.objects.filter(is_active=True),
         'why_us':          WhyUs.objects.filter(is_active=True),
-        'stats':           stats,
+        'stats':           list(Stat.objects.filter(is_active=True)),
         'contact_form':    ContactForm(),
-        # ── SEO ──
-        'meta_title':       meta_title,
-        'meta_description': meta_description,
-        'base_url':         base_url,
-        'canonical_url':    base_url + request.path,
-        'alt_lang_urls':    _alt_lang_urls(request, base_url),
-        'og_locale':        OG_LOCALES.get(lang, lang),
-        'og_locale_alternates': [v for k, v in OG_LOCALES.items() if k != lang],
-        'organization_jsonld': _organization_jsonld(site, base_url, meta_description),
-    }
+    })
     return render(request, 'index.html', context)
+
+
+def partners(request):
+    items = list(Partner.objects.filter(is_active=True).prefetch_related('projects'))
+    context = _site_context(request, url_name='site_partners',
+                            meta_title=f"{_('Партнёры')} — {SiteSettings.get().site_name}",
+                            meta_description=_('Компании и организации, с которыми работает ZEA.'))
+    context['partners'] = items
+    return render(request, 'site/partners_list.html', context)
+
+
+def partner_detail(request, slug):
+    partner = get_object_or_404(Partner, slug=slug, is_active=True)
+    projects = list(partner.projects.filter(is_active=True).order_by('-is_featured', 'order')
+                    .prefetch_related('gallery'))
+    context = _site_context(request, url_name='site_partner', url_kwargs={'slug': slug},
+                            meta_title=f'{partner.name} — {_("партнёр")} {SiteSettings.get().site_name}',
+                            meta_description=partner.about or partner.industry)
+    context.update({
+        'partner':  partner,
+        'projects': projects,
+        'others':   list(Partner.objects.filter(is_active=True).exclude(pk=partner.pk)),
+    })
+    return render(request, 'site/partner_detail.html', context)
 
 
 def robots_txt(request):

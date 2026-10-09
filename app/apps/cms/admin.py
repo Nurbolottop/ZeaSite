@@ -177,10 +177,10 @@ class ProjectAdmin(PreviewAdmin):
             'fields': ('name', 'description', 'project_type', 'technologies'),
         }),
         ('Внешний вид', {
-            'fields': ('icon', 'image', 'color'),
+            'fields': ('logo', 'icon', 'image', 'color'),
         }),
         ('Ссылки и детали', {
-            'fields': ('live_url', 'year'),
+            'fields': ('partner', 'live_url', 'year'),
         }),
         ('Кейс (окно «Подробнее»)', {
             'description': 'Заполняйте только проверенными фактами. Пустые поля не показываются.',
@@ -207,7 +207,7 @@ class PartnerAdmin(PreviewAdmin):
 
     fieldsets = (
         ('Основная информация', {
-            'fields': ('name', 'industry'),
+            'fields': ('name', 'slug', 'industry', 'about', 'website'),
         }),
         ('Внешний вид', {
             'fields': ('icon', 'logo', 'color'),

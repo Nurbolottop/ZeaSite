@@ -1,0 +1,59 @@
+{% extends "site/base.html" %}{% load i18n %}
+{% block content %}
+<main>
+<section class="relative pt-32 md:pt-40 pb-16 md:pb-24 overflow-hidden" data-color="{{ partner.color }}">
+    <div class="absolute inset-x-0 top-0 h-96 dot-grid opacity-70 pointer-events-none [mask-image:linear-gradient(#000,transparent)]" aria-hidden="true"></div>
+    <div class="relative max-w-site mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="mono text-xs text-muted mb-8" aria-label="{% trans 'Навигация' %}">
+            <a href="{% url 'index' %}" class="hover:text-ink">{{ settings.site_name }}</a> /
+            <a href="{% url 'site_partners' %}" class="hover:text-ink">{% trans "Партнёры" %}</a> / {{ partner.name }}
+        </nav>
+
+        <div class="grid lg:grid-cols-12 gap-10 items-center">
+            <div class="lg:col-span-7 min-w-0">
+                <div class="flex items-center gap-5 mb-7" data-reveal>
+                    <span class="pd-logo">{% if partner.logo %}<img src="{{ partner.logo.url }}" alt="{{ partner.name }}">{% else %}<i data-lucide="{{ partner.icon|default:'building-2' }}"></i>{% endif %}</span>
+                    {% if partner.industry %}<span class="sticker" style="background:var(--tone)">{{ partner.industry }}</span>{% endif %}
+                </div>
+                <h1 class="h-display text-4xl md:text-6xl mb-6" data-reveal style="--d:80ms">{{ partner.name }}</h1>
+                {% if partner.about %}<p class="lead max-w-xl mb-8" data-reveal style="--d:160ms">{{ partner.about }}</p>{% endif %}
+                <div class="flex flex-wrap gap-3" data-reveal style="--d:240ms">
+                    {% if partner.website %}<a href="{{ partner.website }}" target="_blank" rel="noopener" class="btn btn-ink">{% trans "Сайт партнёра" %} <i data-lucide="arrow-up-right"></i></a>{% endif %}
+                    {% if projects %}<a href="#partner-projects" class="btn btn-ghost">{% trans "Проекты" %} <span class="mono text-xs tnum">({{ projects|length }})</span></a>{% endif %}
+                </div>
+            </div>
+            <div class="lg:col-span-5 min-w-0" data-reveal style="--d:120ms">
+                <div class="max-w-[440px] mx-auto">{% include "site/illustrations/partnership.html" %}</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if projects %}
+<section id="partner-projects" class="py-16 md:py-24 bg-white border-t-[1.5px] border-ink">
+    <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="h-section mb-10 md:mb-14" data-reveal>{% trans "Что мы сделали вместе" %}</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+            {% for project in projects %}{% include "site/_project_card.html" %}{% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="py-16 md:py-20 {% if projects %}bg-milk{% else %}bg-white{% endif %} border-t-[1.5px] border-ink">
+    <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="panel grain p-6 md:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6 bg-lime-soft mb-14">
+            <p class="h-card text-2xl md:text-3xl max-w-xl">{% trans "Станьте нашим партнёром" %}</p>
+            <a href="{% url 'index' %}?request=partnership#contact" class="btn btn-ink self-start md:self-auto">{% trans "Обсудить партнёрство" %} <i data-lucide="arrow-right" class="i-arrow"></i></a>
+        </div>
+        {% if others %}
+        <p class="mono text-xs uppercase tracking-[.14em] text-muted mb-5">{% trans "Другие партнёры" %}</p>
+        <div class="flex flex-wrap gap-3">
+            {% for partner in others %}{% include "site/_partner_chip.html" %}{% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+</main>
+{% endblock %}
+{% block modals %}{% if projects %}{% include "site/_project_modal.html" %}{% endif %}{% endblock %}

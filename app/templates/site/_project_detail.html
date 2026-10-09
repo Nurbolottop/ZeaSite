@@ -16,7 +16,9 @@
                 {% for shot in shots %}
                 <a href="{{ shot.image.url }}" target="_blank" rel="noopener" class="shot shot-{{ shot.kind }}"
                    aria-label="{% trans 'Открыть скриншот' %}{% if shot.caption %}: {{ shot.caption }}{% endif %}">
-                    {% if shot.kind == 'mobile' %}
+                    {% if shot.kind == 'image' %}
+                    <span class="shot-img"><img src="{{ shot.image.url }}" alt="{{ shot.caption|default:project.name }}" loading="lazy"></span>
+                    {% elif shot.kind == 'mobile' %}
                     <span class="phone-frame"><img src="{{ shot.image.url }}" alt="{{ shot.caption|default:project.name }}" loading="lazy"></span>
                     {% else %}
                     <span class="browser"><span class="browser-bar"><i></i><i></i><i></i></span><img src="{{ shot.image.url }}" alt="{{ shot.caption|default:project.name }}" loading="lazy"></span>

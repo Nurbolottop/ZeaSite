@@ -1,4 +1,7 @@
+import re
+
 from django.db import models
+from django.urls import reverse
 from django_resized import ResizedImageField
 
 from apps.contacts.choices import REQUEST_TYPE_CHOICES
@@ -30,6 +33,17 @@ ILLUSTRATION_CHOICES = [
 ]
 
 # Если иллюстрация не выбрана — подбирается по иконке
+_TRANSLIT = dict(zip('абвгдеёжзийклмнопрстуфхцчшщъыьэюяңөү',
+                     ['a','b','v','g','d','e','e','zh','z','i','y','k','l','m','n','o','p','r','s','t','u',
+                      'f','h','ts','ch','sh','sch','','y','','e','yu','ya','n','o','u']))
+
+
+def make_slug(text, max_length=80):
+    """«Тёплый город» → teplyy-gorod (кириллица ru/ky транслитерируется)."""
+    text = ''.join(_TRANSLIT.get(ch, ch) for ch in (text or '').lower())
+    return re.sub(r'[^a-z0-9]+', '-', text).strip('-')[:max_length] or 'partner'
+
+
 ICON_ILLUSTRATIONS = {
     'globe': 'websites', 'monitor': 'websites', 'layout': 'websites',
     'app-window': 'platforms', 'layout-grid': 'platforms', 'layers': 'platforms',
@@ -88,6 +102,15 @@ class Project(models.Model):
                        upload_to='projects/', force_format='WEBP',
                        blank=True, null=True,
                        help_text='Скриншот / превью проекта (1200×800, WebP)')
+    partner      = models.ForeignKey('Partner', on_delete=models.SET_NULL, null=True, blank=True,
+                                     related_name='projects', verbose_name='Партнёр (заказчик)',
+                                     help_text='Проект покажется на странице этого партнёра')
+    logo         = ResizedImageField(
+                       '🖼 Логотип проекта',
+                       size=[400, 400], quality=90,
+                       upload_to='projects/logos/', force_format='WEBP',
+                       blank=True, null=True,
+                       help_text='Показывается в углу обложки на главной (квадрат или прозрачный фон)')
     color        = models.CharField('Цвет', max_length=20, choices=COLOR_CHOICES, default='indigo')
     live_url     = models.URLField('🔗 Ссылка на проект', blank=True,
                                    help_text='URL живого сайта (кнопка "Открыть проект")')
@@ -119,7 +142,7 @@ class Project(models.Model):
 
 class ProjectImage(models.Model):
     """Скриншоты платформы в окне «Подробнее» проекта."""
-    KIND_CHOICES = [('desktop', 'Компьютер'), ('mobile', 'Телефон')]
+    KIND_CHOICES = [('desktop', 'Компьютер'), ('mobile', 'Телефон'), ('image', 'Изображение (квадрат)')]
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='gallery',
                                 verbose_name='Проект')
@@ -127,7 +150,7 @@ class ProjectImage(models.Model):
                                 upload_to='projects/gallery/', force_format='WEBP',
                                 help_text='Реальный скриншот платформы (без вымышленных данных)')
     kind    = models.CharField('Экран', max_length=10, choices=KIND_CHOICES, default='desktop',
-                               help_text='Определяет рамку: окно браузера или телефон')
+                               help_text='Рамка: окно браузера, телефон или просто изображение (промо, баннер)')
     caption = models.CharField('Подпись', max_length=150, blank=True)
     order   = models.PositiveIntegerField('Порядок', default=0)
 
@@ -142,7 +165,12 @@ class ProjectImage(models.Model):
 
 class Partner(models.Model):
     name     = models.CharField('Название', max_length=100)
+    slug     = models.SlugField('Адрес страницы', max_length=80, unique=True, null=True, blank=True,
+                                help_text='zeastudio.su/partners/<адрес>/. Пусто — из названия')
     industry = models.CharField('Сфера', max_length=100)
+    about    = models.TextField('О партнёре', blank=True,
+                                help_text='Короткий текст для страницы партнёра')
+    website  = models.URLField('Сайт партнёра', blank=True)
     icon     = models.CharField('Иконка (lucide)', max_length=60, default='building-2',
                                 help_text='Используется если логотип не загружен')
     logo     = ResizedImageField(
@@ -159,6 +187,18 @@ class Partner(models.Model):
         verbose_name        = 'Партнёр сайта (логотип)'
         verbose_name_plural = 'Партнёры сайта (логотипы)'
         ordering            = ['order']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base = make_slug(self.name_ru if getattr(self, 'name_ru', None) else self.name)
+            slug, n = base, 2
+            while Partner.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug, n = f'{base}-{n}', n + 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('site_partner', kwargs={'slug': self.slug})
 
     def __str__(self):
         return self.name

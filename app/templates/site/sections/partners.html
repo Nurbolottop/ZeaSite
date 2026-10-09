@@ -4,7 +4,8 @@
     <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] gap-6 lg:gap-10 items-center">
         <div data-reveal>
             <span class="eyebrow">{% trans "Партнёры" %}</span>
-            <p class="h-card text-xl md:text-2xl mt-3">{% trans "Наши партнёры и организации" %}</p>
+            <p class="h-card text-xl md:text-2xl mt-3 mb-4">{% trans "Наши партнёры и организации" %}</p>
+            <a href="{% url 'site_partners' %}" class="link-arrow text-sm">{% trans "Все партнёры" %} <i data-lucide="arrow-right"></i></a>
         </div>
         <div class="marquee min-w-0" data-reveal style="--d:120ms">
             <div class="marquee-track marquee-reverse">

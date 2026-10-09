@@ -3,7 +3,7 @@
 <header id="header" class="site-header">
     <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between gap-4 h-20">
-            <a href="#home" class="flex items-center gap-2.5 text-ink no-underline" aria-label="{{ settings.site_name }}">
+            <a href="{{ home_url }}" class="flex items-center gap-2.5 text-ink no-underline" aria-label="{{ settings.site_name }}">
                 {% include "site/_brand.html" with size="lg" %}
             </a>
 
@@ -15,14 +15,12 @@
 
             <div class="flex items-center gap-2">
                 <div class="hidden md:flex items-center gap-0.5">
-                    {% for lang_code, lang_name in LANGUAGES %}
-                    {% language lang_code %}
-                    <a href="{% url 'index' %}" hreflang="{{ lang_code }}"
+                    {% for lang_code, lang_path in lang_paths.items %}
+                    <a href="{{ lang_path }}" hreflang="{{ lang_code }}"
                        class="lang-link{% if lang_code == CURRENT_LANG %} is-current{% endif %}">{{ lang_code }}</a>
-                    {% endlanguage %}
                     {% endfor %}
                 </div>
-                <a href="#contact" data-request-type="partnership"
+                <a href="{{ contact_url }}" data-request-type="partnership"
                    class="hidden md:inline-flex btn btn-ink btn-sm">{% trans "Обсудить партнёрство" %}</a>
                 <button id="burger-btn" type="button" class="burger lg:hidden flex flex-col justify-center gap-[5px] w-11 h-11 p-2.5 rounded-full border-[1.5px] border-ink bg-white"
                         aria-label="{% trans 'Меню' %}" aria-controls="mobile-menu" aria-expanded="false">
@@ -46,16 +44,14 @@
         {% endfor %}
     </nav>
     <div class="mt-auto grid gap-4">
-        <a href="#contact" data-request-type="partnership" class="mobile-link btn btn-ink">
+        <a href="{{ contact_url }}" data-request-type="partnership" class="mobile-link btn btn-ink">
             {% trans "Обсудить партнёрство" %} <i data-lucide="arrow-right" class="i-arrow"></i>
         </a>
         <div class="flex items-center gap-1 justify-center">
-            {% for lang_code, lang_name in LANGUAGES %}
-            {% language lang_code %}
-            <a href="{% url 'index' %}" hreflang="{{ lang_code }}"
-               class="lang-link{% if lang_code == CURRENT_LANG %} is-current{% endif %}">{{ lang_code }}</a>
-            {% endlanguage %}
-            {% endfor %}
+            {% for lang_code, lang_path in lang_paths.items %}
+                    <a href="{{ lang_path }}" hreflang="{{ lang_code }}"
+                       class="lang-link{% if lang_code == CURRENT_LANG %} is-current{% endif %}">{{ lang_code }}</a>
+                    {% endfor %}
         </div>
     </div>
 </div>

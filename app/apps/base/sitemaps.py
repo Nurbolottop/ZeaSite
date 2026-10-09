@@ -23,10 +23,17 @@ class StaticViewSitemap(Sitemap):
     alternates = True
 
     def items(self):
-        return ['index']
+        from apps.cms.models import Partner
+        items = [('index', {})]
+        if Partner.objects.filter(is_active=True).exists():
+            items.append(('site_partners', {}))
+            items += [('site_partner', {'slug': p.slug})
+                      for p in Partner.objects.filter(is_active=True).exclude(slug=None)]
+        return items
 
     def location(self, item):
-        return reverse(item)
+        name, kwargs = item
+        return reverse(name, kwargs=kwargs or None)
 
     def get_urls(self, page=1, site=None, protocol=None):
         from apps.cms.models import SiteSettings

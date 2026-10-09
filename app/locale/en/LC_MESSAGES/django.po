@@ -661,3 +661,31 @@ msgstr "More about the terms"
 
 msgid "Ответим и предложим формат работы."
 msgstr "We’ll reply and suggest how to work together."
+
+msgid "Все партнёры"
+msgstr "All partners"
+
+msgid "Страница партнёра"
+msgstr "Partner page"
+
+msgid "Станьте нашим партнёром"
+msgstr "Become our partner"
+
+msgid "Сайт партнёра"
+msgstr "Partner website"
+
+msgid "Что мы сделали вместе"
+msgstr "What we built together"
+
+msgid "Другие партнёры"
+msgstr "Other partners"
+
+msgid "Навигация"
+msgstr "Breadcrumbs"
+
+msgid "партнёр"
+msgstr "partner"
+
+msgid "Компании и организации, с которыми работает ZEA."
+msgstr "Companies and organizations ZEA works with."
+
