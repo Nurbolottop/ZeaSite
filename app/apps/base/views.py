@@ -9,7 +9,7 @@ from django.conf import settings as dj_settings
 from django.contrib.staticfiles import finders
 from apps.cms.models import (
     Service, Project, Partner, TechStack, WhyUs, Stat, SiteSettings,
-    CooperationFormat, ProcessStep, Commitment,
+    CooperationFormat, ProcessStep, Commitment, TeamMember,
 )
 from apps.contacts.forms import ContactForm
 
@@ -18,6 +18,9 @@ TAILWIND_PATH = os.path.join('css', 'tailwind.css')
 OG_LOCALES = {'ru': 'ru_RU', 'ky': 'ky_KG', 'en': 'en_US'}
 
 _TAILWIND_CSS = None
+
+# Вертикальные иллюстрации занимают высокую ячейку бенто, остальные — широкую
+TALL_ILLUSTRATIONS = {'mobile', 'ai', 'support'}
 
 
 def _tailwind_inline():
@@ -74,6 +77,27 @@ def _organization_jsonld(site, base_url, description):
     return json.dumps(data, ensure_ascii=False).replace('<', '\\u003c')
 
 
+def _bento(services):
+    """Раскладка «Направлений» (сетка из 6 колонок, grid-auto-flow: dense).
+
+    Высокая карточка (2×2) идёт в паре с двумя широкими (4×1), стороны
+    чередуются. Порядок из админки сохраняется внутри каждой группы.
+    Оставшиеся широкие растягиваются на всю ширину. None — карточка-призыв.
+    Возвращает список (service | None, layout, side)."""
+    talls = [s for s in services if s.illustration_key in TALL_ILLUSTRATIONS]
+    wides = [s for s in services if s.illustration_key not in TALL_ILLUSTRATIONS] + [None]
+    cells, right = [], True
+    while talls and len(wides) >= 2:
+        tall = (talls.pop(0), 'tall', 'right' if right else 'left')
+        w1, w2 = (wides.pop(0), 'wide', ''), (wides.pop(0), 'wide', '')
+        # Слева высокая должна стоять в DOM первой, иначе широкая займёт её колонки
+        cells += [w1, tall, w2] if right else [tall, w1, w2]
+        right = not right
+    cells += [(t, 'tall', 'right') for t in talls]
+    cells += [(w, 'full', '') for w in wides]
+    return cells
+
+
 def index(request):
     site = SiteSettings.get()
     base_url = site.get_base_url(request)
@@ -83,11 +107,11 @@ def index(request):
     partners = list(Partner.objects.filter(is_active=True))
     stats = list(Stat.objects.filter(is_active=True))
 
-    nav_items = [('#about', _('О нас')), ('#cooperation', _('Сотрудничество')),
-                 ('#services', _('Направления'))]
+    nav_items = [('#services', _('Направления'))]
     if projects:
         nav_items.append(('#projects', _('Проекты')))
-    nav_items.append(('#contact', _('Контакты')))
+    nav_items += [('#about', _('О нас')), ('#cooperation', _('Сотрудничество')),
+                  ('#contact', _('Контакты'))]
 
     meta_title = site.meta_title or f'{site.site_name} — {site.site_tagline}'
     meta_description = site.meta_description or site.hero_subtitle
@@ -99,7 +123,8 @@ def index(request):
         'commitments':     Commitment.objects.filter(is_active=True),
         'formats':         CooperationFormat.objects.filter(is_active=True),
         'process_steps':   ProcessStep.objects.filter(is_active=True),
-        'services':        Service.objects.filter(is_active=True),
+        'bento':           _bento(list(Service.objects.filter(is_active=True))),
+        'team':            TeamMember.objects.filter(is_active=True),
         'projects':        projects,
         'hero_projects':   [p for p in projects if p.is_featured][:2],
         'partners':        partners,

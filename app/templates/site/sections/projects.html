@@ -1,130 +1,77 @@
 {% load i18n %}
 <!-- ══════════ ПРОЕКТЫ ══════════ -->
-<section id="projects" class="py-24 md:py-32 relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center mb-16">
-            <div class="inline-flex items-center gap-2 glass px-3.5 py-1.5 rounded-full text-xs eyebrow mb-7" data-aos="fade-up">
-                <i data-lucide="layers" class="w-3.5 h-3.5"></i> {% trans "Проекты" %}
+<section id="projects" class="py-20 md:py-28 border-t-[1.5px] border-ink bg-white">
+    <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-12 gap-6 items-end mb-12 md:mb-16">
+            <div class="lg:col-span-7">
+                <span class="eyebrow mb-5" data-reveal>{% trans "Проекты" %}</span>
+                <h2 class="h-section" data-reveal style="--d:80ms">{% trans "Продукты, которые уже работают" %}</h2>
             </div>
-            <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4" data-aos="fade-up" data-aos-delay="100">
-                {% blocktrans %}Наши <span class="gradient-text">проекты</span>{% endblocktrans %}
-            </h2>
-            <p class="section-sub text-lg max-w-xl mx-auto" data-aos="fade-up" data-aos-delay="200">
-                {% trans "Цифровые продукты, которые мы разработали и запустили" %}
-            </p>
+            <p class="lead lg:col-span-5 lg:pb-2" data-reveal style="--d:160ms">{% trans "Цифровые продукты, которые мы разработали и запустили" %}</p>
         </div>
 
-        <div class="grid md:grid-cols-2 gap-8">
-            {% for project in projects %}
-            <article class="project-card glass rounded-2xl overflow-hidden border {% if project.is_featured %}border-indigo-400/30{% else %}border-white/10{% endif %} flex flex-col"
-                     data-color="{{ project.color }}" data-aos="fade-up" data-aos-delay="{{ forloop.counter }}0">
-                {% if project.image %}
-                <div class="h-52 overflow-hidden relative">
-                    <img src="{{ project.image.url }}" alt="{{ project.name }}" loading="lazy"
-                         class="w-full h-full object-cover transition-transform duration-700 hover:scale-105">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+        {% for project in projects %}
+        {% if forloop.first %}
+        {# Главный кейс #}
+        <article class="p-card p-feature mb-14 md:mb-20" data-color="{{ project.color }}" data-reveal>
+            <div class="p-media min-w-0 lg:order-2">{% include "site/_project_media.html" with monogram=True %}</div>
+            <div class="min-w-0 lg:order-1">
+                <div class="flex flex-wrap items-center gap-2 mb-5">
+                    <span class="sticker" style="background:var(--tone)">{{ project.project_type }}</span>
+                    <span class="mono text-xs text-muted tnum">{{ project.year }}</span>
+                    {% if project.is_featured %}<span class="sticker">★ {% trans "Избранный кейс" %}</span>{% endif %}
                 </div>
-                {% else %}
-                <div class="h-52 c-grad relative flex items-center justify-center overflow-hidden">
-                    <div class="c-glow absolute inset-0"></div>
-                    <div class="relative z-10 w-16 h-16 rounded-2xl c-icon flex items-center justify-center shadow-lg">
-                        <i data-lucide="{{ project.icon|default:'layers' }}" class="w-8 h-8"></i>
-                    </div>
-                </div>
+                <h3 class="h-display text-3xl md:text-5xl mb-5">{{ project.name }}</h3>
+                <p class="lead mb-6">{{ project.description }}</p>
+                {% if project.technologies_list %}
+                <div class="flex flex-wrap gap-2 mb-8">{% for tech in project.technologies_list %}<span class="chip">{{ tech }}</span>{% endfor %}</div>
                 {% endif %}
-
-                <div class="p-7 flex flex-col flex-1">
-                    <div class="flex flex-wrap items-center gap-2 mb-3">
-                        <span class="c-label text-xs px-2.5 py-1 rounded-full font-medium">{{ project.project_type }}</span>
-                        <span class="text-xs text-gray-400">{{ project.year }}</span>
-                        {% if project.is_featured %}<span class="text-xs text-indigo-200 bg-indigo-500/15 px-2.5 py-1 rounded-full">{% trans "Избранный кейс" %}</span>{% endif %}
-                    </div>
-                    <h3 class="text-white text-xl font-bold mb-2">{{ project.name }}</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed mb-5 line-clamp-3">{{ project.description }}</p>
-
-                    {% if project.technologies_list %}
-                    <div class="flex flex-wrap gap-2 mb-5">
-                        {% for tech in project.technologies_list %}
-                        <span class="tech-tag text-xs text-gray-400 border border-white/10 px-2.5 py-1 rounded-lg">{{ tech }}</span>
-                        {% endfor %}
-                    </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <button type="button" data-project-open="{{ project.pk }}" class="btn btn-ink">
+                        {% trans "Подробнее" %} <i data-lucide="arrow-right" class="i-arrow"></i>
+                    </button>
+                    {% if project.live_url %}
+                    <a href="{{ project.live_url }}" target="_blank" rel="noopener" class="btn btn-ghost">
+                        {% trans "Открыть" %} <i data-lucide="arrow-up-right"></i>
+                    </a>
                     {% endif %}
-
-                    <div class="flex items-center gap-5 mt-auto">
-                        <button type="button" data-project-open="{{ project.pk }}"
-                                class="c-more text-sm font-semibold flex items-center gap-1.5 transition-colors group">
-                            {% trans "Подробнее" %} <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
-                        </button>
-                        {% if project.live_url %}
-                        <a href="{{ project.live_url }}" target="_blank" rel="noopener"
-                           class="text-gray-400 hover:text-gray-200 text-sm flex items-center gap-1.5 transition-colors">
-                            <i data-lucide="external-link" class="w-4 h-4"></i> {% trans "Открыть" %}
-                        </a>
-                        {% endif %}
-                    </div>
                 </div>
-
-                {# Содержимое окна «Подробнее» #}
-                <template id="project-detail-{{ project.pk }}">
-                    {% if project.image %}
-                    <img src="{{ project.image.url }}" alt="{{ project.name }}" class="w-full h-56 md:h-72 object-cover rounded-t-3xl">
+            </div>
+            {% include "site/_project_detail.html" %}
+        </article>
+        {% if forloop.revcounter0 %}<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">{% endif %}
+        {% else %}
+        <article class="p-card{% if forloop.counter > 7 %} p-more{% endif %}" data-color="{{ project.color }}"{% if forloop.counter > 7 %} hidden{% endif %} data-reveal style="--d:{{ forloop.counter0|divisibleby:3|yesno:'0,80' }}ms">
+            <div class="p-media">{% include "site/_project_media.html" %}</div>
+            <div class="grid gap-2.5">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="mono text-xs text-muted">{{ project.project_type }} · <span class="tnum">{{ project.year }}</span></span>
+                </div>
+                <h3 class="h-card text-xl{% if not project.image %} sr-only{% endif %}">{{ project.name }}</h3>
+                <p class="text-muted text-[.95rem] leading-relaxed line-clamp-3">{{ project.description }}</p>
+                <div class="flex items-center gap-5 mt-1">
+                    <button type="button" data-project-open="{{ project.pk }}" class="link-arrow">
+                        {% trans "Подробнее" %} <i data-lucide="arrow-right"></i>
+                    </button>
+                    {% if project.live_url %}
+                    <a href="{{ project.live_url }}" target="_blank" rel="noopener" class="mono text-xs text-muted hover:text-ink inline-flex items-center gap-1">
+                        {% trans "Открыть" %} ↗
+                    </a>
                     {% endif %}
-                    <div class="p-7 md:p-10" data-color="{{ project.color }}">
-                        <div class="flex flex-wrap items-center gap-2 mb-4">
-                            <span class="c-label text-xs px-2.5 py-1 rounded-full font-medium">{{ project.project_type }}</span>
-                            <span class="text-xs text-gray-400">{{ project.year }}</span>
-                        </div>
-                        <h3 id="project-modal-title" class="text-white text-2xl md:text-3xl font-black mb-4">{{ project.name }}</h3>
-                        <p class="text-gray-300 leading-relaxed mb-8">{{ project.description|linebreaksbr }}</p>
+                </div>
+            </div>
+            {% include "site/_project_detail.html" %}
+        </article>
+        {% if forloop.last %}</div>{% endif %}
+        {% endif %}
+        {% endfor %}
 
-                        {% if project.task or project.solution or project.result %}
-                        <div class="grid gap-4 mb-8">
-                            {% if project.task %}
-                            <div class="rounded-2xl bg-white/5 border border-white/10 p-5">
-                                <p class="flex items-center gap-2 text-xs uppercase tracking-[.16em] text-indigo-300 font-semibold mb-2"><i data-lucide="target" class="w-4 h-4"></i> {% trans "Задача" %}</p>
-                                <p class="text-gray-300 text-sm leading-relaxed">{{ project.task|linebreaksbr }}</p>
-                            </div>
-                            {% endif %}
-                            {% if project.solution %}
-                            <div class="rounded-2xl bg-white/5 border border-white/10 p-5">
-                                <p class="flex items-center gap-2 text-xs uppercase tracking-[.16em] text-purple-300 font-semibold mb-2"><i data-lucide="wrench" class="w-4 h-4"></i> {% trans "Решение" %}</p>
-                                <p class="text-gray-300 text-sm leading-relaxed">{{ project.solution|linebreaksbr }}</p>
-                            </div>
-                            {% endif %}
-                            {% if project.result %}
-                            <div class="rounded-2xl bg-white/5 border border-white/10 p-5">
-                                <p class="flex items-center gap-2 text-xs uppercase tracking-[.16em] text-cyan-300 font-semibold mb-2"><i data-lucide="check-circle" class="w-4 h-4"></i> {% trans "Результат" %}</p>
-                                <p class="text-gray-300 text-sm leading-relaxed">{{ project.result|linebreaksbr }}</p>
-                            </div>
-                            {% endif %}
-                        </div>
-                        {% endif %}
-
-                        {% if project.technologies_list %}
-                        <p class="text-xs uppercase tracking-[.16em] text-gray-400 font-semibold mb-3">{% trans "Технологии" %}</p>
-                        <div class="flex flex-wrap gap-2 mb-8">
-                            {% for tech in project.technologies_list %}
-                            <span class="text-xs text-gray-300 border border-white/10 px-2.5 py-1 rounded-lg">{{ tech }}</span>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-
-                        <div class="flex flex-wrap gap-3">
-                            {% if project.live_url %}
-                            <a href="{{ project.live_url }}" target="_blank" rel="noopener"
-                               class="btn-outline inline-flex items-center gap-2 px-5 py-3 rounded-xl text-white font-semibold text-sm">
-                                <i data-lucide="external-link" class="w-4 h-4"></i> {% trans "Открыть проект" %}
-                            </a>
-                            {% endif %}
-                            <a href="#contact" data-request-type="development" data-modal-close
-                               class="btn-primary inline-flex items-center gap-2 px-5 py-3 rounded-xl text-white font-semibold text-sm">
-                                {% trans "Нужен похожий проект" %} <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                            </a>
-                        </div>
-                    </div>
-                </template>
-            </article>
-            {% endfor %}
+        {% if projects|length > 7 %}
+        <div class="mt-12 flex justify-center">
+            <button type="button" id="projects-more" class="btn btn-ghost" aria-expanded="false">
+                {% trans "Показать все проекты" %} <span class="mono text-xs tnum">({{ projects|length }})</span>
+            </button>
         </div>
+        {% endif %}
     </div>
 </section>

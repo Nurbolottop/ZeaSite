@@ -2,10 +2,10 @@
 <!-- Окно «Подробнее» (контент подставляется из <template id="project-detail-N">) -->
 <div id="project-modal" class="modal hidden fixed inset-0 z-[60] items-end sm:items-center justify-center p-0 sm:p-6"
      role="dialog" aria-modal="true" aria-labelledby="project-modal-title">
-    <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" data-modal-close></div>
-    <div class="modal-panel relative w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl bg-[#0D1120] border border-white/10 shadow-2xl">
+    <div class="absolute inset-0 bg-ink/50 backdrop-blur-[3px]" data-modal-close></div>
+    <div class="modal-panel relative w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-t-[1.75rem] sm:rounded-[1.75rem] shadow-2xl">
         <button type="button" data-modal-close aria-label="{% trans 'Закрыть' %}"
-                class="absolute top-4 right-4 z-10 w-10 h-10 rounded-xl bg-black/50 border border-white/10 flex items-center justify-center text-gray-300 hover:text-white hover:border-indigo-400/50 transition-colors">
+                class="sticky top-4 float-right mr-4 mt-4 z-10 w-11 h-11 rounded-full bg-white border-[1.5px] border-ink grid place-items-center hover:bg-lime transition-colors">
             <i data-lucide="x" class="w-5 h-5"></i>
         </button>
         <div id="project-modal-body"></div>

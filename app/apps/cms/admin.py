@@ -3,7 +3,7 @@ from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin
 from .models import (
     Service, Project, Partner, TechStack, WhyUs, Stat, SiteSettings,
-    CooperationFormat, ProcessStep, Commitment,
+    CooperationFormat, ProcessStep, Commitment, TeamMember,
 )
 
 
@@ -144,7 +144,7 @@ class ServiceAdmin(PreviewAdmin):
             'fields': ('title', 'description'),
         }),
         ('Внешний вид', {
-            'fields': ('icon', 'image', 'color'),
+            'fields': ('illustration', 'icon', 'image', 'color'),
         }),
         ('Отображение', {
             'classes': ('collapse',),
@@ -367,7 +367,7 @@ class SiteSettingsAdmin(TranslationAdmin):
             'fields': ('hero_badge', 'hero_title', 'hero_subtitle'),
         }),
         ('О компании', {
-            'fields': ('about_text',),
+            'fields': ('about_text', 'about_photo', 'about_photo_caption'),
         }),
         ('Контактная информация', {
             'description': 'Незаполненный контакт на сайте не показывается.',
@@ -393,3 +393,16 @@ class SiteSettingsAdmin(TranslationAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
+
+
+# ── TeamMember ──────────────────────────────────────────────────────────────
+@admin.register(TeamMember)
+class TeamMemberAdmin(TranslationAdmin):
+    list_display       = ('name', 'role', 'order', 'is_active')
+    list_display_links = ('name',)
+    list_editable      = ('order', 'is_active')
+    list_filter        = ('is_active',)
+    search_fields      = ('name', 'role')
+    ordering           = ('order',)
+    actions            = [make_active, make_inactive]
+    fields             = ('name', 'role', 'photo', 'order', 'is_active')

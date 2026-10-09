@@ -16,15 +16,63 @@ function initApp() {
     const sig = { signal: _appAbort.signal };
 
     lucide.createIcons();
-    AOS.init({ duration:700, easing:'ease-out-cubic', once:true, offset:70 });
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ── Появление секций (вместо AOS): контент виден и без JS ── */
+    const revealEls = document.querySelectorAll('[data-reveal]');
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+        revealEls.forEach(el => el.classList.add('is-in'));
+    } else {
+        const revealObs = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('is-in');
+                revealObs.unobserve(entry.target);
+            });
+        }, { threshold:0.12, rootMargin:'0px 0px -6% 0px' });
+        revealEls.forEach(el => revealObs.observe(el));
+    }
+
+    /* ── SVG-иллюстрации: пауза вне экрана и при reduced-motion ── */
+    const scenes = document.querySelectorAll('main svg[role="img"]');
+    if (reduceMotion) {
+        scenes.forEach(svg => { try { svg.setCurrentTime(2.5); } catch (e) {} svg.pauseAnimations && svg.pauseAnimations(); });
+    } else if ('IntersectionObserver' in window) {
+        const sceneObs = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                const svg = entry.target;
+                if (!svg.pauseAnimations) return;
+                entry.isIntersecting ? svg.unpauseAnimations() : svg.pauseAnimations();
+            });
+        }, { rootMargin:'120px' });
+        scenes.forEach(svg => sceneObs.observe(svg));
+    }
+
+    /* ── Hero: слои сцены следуют за курсором ── */
+    const heroScene = document.getElementById('hero-scene');
+    if (heroScene && !reduceMotion && window.matchMedia('(pointer: fine)').matches) {
+        const layers = heroScene.querySelectorAll('[data-depth]');
+        let raf = null;
+        document.getElementById('home').addEventListener('pointermove', e => {
+            if (raf) return;
+            raf = requestAnimationFrame(() => {
+                raf = null;
+                const x = e.clientX / window.innerWidth - .5, y = e.clientY / window.innerHeight - .5;
+                layers.forEach(l => {
+                    const d = parseFloat(l.dataset.depth);
+                    l.style.transform = `translate(${(-x * d).toFixed(1)}px, ${(-y * d).toFixed(1)}px)`;
+                });
+            });
+        }, sig);
+    }
 
     /* ── Mobile menu ── */
     const burgerBtn   = document.getElementById('burger-btn');
     const mobileMenu  = document.getElementById('mobile-menu');
     const bgOverlay   = document.getElementById('overlay');
     const closeBtn    = document.getElementById('close-menu');
-    function openMenu()  { mobileMenu.classList.add('open');    bgOverlay.classList.remove('hidden'); document.body.style.overflow='hidden'; }
-    function closeMenu() { mobileMenu.classList.remove('open'); bgOverlay.classList.add('hidden');    document.body.style.overflow=''; }
+    function openMenu()  { mobileMenu.classList.add('open');    bgOverlay.classList.remove('hidden'); document.body.style.overflow='hidden'; burgerBtn.setAttribute('aria-expanded', 'true'); }
+    function closeMenu() { mobileMenu.classList.remove('open'); bgOverlay.classList.add('hidden');    document.body.style.overflow=''; if (burgerBtn) burgerBtn.setAttribute('aria-expanded', 'false'); }
     if (burgerBtn) burgerBtn.addEventListener('click', openMenu, sig);
     if (closeBtn)  closeBtn.addEventListener('click', closeMenu, sig);
     if (bgOverlay) bgOverlay.addEventListener('click', closeMenu, sig);
@@ -58,7 +106,7 @@ function initApp() {
             const target = href.length > 1 && document.querySelector(href);
             if (!target) return;
             e.preventDefault();
-            window.scrollTo({ top: target.getBoundingClientRect().top + scrollY - 80, behavior:'smooth' });
+            window.scrollTo({ top: target.getBoundingClientRect().top + scrollY - 84, behavior: reduceMotion ? 'auto' : 'smooth' });
         }, sig);
     });
 
@@ -87,21 +135,23 @@ function initApp() {
         entries.forEach(entry => {
             if (!entry.isIntersecting) return;
             const id = entry.target.getAttribute('id');
-            navAnchors.forEach(a => {
-                const match = a.getAttribute('href') === '#' + id;
-                a.classList.toggle('active', match);
-                a.classList.toggle('text-white', match);
-                a.classList.toggle('text-gray-400', !match);
-            });
+            navAnchors.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
         });
     }, { threshold:0.3, rootMargin:'-80px 0px -40% 0px' });
-    document.querySelectorAll('section[id]').forEach(s => navObs.observe(s));
+    document.querySelectorAll('main > section[id]').forEach(s => navObs.observe(s));
 
-    /* ── Header shadow ── */
-    window.addEventListener('scroll', () => {
-        const h = document.getElementById('header');
-        if (h) h.style.boxShadow = scrollY > 20 ? '0 4px 30px rgba(0,0,0,.4)' : 'none';
-    }, { passive:true, ...sig });
+    /* ── Шапка: подложка после начала прокрутки ── */
+    const header = document.getElementById('header');
+    const syncHeader = () => { if (header) header.classList.toggle('is-scrolled', scrollY > 12); };
+    syncHeader();
+    window.addEventListener('scroll', syncHeader, { passive:true, ...sig });
+
+    /* ── «Показать все проекты» ── */
+    const moreBtn = document.getElementById('projects-more');
+    if (moreBtn) moreBtn.addEventListener('click', () => {
+        document.querySelectorAll('.p-more').forEach(el => { el.hidden = false; });
+        moreBtn.parentElement.remove();
+    }, sig);
 
     /* ── Окно «Подробнее» ── */
     const modal     = document.getElementById('project-modal');
@@ -193,10 +243,7 @@ function initApp() {
             }
         }, sig);
         const sel = document.getElementById('id_service');
-        if (sel) sel.addEventListener('change', () => {
-            sel.style.webkitTextFillColor = sel.value ? '#fff' : '#9ca3af';
-            sel.style.color = sel.value ? '#fff' : '#9ca3af';
-        }, sig);
+        if (sel) sel.addEventListener('change', () => sel.classList.toggle('is-empty', !sel.value), sig);
     }
 
     /* ── Language switcher (AJAX по языковому URL, без перезагрузки) ── */

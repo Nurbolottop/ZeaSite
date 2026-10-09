@@ -1,0 +1,53 @@
+{% load i18n %}{# Содержимое окна «Подробнее» #}
+<template id="project-detail-{{ project.pk }}">
+    <div class="p-5 md:p-8 pb-0 md:pb-0">{% include "site/_project_media.html" %}</div>
+    <div class="p-6 md:p-9">
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="sticker" data-color="{{ project.color }}" style="background:var(--tone)">{{ project.project_type }}</span>
+            <span class="mono text-xs text-muted tnum">{{ project.year }}</span>
+        </div>
+        <h3 id="project-modal-title" class="h-display text-2xl md:text-4xl mb-4">{{ project.name }}</h3>
+        <p class="text-muted leading-relaxed mb-8">{{ project.description|linebreaksbr }}</p>
+
+        {% if project.task or project.solution or project.result %}
+        <div class="grid gap-3 mb-8">
+            {% if project.task %}
+            <div class="modal-block">
+                <p class="eyebrow mb-2">{% trans "Задача" %}</p>
+                <p class="leading-relaxed">{{ project.task|linebreaksbr }}</p>
+            </div>
+            {% endif %}
+            {% if project.solution %}
+            <div class="modal-block">
+                <p class="eyebrow mb-2">{% trans "Решение" %}</p>
+                <p class="leading-relaxed">{{ project.solution|linebreaksbr }}</p>
+            </div>
+            {% endif %}
+            {% if project.result %}
+            <div class="modal-block" style="background:var(--lime-soft)">
+                <p class="eyebrow mb-2">{% trans "Результат" %}</p>
+                <p class="leading-relaxed">{{ project.result|linebreaksbr }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if project.technologies_list %}
+        <p class="mono text-xs uppercase tracking-[.14em] text-muted mb-3">{% trans "Технологии" %}</p>
+        <div class="flex flex-wrap gap-2 mb-8">
+            {% for tech in project.technologies_list %}<span class="chip">{{ tech }}</span>{% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="flex flex-wrap gap-3">
+            <a href="#contact" data-request-type="development" data-modal-close class="btn btn-ink">
+                {% trans "Нужен похожий проект" %} <i data-lucide="arrow-right" class="i-arrow"></i>
+            </a>
+            {% if project.live_url %}
+            <a href="{{ project.live_url }}" target="_blank" rel="noopener" class="btn btn-ghost">
+                {% trans "Открыть проект" %} <i data-lucide="arrow-up-right"></i>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</template>

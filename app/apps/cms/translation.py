@@ -1,7 +1,7 @@
 from modeltranslation.translator import register, TranslationOptions
 from .models import (
     Service, Project, Partner, TechStack, WhyUs, Stat, SiteSettings,
-    CooperationFormat, ProcessStep, Commitment,
+    CooperationFormat, ProcessStep, Commitment, TeamMember,
 )
 
 
@@ -9,7 +9,7 @@ from .models import (
 class SiteSettingsTranslationOptions(TranslationOptions):
     fields = (
         'site_name', 'site_tagline', 'hero_badge', 'hero_title',
-        'hero_subtitle', 'about_text', 'footer_text',
+        'hero_subtitle', 'about_text', 'about_photo_caption', 'footer_text',
         'meta_title', 'meta_description', 'meta_keywords',
     )
 
@@ -64,4 +64,10 @@ class ProcessStepTranslationOptions(TranslationOptions):
 @register(Commitment)
 class CommitmentTranslationOptions(TranslationOptions):
     fields = ('title', 'description')
+    required_languages = ('ru',)
+
+
+@register(TeamMember)
+class TeamMemberTranslationOptions(TranslationOptions):
+    fields = ('name', 'role')
     required_languages = ('ru',)

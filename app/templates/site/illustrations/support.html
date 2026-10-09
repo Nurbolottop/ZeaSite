@@ -1,0 +1,27 @@
+{% load i18n %}<svg viewBox="0 0 300 380" role="img" aria-label="{% trans 'Сопровождение: монитор с пульсом системы и спасательный круг' %}">
+    <rect x="38" y="52" width="240" height="160" rx="20" fill="#17181C" opacity=".14" filter="url(#z-soft)"/>
+    <rect x="30" y="40" width="240" height="164" rx="20" fill="#17181C"/>
+    <rect x="40" y="50" width="220" height="134" rx="13" fill="#fff"/>
+    <g stroke="#ECEEF1" stroke-width="1"><path d="M40 84 H260 M40 118 H260 M40 152 H260"/></g>
+    <circle class="pulse-dot" cx="56" cy="66" r="4" fill="#A9BF5E" stroke="#17181C"/>
+    <text x="68" y="70" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#17181C">STATUS · OK</text>
+    <path d="M52 132 H108 L120 102 L134 160 L148 110 L158 132 H248" fill="none" stroke="#17181C" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+          stroke-dasharray="280" stroke-dashoffset="280">
+        <animate attributeName="stroke-dashoffset" values="280;0;0" keyTimes="0;.6;1" dur="3s" repeatCount="indefinite"/>
+    </path>
+    <path d="M128 204 L118 236 H182 L172 204 Z" fill="#D7DAE0" stroke="#17181C" stroke-width="1.4"/>
+    <rect x="96" y="234" width="108" height="12" rx="6" fill="#fff" stroke="#17181C" stroke-width="1.4"/>
+    {# Спасательный круг #}
+    <ellipse cx="220" cy="350" rx="56" ry="8" fill="#17181C" opacity=".14" filter="url(#z-soft)"/>
+    <g class="float-y">
+        <circle cx="216" cy="296" r="42" fill="none" stroke="#17181C" stroke-width="31"/>
+        <circle cx="216" cy="296" r="42" fill="none" stroke="#fff" stroke-width="27"/>
+        <circle cx="216" cy="296" r="42" fill="none" stroke="#EFA28E" stroke-width="27" stroke-dasharray="33 32.97" transform="rotate(-20 216 296)"/>
+        <circle cx="216" cy="296" r="48" fill="none" stroke="#fff" stroke-width="3" opacity=".7" stroke-dasharray="40 400" transform="rotate(-150 216 296)" stroke-linecap="round"/>
+    </g>
+    <g font-family="JetBrains Mono, monospace" font-size="9.5" fill="#17181C">
+        <g transform="rotate(-4 76 274)"><rect x="18" y="262" width="118" height="24" rx="12" fill="#D4E89A" stroke="#17181C" stroke-width="1.2"/><text x="77" y="278" text-anchor="middle">✓ {% trans "обновления" %}</text></g>
+        <g transform="rotate(3 80 306)"><rect x="14" y="294" width="132" height="24" rx="12" fill="#fff" stroke="#17181C" stroke-width="1.2"/><text x="80" y="310" text-anchor="middle">✓ {% trans "резервные копии" %}</text></g>
+        <g transform="rotate(-2 76 338)"><rect x="18" y="326" width="118" height="24" rx="12" fill="#C3D5EE" stroke="#17181C" stroke-width="1.2"/><text x="77" y="342" text-anchor="middle">✓ {% trans "мониторинг" %}</text></g>
+    </g>
+</svg>

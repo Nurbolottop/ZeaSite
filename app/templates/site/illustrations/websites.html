@@ -1,0 +1,46 @@
+{% load i18n %}<svg viewBox="0 0 420 330" role="img" aria-label="{% trans 'Сайт, разложенный на слои: код, каркас и дизайн' %}">
+    <g transform="matrix(0.866 0.5 -0.866 0.5 214 166)"><rect x="0" y="0" width="200" height="140" rx="12" fill="#17181C" opacity=".14" filter="url(#z-soft)"/></g>
+    <g class="web-lay web-bot">
+        <g transform="matrix(0.866 0.5 -0.866 0.5 210 140)">
+            <rect x="0" y="0" width="200" height="140" rx="12" fill="#17181C"/>
+            <g font-family="JetBrains Mono, monospace" font-size="10">
+                <text x="14" y="26" fill="#D4E89A">&lt;header&gt;</text>
+                <text x="24" y="46" fill="#fff" opacity=".7">&lt;nav&gt;…&lt;/nav&gt;</text>
+                <text x="14" y="66" fill="#D4E89A">&lt;section class="hero"&gt;</text>
+                <text x="24" y="86" fill="#fff" opacity=".7">&lt;h1&gt;…&lt;/h1&gt;</text>
+                <text x="14" y="106" fill="#EFA28E">&lt;form action="/crm"&gt;</text>
+            </g>
+            <rect class="blink" x="128" y="98" width="6" height="11" fill="#D4E89A"/>
+        </g>
+        <text x="82" y="214" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5A5D66">{% trans "КОД" %}</text>
+    </g>
+    <g class="web-lay">
+        <g transform="matrix(0.866 0.5 -0.866 0.5 210 80)" fill="none" stroke="#17181C" stroke-width="1.2">
+            <rect x="0" y="0" width="200" height="140" rx="12" fill="#FAF8F4" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/>
+            <rect x="12" y="28" width="110" height="56" rx="8" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>
+            <rect x="130" y="28" width="58" height="56" rx="8" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>
+            <path d="M130 28 L188 84 M188 28 L130 84" opacity=".5" vector-effect="non-scaling-stroke"/>
+            <rect x="12" y="94" width="54" height="34" rx="6" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>
+            <rect x="73" y="94" width="54" height="34" rx="6" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>
+            <rect x="134" y="94" width="54" height="34" rx="6" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>
+        </g>
+        <text x="82" y="154" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5A5D66">{% trans "КАРКАС" %}</text>
+    </g>
+    <g class="web-lay web-top">
+        <g transform="matrix(0.866 0.5 -0.866 0.5 210 20)" stroke="#17181C" stroke-width="1.3">
+            <rect x="0" y="0" width="200" height="140" rx="12" fill="#fff" vector-effect="non-scaling-stroke"/>
+            <path d="M0 18 H200" fill="none" vector-effect="non-scaling-stroke"/>
+            <circle cx="12" cy="9" r="3.5" fill="#EFA28E"/><circle cx="24" cy="9" r="3.5" fill="#D4E89A"/><circle cx="36" cy="9" r="3.5" fill="#C3D5EE"/>
+            <rect x="12" y="28" width="110" height="56" rx="8" fill="#D4E89A" vector-effect="non-scaling-stroke"/>
+            <rect x="20" y="38" width="70" height="8" rx="4" fill="#17181C" stroke="none"/>
+            <rect x="20" y="51" width="50" height="5" rx="2.5" fill="#17181C" opacity=".5" stroke="none"/>
+            <rect x="20" y="64" width="40" height="12" rx="6" fill="#17181C" stroke="none"/>
+            <rect x="130" y="28" width="58" height="56" rx="8" fill="#C3D5EE" vector-effect="non-scaling-stroke"/>
+            <circle cx="159" cy="56" r="13" fill="url(#z-sCoral)"/>
+            <rect x="12" y="94" width="54" height="34" rx="6" fill="#ECEEF1" vector-effect="non-scaling-stroke"/>
+            <rect x="73" y="94" width="54" height="34" rx="6" fill="#ECEEF1" vector-effect="non-scaling-stroke"/>
+            <rect x="134" y="94" width="54" height="34" rx="6" fill="#ECEEF1" vector-effect="non-scaling-stroke"/>
+        </g>
+        <text x="82" y="94" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#17181C">{% trans "ДИЗАЙН" %}</text>
+    </g>
+</svg>

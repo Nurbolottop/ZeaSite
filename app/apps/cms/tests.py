@@ -7,7 +7,7 @@ from django.test import TestCase
 from apps.cms import site_content
 from apps.cms.models import (
     Commitment, CooperationFormat, Partner, ProcessStep, Project, Service,
-    SiteSettings, Stat, WhyUs,
+    SiteSettings, Stat, TeamMember, WhyUs,
 )
 
 LIST_MODELS = {'Commitment': Commitment, 'CooperationFormat': CooperationFormat,
@@ -20,7 +20,7 @@ class SeedMigrationTests(TestCase):
     def test_list_blocks_seeded(self):
         self.assertEqual(Commitment.objects.count(), 6)
         self.assertEqual(ProcessStep.objects.count(), 6)
-        self.assertEqual(Service.objects.count(), 7)
+        self.assertEqual(Service.objects.count(), 8)  # 7 базовых + «AI и ассистенты»
         self.assertEqual(WhyUs.objects.count(), 5)
         formats = list(CooperationFormat.objects.all())
         self.assertEqual([f.request_type for f in formats], ['partnership', 'development'])
@@ -144,7 +144,7 @@ class PopulateDbCommandTests(TestCase):
         call_command('populate_db', '--update', stdout=StringIO())
         for obj in (project, partner, stat):
             self.assertTrue(type(obj).objects.filter(pk=obj.pk).exists())
-        self.assertEqual(Service.objects.count(), 7)
+        self.assertEqual(Service.objects.count(), 8)  # 7 базовых + «AI и ассистенты»
 
 
 class ModelFieldsTests(TestCase):
@@ -165,3 +165,20 @@ class ModelFieldsTests(TestCase):
         SiteSettings.objects.all().delete()
         s = SiteSettings.get()
         self.assertEqual((s.telegram_url, s.whatsapp_url, s.instagram_url, s.email), ('', '', '', ''))
+
+
+class RedesignFieldsTests(TestCase):
+    def test_ai_service_seeded_once(self):
+        self.assertEqual(Service.objects.filter(title_ru='AI и ассистенты').count(), 1)
+        call_command('populate_db', stdout=StringIO())
+        self.assertEqual(Service.objects.filter(title_ru='AI и ассистенты').count(), 1)
+
+    def test_illustration_key_falls_back_to_icon(self):
+        s = Service(title='x', description='d', icon='database')
+        self.assertEqual(s.illustration_key, 'crm')
+        s.illustration = 'ai'
+        self.assertEqual(s.illustration_key, 'ai')
+        self.assertEqual(Service(title='x', description='d', icon='star').illustration_key, 'platforms')
+
+    def test_team_member_initials(self):
+        self.assertEqual(TeamMember(name='Айбек Сыдыков').initials, 'АС')

@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.test import Client, TestCase, override_settings
 
 from apps.base import views as site_views
-from apps.cms.models import Partner, Project, SiteSettings, Stat
+from apps.cms.models import Partner, Project, SiteSettings, Stat, TeamMember
 from apps.contacts.models import ContactMessage
 
 
@@ -142,6 +142,40 @@ class OptionalSectionsTests(TestCase):
         html = self.html()
         self.assertIn('id="partners"', html)
         self.assertIn('Партнёр Б', html)
+
+
+class RedesignSectionsTests(TestCase):
+    def html(self):
+        return self.client.get('/').content.decode()
+
+    def test_service_illustrations_rendered(self):
+        html = self.html()
+        # Каждая услуга получает свою SVG-сцену; общие градиенты подключены один раз
+        self.assertEqual(html.count('id="z-sLime"'), 1)
+        self.assertIn('id="z-auto-t1"', html)   # автоматизация
+        self.assertIn('AI и ассистенты', html)
+        self.assertNotIn('aos.js', html)
+        self.assertNotIn('aos.css', html)
+        self.assertNotIn('lucide@latest', html)
+
+    def test_team_hidden_until_filled(self):
+        self.assertNotIn('id="team"', self.html())
+        TeamMember.objects.create(name='Айбек', role='Разработчик')
+        TeamMember.objects.create(name='Скрытый Человек', is_active=False)
+        html = self.html()
+        self.assertIn('id="team"', html)
+        self.assertIn('Айбек', html)
+        self.assertNotIn('Скрытый Человек', html)
+
+    def test_about_shows_illustration_without_photo(self):
+        self.assertIn('ВАШ ПРОЕКТ', self.html())
+
+    def test_more_projects_button(self):
+        for i in range(9):
+            Project.objects.create(name=f'Кейс {i}', description='d', project_type='CRM', technologies='Django')
+        html = self.html()
+        self.assertIn('id="projects-more"', html)
+        self.assertEqual(html.count('class="p-card p-more"'), 2)
 
 
 class ContactsVisibilityTests(TestCase):

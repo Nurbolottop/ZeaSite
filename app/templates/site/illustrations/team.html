@@ -1,0 +1,40 @@
+{% load i18n %}<svg viewBox="0 0 520 390" role="img" aria-label="{% trans 'Одна команда вокруг вашего проекта: аналитик, дизайнер, разработчик и менеджер' %}">
+    <g fill="none" stroke="#17181C" stroke-width="1.2" class="flow">
+        <path id="z-team-a" d="M124 104 C 180 120 200 150 230 170"/>
+        <path id="z-team-b" d="M396 104 C 340 120 320 150 290 170"/>
+        <path id="z-team-c" d="M124 290 C 180 270 200 245 230 228"/>
+        <path id="z-team-d" d="M396 290 C 340 270 320 245 290 228"/>
+    </g>
+    <g stroke="#17181C" stroke-width="1">
+        <circle r="5" fill="url(#z-sLime)"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#z-team-a"/></animateMotion></circle>
+        <circle r="5" fill="url(#z-sCoral)"><animateMotion dur="2.6s" begin="-.7s" repeatCount="indefinite"><mpath href="#z-team-b"/></animateMotion></circle>
+        <circle r="5" fill="url(#z-sLime)"><animateMotion dur="2.6s" begin="-1.3s" repeatCount="indefinite"><mpath href="#z-team-c"/></animateMotion></circle>
+        <circle r="5" fill="url(#z-sCoral)"><animateMotion dur="2.6s" begin="-1.9s" repeatCount="indefinite"><mpath href="#z-team-d"/></animateMotion></circle>
+    </g>
+    {# Проект в центре #}
+    <rect x="186" y="156" width="150" height="96" rx="18" fill="#17181C" opacity=".14" filter="url(#z-soft)"/>
+    <rect x="182" y="152" width="156" height="92" rx="18" fill="#D7DAE0" stroke="#17181C" stroke-width="1.5"/>
+    <rect x="182" y="144" width="156" height="92" rx="18" fill="#fff" stroke="#17181C" stroke-width="1.5"/>
+    <text x="200" y="172" font-family="JetBrains Mono, monospace" font-size="9" fill="#5A5D66" letter-spacing=".6">{% trans "ВАШ ПРОЕКТ" %}</text>
+    <rect x="200" y="184" width="96" height="8" rx="4" fill="#17181C"/>
+    <rect x="200" y="200" width="70" height="6" rx="3" fill="#C7CBD3"/>
+    <rect x="200" y="214" width="120" height="8" rx="4" fill="#ECEEF1" stroke="#17181C" stroke-width=".8"/>
+    <rect x="200" y="214" width="78" height="8" rx="4" fill="#D4E89A" stroke="#17181C" stroke-width=".8"/>
+    {# Люди #}
+    <g stroke="#17181C" stroke-width="1.5">
+        <circle cx="96" cy="96" r="38" fill="url(#z-sLime)"/><circle cx="424" cy="96" r="38" fill="url(#z-sSky)"/>
+        <circle cx="96" cy="296" r="38" fill="url(#z-sCoral)"/><circle cx="424" cy="296" r="38" fill="url(#z-sButter)"/>
+    </g>
+    <g fill="#fff" stroke="#17181C" stroke-width="1.4">
+        <circle cx="96" cy="88" r="10"/><path d="M76 116 a20 16 0 0 1 40 0" />
+        <circle cx="424" cy="88" r="10"/><path d="M404 116 a20 16 0 0 1 40 0"/>
+        <circle cx="96" cy="288" r="10"/><path d="M76 316 a20 16 0 0 1 40 0"/>
+        <circle cx="424" cy="288" r="10"/><path d="M404 316 a20 16 0 0 1 40 0"/>
+    </g>
+    <g font-family="JetBrains Mono, monospace" font-size="10" fill="#17181C" text-anchor="middle">
+        <g transform="rotate(-3 96 154)"><rect x="40" y="142" width="112" height="24" rx="12" fill="#fff" stroke="#17181C" stroke-width="1.2"/><text x="96" y="158">{% trans "аналитик" %}</text></g>
+        <g transform="rotate(3 424 154)"><rect x="368" y="142" width="112" height="24" rx="12" fill="#fff" stroke="#17181C" stroke-width="1.2"/><text x="424" y="158">{% trans "дизайнер" %}</text></g>
+        <g transform="rotate(2 96 354)"><rect x="34" y="342" width="124" height="24" rx="12" fill="#fff" stroke="#17181C" stroke-width="1.2"/><text x="96" y="358">{% trans "разработчик" %}</text></g>
+        <g transform="rotate(-2 424 354)"><rect x="368" y="342" width="112" height="24" rx="12" fill="#fff" stroke="#17181C" stroke-width="1.2"/><text x="424" y="358">{% trans "менеджер" %}</text></g>
+    </g>
+</svg>

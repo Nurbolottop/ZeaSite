@@ -1,0 +1,22 @@
+{% load i18n site_tags %}{# Обложка проекта: реальный скриншот в рамке браузера или типографская обложка из данных проекта (без вымышленных скриншотов) #}
+{% if project.image %}
+<div class="browser">
+    <div class="browser-bar"><i></i><i></i><i></i><span>{% if project.live_url %}{{ project.live_url|cut:"https://"|cut:"http://" }}{% else %}{{ project.name }}{% endif %}</span></div>
+    <img src="{{ project.image.url }}" alt="{{ project.name }}" loading="lazy" width="1200" height="800">
+</div>
+{% else %}
+<div class="cover grain" data-color="{{ project.color }}">
+    <div class="flex items-center justify-between gap-3 relative z-[1]">
+        <span class="chip">{{ project.project_type }}</span>
+        <span class="mono text-xs tnum">{{ project.year }}</span>
+    </div>
+    <div class="cover-ball" aria-hidden="true"></div>
+    <div class="grid gap-3 relative z-[1]">
+        {% if monogram %}<p class="cover-name cover-mono" aria-hidden="true">{{ project.name|initials }}</p>
+        {% else %}<p class="cover-name">{{ project.name }}</p>{% endif %}
+        {% if project.technologies_list %}
+        <div class="cover-stack">{% for tech in project.technologies_list|slice:":4" %}<span class="chip">{{ tech }}</span>{% endfor %}</div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}

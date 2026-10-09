@@ -1,0 +1,80 @@
+{% load i18n %}{# Сцена первого экрана. Группы с data-depth сдвигаются за курсором (см. _scripts.html) #}
+<svg viewBox="0 0 600 560" role="img" aria-label="{% trans 'Цифровая система бизнеса: заявки, CRM, мобильное приложение и AI-ассистент связаны между собой' %}">
+    {# Дальний план #}
+    <g class="hero-layer" data-depth="6">
+        <circle cx="468" cy="132" r="96" fill="url(#z-sSky)" stroke="#17181C" stroke-width="1.5"/>
+        <ellipse cx="438" cy="96" rx="24" ry="14" fill="#fff" opacity=".7" transform="rotate(-32 438 96)"/>
+        <g transform="rotate(-14 468 132)"><ellipse cx="468" cy="132" rx="132" ry="30" fill="none" stroke="#17181C" stroke-width="1.1" stroke-dasharray="3 5"/></g>
+    </g>
+
+    {# Линия данных: заявка → CRM → AI #}
+    <g class="hero-layer" data-depth="10">
+        <path id="z-hero-flow" d="M140 404 C 140 498 470 506 470 432" fill="none" stroke="#17181C" stroke-width="1.4" class="flow"/>
+        <circle r="7" fill="url(#z-sLime)" stroke="#17181C" stroke-width="1.2"><animateMotion dur="3.2s" repeatCount="indefinite"><mpath href="#z-hero-flow"/></animateMotion></circle>
+        <circle r="7" fill="url(#z-sCoral)" stroke="#17181C" stroke-width="1.2"><animateMotion dur="3.2s" begin="-1.6s" repeatCount="indefinite"><mpath href="#z-hero-flow"/></animateMotion></circle>
+        <g transform="rotate(-3 306 486)">
+            <rect x="244" y="474" width="124" height="24" rx="12" fill="#D4E89A" stroke="#17181C" stroke-width="1.2"/>
+            <text x="306" y="490" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#17181C">{% trans "автоматически" %}</text>
+        </g>
+    </g>
+
+    {# Телефон #}
+    <g class="hero-layer" data-depth="14">
+        <rect x="218" y="82" width="170" height="350" rx="34" fill="#17181C" opacity=".18" filter="url(#z-soft)"/>
+        <rect x="208" y="66" width="170" height="350" rx="34" fill="#17181C"/>
+        <rect x="216" y="74" width="154" height="334" rx="27" fill="#fff"/>
+        <rect x="267" y="82" width="52" height="12" rx="6" fill="#17181C"/>
+        <text x="232" y="122" font-family="JetBrains Mono, monospace" font-size="10" fill="#5A5D66" letter-spacing=".6">{% trans "ЗАКАЗЫ" %}</text>
+        <rect x="230" y="132" width="126" height="78" rx="16" fill="#D4E89A" stroke="#17181C" stroke-width="1.3"/>
+        <text x="244" y="156" font-family="Manrope, sans-serif" font-weight="700" font-size="11" fill="#17181C">{% trans "Новые сегодня" %}</text>
+        <text x="244" y="194" font-family="Unbounded, sans-serif" font-weight="700" font-size="28" fill="#17181C">24</text>
+        <g fill="#ECEEF1">
+            <circle cx="244" cy="236" r="10"/><rect x="262" y="231" width="80" height="9" rx="4.5"/>
+            <circle cx="244" cy="268" r="10"/><rect x="262" y="263" width="62" height="9" rx="4.5"/>
+            <circle cx="244" cy="300" r="10"/><rect x="262" y="295" width="72" height="9" rx="4.5"/>
+        </g>
+        <rect x="232" y="364" width="122" height="32" rx="16" fill="#17181C"/>
+        <text x="293" y="384" text-anchor="middle" font-family="Manrope, sans-serif" font-weight="700" font-size="11" fill="#fff">{% trans "Принять заказ" %}</text>
+        <g transform="rotate(7 356 58)">
+            <rect x="306" y="46" width="104" height="24" rx="12" fill="#fff" stroke="#17181C" stroke-width="1.2"/>
+            <text x="358" y="62" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#17181C">iOS · Android</text>
+        </g>
+    </g>
+
+    {# Передний план: виджет, карточка CRM, AI #}
+    <g class="hero-layer" data-depth="22">
+        <g class="float-y">
+            <rect x="28" y="92" width="178" height="128" rx="20" fill="#fff" stroke="#17181C" stroke-width="1.5"/>
+            <text x="46" y="120" font-family="Manrope, sans-serif" font-weight="700" font-size="11" fill="#5A5D66">{% trans "Заявки за неделю" %}</text>
+            <g fill="#ECEEF1" stroke="#17181C" stroke-width="1">
+                <rect x="46" y="170" width="16" height="32" rx="4"/><rect x="68" y="158" width="16" height="44" rx="4"/><rect x="90" y="164" width="16" height="38" rx="4"/>
+                <rect x="112" y="148" width="16" height="54" rx="4"/><rect x="134" y="156" width="16" height="46" rx="4"/>
+                <rect x="156" y="134" width="16" height="68" rx="4" fill="#D4E89A"/>
+            </g>
+        </g>
+
+        <rect x="34" y="306" width="226" height="104" rx="20" fill="#17181C" opacity=".16" filter="url(#z-soft)"/>
+        <rect x="24" y="294" width="226" height="104" rx="20" fill="#fff" stroke="#17181C" stroke-width="1.5"/>
+        <rect x="42" y="312" width="92" height="20" rx="10" fill="#EFA28E" stroke="#17181C" stroke-width="1"/>
+        <text x="88" y="326" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#17181C">{% trans "НОВАЯ ЗАЯВКА" %}</text>
+        <text x="42" y="356" font-family="Manrope, sans-serif" font-weight="800" font-size="14" fill="#17181C">{% trans "Заявка с сайта" %}</text>
+        <text x="42" y="380" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5A5D66">→ {% trans "менеджер назначен" %}</text>
+        <g transform="rotate(8 232 296)"><rect x="206" y="284" width="54" height="22" rx="11" fill="#C3D5EE" stroke="#17181C" stroke-width="1.2"/><text x="233" y="299" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#17181C">CRM</text></g>
+
+        <path d="M404 432 L396 452 L428 432 Z" fill="#17181C"/>
+        <rect x="360" y="336" width="222" height="98" rx="22" fill="#17181C"/>
+        <circle cx="382" cy="358" r="4.5" fill="#D4E89A"/>
+        <text x="394" y="362" font-family="JetBrains Mono, monospace" font-size="10" fill="#D4E89A">{% trans "AI-ассистент" %}</text>
+        <text x="380" y="388" font-family="Manrope, sans-serif" font-weight="600" font-size="13" fill="#fff">{% trans "Отчёт за неделю готов." %}</text>
+        <g fill="#fff">
+            <circle cx="386" cy="412" r="3.3"><animate attributeName="opacity" values=".25;1;.25" dur="1.2s" repeatCount="indefinite"/></circle>
+            <circle cx="398" cy="412" r="3.3"><animate attributeName="opacity" values=".25;1;.25" dur="1.2s" begin="-.2s" repeatCount="indefinite"/></circle>
+            <circle cx="410" cy="412" r="3.3"><animate attributeName="opacity" values=".25;1;.25" dur="1.2s" begin="-.4s" repeatCount="indefinite"/></circle>
+        </g>
+
+        <g stroke="#17181C" stroke-width="1.3" stroke-linejoin="round">
+            <polygon points="62,446 92,463 62,480 32,463" fill="#F6ECC6"/><polygon points="32,463 62,480 62,514 32,497" fill="#E9D48E"/><polygon points="62,480 92,463 92,497 62,514" fill="#BFA75A"/>
+        </g>
+        <circle cx="560" cy="268" r="20" fill="url(#z-sCoral)" stroke="#17181C" stroke-width="1.4"/>
+    </g>
+</svg>

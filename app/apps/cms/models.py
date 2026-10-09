@@ -16,6 +16,32 @@ COLOR_CHOICES = [
     ('yellow', 'Yellow'),
 ]
 
+# Иллюстрации направлений: templates/site/illustrations/<key>.html
+ILLUSTRATION_CHOICES = [
+    ('websites',     'Сайты'),
+    ('platforms',    'Веб-системы и платформы'),
+    ('crm',          'CRM и внутренние системы'),
+    ('mobile',       'Мобильные приложения'),
+    ('automation',   'Автоматизация'),
+    ('integrations', 'Интеграции'),
+    ('support',      'Сопровождение'),
+    ('ai',           'AI и ассистенты'),
+    ('partnership',  'Технологическое партнёрство'),
+]
+
+# Если иллюстрация не выбрана — подбирается по иконке
+ICON_ILLUSTRATIONS = {
+    'globe': 'websites', 'monitor': 'websites', 'layout': 'websites',
+    'app-window': 'platforms', 'layout-grid': 'platforms', 'layers': 'platforms',
+    'database': 'crm', 'users': 'crm',
+    'smartphone': 'mobile',
+    'workflow': 'automation', 'zap': 'automation', 'settings': 'automation',
+    'plug': 'integrations', 'refresh-cw': 'integrations',
+    'life-buoy': 'support', 'headphones': 'support', 'shield-check': 'support',
+    'bot': 'ai', 'sparkles': 'ai', 'cpu': 'ai',
+    'handshake': 'partnership',
+}
+
 
 class Service(models.Model):
     title       = models.CharField('Название', max_length=100)
@@ -27,7 +53,10 @@ class Service(models.Model):
                       size=[800, 600], quality=88,
                       upload_to='services/', force_format='WEBP',
                       blank=True, null=True,
-                      help_text='Иллюстрация / скриншот услуги (800×600, WebP)')
+                      help_text='Фото вместо иллюстрации (800×600, WebP). Пусто — показывается иллюстрация')
+    illustration = models.CharField('Иллюстрация', max_length=20, choices=ILLUSTRATION_CHOICES,
+                                    blank=True,
+                                    help_text='Пусто — подбирается автоматически по иконке')
     color       = models.CharField('Цвет', max_length=20, choices=COLOR_CHOICES, default='indigo')
     order       = models.PositiveIntegerField('Порядок', default=0)
     is_active   = models.BooleanField('Активно', default=True)
@@ -39,6 +68,10 @@ class Service(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def illustration_key(self):
+        return self.illustration or ICON_ILLUSTRATIONS.get(self.icon, 'platforms')
 
 
 class Project(models.Model):
@@ -232,6 +265,13 @@ class SiteSettings(models.Model):
                                           'и автоматизации. Мы не заканчиваем работу после запуска: '
                                           'сопровождаем продукт, развиваем его и адаптируем под новые '
                                           'задачи компании.')
+    about_photo = ResizedImageField(
+                      '📷 Фото для блока «О нас»',
+                      size=[1400, 1050], quality=86,
+                      upload_to='about/', force_format='WEBP',
+                      blank=True, null=True,
+                      help_text='Команда или офис (горизонтальное, ~4:3). Пусто — показывается иллюстрация')
+    about_photo_caption = models.CharField('Подпись к фото', max_length=150, blank=True)
 
     # ── Контакты ─────────────────────────────────────────────
     # Пустое поле = контакт не показывается на сайте.
@@ -341,3 +381,29 @@ class Commitment(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class TeamMember(models.Model):
+    """Команда на публичном сайте (блок «О нас»). Не связано с сотрудниками ZEA Hub."""
+    name      = models.CharField('Имя', max_length=100)
+    role      = models.CharField('Роль', max_length=120, blank=True)
+    photo     = ResizedImageField(
+                    '📷 Фото',
+                    size=[600, 750], crop=['middle', 'center'], quality=86,
+                    upload_to='team/', force_format='WEBP',
+                    blank=True, null=True,
+                    help_text='Вертикальное фото 4:5 (600×750). Пусто — инициалы')
+    order     = models.PositiveIntegerField('Порядок', default=0)
+    is_active = models.BooleanField('Активно', default=True)
+
+    class Meta:
+        verbose_name        = 'Человек в команде'
+        verbose_name_plural = 'Команда (на сайте)'
+        ordering            = ['order']
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def initials(self):
+        return ''.join(part[0] for part in self.name.split()[:2]).upper()

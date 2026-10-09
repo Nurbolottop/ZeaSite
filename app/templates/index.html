@@ -64,44 +64,31 @@
     <!-- Tailwind: собирается из репозитория (npm run build:css) и встраивается в страницу -->
     <style>{{ tailwind_inline|safe }}</style>
 
-    <!-- Шрифты и AOS — асинхронно, не блокируют первую отрисовку -->
+    <!-- Шрифты — асинхронно, не блокируют первую отрисовку (все три с cyrillic-ext: ң ө ү) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://unpkg.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
           onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"></noscript>
-    <link rel="preload" as="style" href="https://unpkg.com/aos@2.3.1/dist/aos.css"
-          onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css"></noscript>
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
+    <!-- Анимации появления включаются только при работающем JS -->
+    <script>document.documentElement.classList.add('js');</script>
 
     {% include "site/_styles.html" %}
 </head>
 
-<body class="bg-[#0B0F19] text-white">
+<body>
 
 {% include "site/_header.html" %}
 
+{% include "site/illustrations/_defs.html" %}
+
 <main>
     {% include "site/sections/hero.html" %}
-    <div class="divider"></div>
-    {% include "site/sections/about.html" %}
-    <div class="divider"></div>
-    {% include "site/sections/cooperation.html" %}
-    {% include "site/sections/process.html" %}
-    <div class="divider"></div>
     {% include "site/sections/services.html" %}
-    {% if projects %}
-    <div class="divider"></div>
-    {% include "site/sections/projects.html" %}
-    {% endif %}
-    {% if stats or partners %}
-    <div class="divider"></div>
-    {% include "site/sections/results.html" %}
-    {% endif %}
-    <div class="divider"></div>
-    {% include "site/sections/why.html" %}
-    <div class="divider"></div>
+    {% if projects %}{% include "site/sections/projects.html" %}{% endif %}
+    {% include "site/sections/process.html" %}
+    {% include "site/sections/about.html" %}
+    {% include "site/sections/cooperation.html" %}
     {% include "site/sections/contact.html" %}
 </main>
 
@@ -109,9 +96,9 @@
 
 {% if projects %}{% include "site/_project_modal.html" %}{% endif %}
 
-<!-- JS в конце body — не блокирует отрисовку; lucide здесь, до первого вызова createIcons() -->
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<!-- JS в конце body — не блокирует отрисовку; lucide здесь, до первого вызова createIcons().
+     Версия закреплена: @latest может сломать иконки без нашего ведома. -->
+<script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
 {% include "site/_scripts.html" %}
 </body>
 </html>

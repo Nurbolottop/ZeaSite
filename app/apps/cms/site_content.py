@@ -270,6 +270,13 @@ SERVICES = [
                        'Кайталануучу процесстерди, өтүнмөлөрдү, билдирмелерди жана документтерди '
                        'автоматташтыруу.',
                        'Automating repetitive processes, requests, notifications and documents.')),
+    dict(icon='bot', color='green', illustration='ai',
+         title=t('AI и ассистенты', 'AI жана ассистенттер', 'AI and assistants'),
+         description=t('AI-ассистенты и инструменты: отвечают клиентам, готовят отчёты и разбирают заявки.',
+                       'AI-ассистенттер жана куралдар: кардарларга жооп берет, отчетторду даярдайт '
+                       'жана өтүнмөлөрдү иреттейт.',
+                       'AI assistants and tools that answer customers, prepare reports and sort '
+                       'incoming requests.')),
     dict(icon='plug', color='orange',
          title=t('Интеграции', 'Интеграциялар', 'Integrations'),
          description=t('Связываем сайт, CRM, оплату, внешние сервисы и другие системы.',

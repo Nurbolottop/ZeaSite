@@ -1,0 +1,46 @@
+{% load i18n %}<svg viewBox="0 0 520 300" role="img" aria-label="{% trans 'Интеграции: сервисы соединены кабелями с центральным API' %}">
+    <g fill="none" stroke-linecap="round">
+        <path id="z-int-a" d="M220 132 C 180 132 168 76 128 76" stroke="#17181C" stroke-width="15"/>
+        <path id="z-int-b" d="M220 168 C 180 168 168 226 128 226" stroke="#17181C" stroke-width="15"/>
+        <path id="z-int-c" d="M300 132 C 340 132 352 76 392 76" stroke="#17181C" stroke-width="15"/>
+        <path id="z-int-d" d="M300 168 C 340 168 352 226 392 226" stroke="#17181C" stroke-width="15"/>
+        <g stroke="#ECEEF1" stroke-width="11">
+            <path d="M220 132 C 180 132 168 76 128 76"/><path d="M220 168 C 180 168 168 226 128 226"/>
+            <path d="M300 132 C 340 132 352 76 392 76"/><path d="M300 168 C 340 168 352 226 392 226"/>
+        </g>
+        <g stroke="#fff" stroke-width="2.5" opacity=".9">
+            <path d="M220 130 C 180 130 168 74 128 74"/><path d="M220 166 C 180 166 168 224 128 224"/>
+            <path d="M300 130 C 340 130 352 74 392 74"/><path d="M300 166 C 340 166 352 224 392 224"/>
+        </g>
+    </g>
+    <g stroke="#17181C" stroke-width="1">
+        <circle r="5" fill="url(#z-sLime)"><animateMotion dur="2.4s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#z-int-a"/></animateMotion></circle>
+        <circle r="5" fill="url(#z-sCoral)"><animateMotion dur="2.4s" begin="-.6s" repeatCount="indefinite"><mpath href="#z-int-b"/></animateMotion></circle>
+        <circle r="5" fill="url(#z-sLime)"><animateMotion dur="2.4s" begin="-1.2s" repeatCount="indefinite"><mpath href="#z-int-c"/></animateMotion></circle>
+        <circle r="5" fill="url(#z-sCoral)"><animateMotion dur="2.4s" begin="-1.8s" repeatCount="indefinite" keyPoints="1;0" keyTimes="0;1" calcMode="linear"><mpath href="#z-int-d"/></animateMotion></circle>
+    </g>
+    {# Штекеры у плиток #}
+    <g fill="#fff" stroke="#17181C" stroke-width="1.3">
+        <rect x="118" y="68" width="16" height="16" rx="4"/><rect x="118" y="218" width="16" height="16" rx="4"/>
+        <rect x="386" y="68" width="16" height="16" rx="4"/><rect x="386" y="218" width="16" height="16" rx="4"/>
+    </g>
+    {# Плитки сервисов #}
+    <g stroke="#17181C" stroke-width="1.5">
+        <rect x="30" y="42" width="88" height="88" rx="22" fill="#9DB4D6"/><rect x="30" y="34" width="88" height="88" rx="22" fill="url(#z-lSky)"/>
+        <rect x="30" y="192" width="88" height="88" rx="22" fill="#CF8A76"/><rect x="30" y="184" width="88" height="88" rx="22" fill="url(#z-lCoral)"/>
+        <rect x="402" y="42" width="88" height="88" rx="22" fill="#BFA75A"/><rect x="402" y="34" width="88" height="88" rx="22" fill="url(#z-lButter)"/>
+        <rect x="402" y="192" width="88" height="88" rx="22" fill="#D7DAE0"/><rect x="402" y="184" width="88" height="88" rx="22" fill="#fff"/>
+    </g>
+    <path d="M56 80 L92 66 L84 98 L74 86 Z M74 86 L92 66" fill="#fff" stroke="#17181C" stroke-width="1.4" stroke-linejoin="round"/>
+    <g stroke="#17181C" stroke-width="1.4"><rect x="52" y="214" width="44" height="30" rx="5" fill="#fff"/><path d="M52 223 H96" /><rect x="58" y="233" width="14" height="5" rx="2" fill="#17181C"/></g>
+    <text x="446" y="88" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="700" font-size="20" fill="#17181C">1С</text>
+    <g stroke="#17181C" stroke-width="1.3"><rect x="424" y="208" width="44" height="34" rx="5" fill="#fff"/><path d="M424 216 H468" fill="none"/><circle cx="429" cy="212" r="1.5" fill="#17181C"/><rect x="430" y="222" width="20" height="5" rx="2.5" fill="#D4E89A"/><rect x="430" y="231" width="30" height="4" rx="2" fill="#C7CBD3" stroke="none"/></g>
+    <g font-family="JetBrains Mono, monospace" font-size="9" fill="#5A5D66" text-anchor="middle" letter-spacing=".5">
+        <text x="74" y="146">TELEGRAM</text><text x="74" y="296">{% trans "ОПЛАТА" %}</text><text x="446" y="146">{% trans "УЧЁТ" %}</text><text x="446" y="296">{% trans "САЙТ" %}</text>
+    </g>
+    {# Центр — API #}
+    <ellipse cx="264" cy="208" rx="52" ry="9" fill="#17181C" opacity=".12" filter="url(#z-soft)"/>
+    <circle cx="260" cy="150" r="48" fill="url(#z-sLime)" stroke="#17181C" stroke-width="1.5"/>
+    <ellipse cx="243" cy="129" rx="13" ry="8" fill="#fff" opacity=".7" transform="rotate(-32 243 129)"/>
+    <text x="260" y="158" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="700" font-size="20" fill="#17181C">API</text>
+</svg>

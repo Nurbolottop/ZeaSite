@@ -1,30 +1,24 @@
 {% load i18n %}
-<!-- ══════════ КАК МЫ НАЧИНАЕМ РАБОТУ ══════════ -->
+<!-- ══════════ КАК МЫ НАЧИНАЕМ РАБОТУ (линия этапов) ══════════ -->
 {% if process_steps %}
-<section id="process" class="pb-24 md:pb-32 pt-4 relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+<section id="process" class="py-20 md:py-28 bg-fog border-y-[1.5px] border-ink">
+    <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12 md:mb-16">
             <div>
-                <div class="inline-flex items-center gap-2 glass px-3.5 py-1.5 rounded-full text-xs eyebrow mb-6" data-aos="fade-up">
-                    <i data-lucide="workflow" class="w-3.5 h-3.5"></i> {% trans "Процесс" %}
-                </div>
-                <h2 class="text-3xl sm:text-4xl font-black text-white" data-aos="fade-up" data-aos-delay="100">
-                    {% blocktrans %}Как мы <span class="gradient-text">начинаем работу</span>{% endblocktrans %}
-                </h2>
+                <span class="eyebrow mb-5" data-reveal>{% trans "Процесс" %}</span>
+                <h2 class="h-section" data-reveal style="--d:80ms">{% trans "Как мы начинаем работу" %}</h2>
             </div>
-            <a href="#contact" data-request-type="partnership" class="c-more text-indigo-300 hover:text-indigo-200 text-sm font-semibold inline-flex items-center gap-2 transition-colors"
-               data-aos="fade-up" data-aos-delay="150">
-                {% trans "Начать с заявки" %} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            <a href="#contact" data-request-type="partnership" class="link-arrow self-start md:self-auto" data-reveal style="--d:160ms">
+                {% trans "Начать с заявки" %} <i data-lucide="arrow-right"></i>
             </a>
         </div>
 
-        <ol class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <ol class="steps list-none p-0 m-0" style="--n:{{ process_steps|length }}">
             {% for step in process_steps %}
-            <li class="step-card glass rounded-2xl p-7 border border-white/10 relative overflow-hidden"
-                data-aos="fade-up" data-aos-delay="{{ forloop.counter }}0">
-                <span class="step-num block text-5xl font-black gradient-text leading-none mb-5">{{ forloop.counter|stringformat:"02d" }}</span>
-                <h3 class="text-white text-lg font-bold mb-2">{{ step.title }}</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">{{ step.description }}</p>
+            <li class="step" data-reveal style="--d:{{ forloop.counter0 }}00ms">
+                <span class="step-node tnum" aria-hidden="true">{{ forloop.counter|stringformat:"02d" }}</span>
+                <h3 class="h-card text-lg mb-2">{{ step.title }}</h3>
+                <p class="text-muted text-[.95rem] leading-relaxed">{{ step.description }}</p>
             </li>
             {% endfor %}
         </ol>

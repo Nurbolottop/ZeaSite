@@ -1,0 +1,43 @@
+{% load i18n %}<svg viewBox="0 0 520 300" role="img" aria-label="{% trans 'Веб-платформа из модулей: новый модуль встаёт на своё место' %}">
+    <rect x="38" y="62" width="440" height="214" rx="24" fill="#17181C" opacity=".12" filter="url(#z-soft)"/>
+    <rect x="30" y="48" width="440" height="214" rx="24" fill="#D7DAE0" stroke="#17181C" stroke-width="1.5"/>
+    <rect x="30" y="40" width="440" height="214" rx="24" fill="#fff" stroke="#17181C" stroke-width="1.5"/>
+    <path d="M30 72 H470" stroke="#17181C" stroke-width="1.2"/>
+    <g stroke="#17181C"><circle cx="52" cy="56" r="5" fill="#EFA28E"/><circle cx="68" cy="56" r="5" fill="#D4E89A"/><circle cx="84" cy="56" r="5" fill="#C3D5EE"/></g>
+    <text x="104" y="60" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5A5D66">admin / {% trans "платформа" %}</text>
+    {# Меню #}
+    <path d="M130 72 V254" stroke="#17181C" stroke-width="1.2"/>
+    <rect x="42" y="86" width="76" height="22" rx="8" fill="#D4E89A" stroke="#17181C"/>
+    <g fill="#17181C"><rect x="52" y="94" width="40" height="6" rx="3"/></g>
+    <g fill="#C7CBD3"><rect x="52" y="124" width="52" height="6" rx="3"/><rect x="52" y="148" width="44" height="6" rx="3"/><rect x="52" y="172" width="56" height="6" rx="3"/><rect x="52" y="196" width="38" height="6" rx="3"/></g>
+    {# Модули #}
+    <g stroke="#17181C" stroke-width="1.2">
+        <rect x="146" y="88" width="146" height="72" rx="12" fill="#fff"/>
+        <rect x="304" y="88" width="150" height="72" rx="12" fill="#E3ECF8"/>
+        <rect x="146" y="170" width="146" height="72" rx="12" fill="#fff"/>
+        <rect x="304" y="170" width="150" height="72" rx="12" fill="none" stroke-dasharray="4 4" opacity=".55"/>
+    </g>
+    <g font-family="JetBrains Mono, monospace" font-size="9" fill="#5A5D66" letter-spacing=".6">
+        <text x="158" y="106">{% trans "СКЛАД" %}</text><text x="316" y="106">{% trans "ФИНАНСЫ" %}</text><text x="158" y="188">{% trans "СОТРУДНИКИ" %}</text>
+    </g>
+    <g fill="#17181C"><rect x="160" y="132" width="12" height="18" rx="2"/><rect x="178" y="122" width="12" height="28" rx="2"/><rect x="196" y="128" width="12" height="22" rx="2"/><rect x="214" y="116" width="12" height="34" rx="2" fill="#A9BF5E" stroke="#17181C"/></g>
+    <path d="M318 146 L344 132 L364 138 L392 118 L420 124 L440 112" fill="none" stroke="#17181C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="440" cy="112" r="4" fill="#EFA28E" stroke="#17181C"/>
+    <g stroke="#17181C" stroke-width="1.1"><circle cx="168" cy="216" r="10" fill="#EFA28E"/><circle cx="186" cy="216" r="10" fill="#C3D5EE"/><circle cx="204" cy="216" r="10" fill="#D4E89A"/><circle cx="222" cy="216" r="10" fill="#E9D48E"/></g>
+    {# Новый модуль встаёт в слот #}
+    <g>
+        <animateTransform attributeName="transform" type="translate" values="0 -118;0 -118;0 0;0 0" keyTimes="0;.2;.55;1" dur="4.5s" repeatCount="indefinite" calcMode="spline" keySplines="0 0 1 1;.6 0 .2 1;0 0 1 1"/>
+        <animate attributeName="opacity" values="0;1;1;1" keyTimes="0;.2;.55;1" dur="4.5s" repeatCount="indefinite"/>
+        <rect x="308" y="178" width="150" height="72" rx="12" fill="#17181C" opacity=".18"/>
+        <rect x="304" y="170" width="150" height="72" rx="12" fill="url(#z-lLime)" stroke="#17181C" stroke-width="1.5"/>
+        <text x="316" y="188" font-family="JetBrains Mono, monospace" font-size="9" fill="#17181C" letter-spacing=".6">{% trans "ОТЧЁТЫ" %}</text>
+        <g fill="#17181C"><rect x="316" y="202" width="90" height="6" rx="3"/><rect x="316" y="214" width="64" height="6" rx="3" opacity=".45"/><rect x="316" y="226" width="76" height="6" rx="3" opacity=".45"/></g>
+    </g>
+    <g stroke="#17181C" stroke-width="1.3" stroke-linejoin="round">
+        <polygon points="478,8 506,24 478,40 450,24" fill="#F6ECC6"/><polygon points="450,24 478,40 478,72 450,56" fill="#E9D48E"/><polygon points="478,40 506,24 506,56 478,72" fill="#BFA75A"/>
+    </g>
+    <g transform="rotate(-4 120 274)">
+        <rect x="40" y="262" width="160" height="26" rx="13" fill="#C3D5EE" stroke="#17181C" stroke-width="1.3"/>
+        <text x="120" y="279" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" fill="#17181C">{% trans "роли и доступы" %}</text>
+    </g>
+</svg>

@@ -1,0 +1,28 @@
+{% load i18n %}<svg viewBox="0 0 300 380" role="img" aria-label="{% trans 'Объёмная сфера AI с орбитами данных и сообщением ассистента' %}">
+    <defs><clipPath id="z-ai-front" clipPathUnits="userSpaceOnUse"><rect x="0" y="150" width="300" height="120"/></clipPath></defs>
+    <g stroke="#17181C" stroke-width="1" stroke-dasharray="2 4" fill="none" opacity=".55"><path d="M60 64 L104 108"/><path d="M236 58 L196 102"/><path d="M252 214 L204 182"/></g>
+    <g transform="rotate(-16 150 150)"><ellipse cx="150" cy="150" rx="118" ry="30" fill="none" stroke="#17181C" stroke-width="1.2"/></g>
+    <g transform="rotate(28 150 150)"><ellipse cx="150" cy="150" rx="100" ry="22" fill="none" stroke="#17181C" stroke-width="1" stroke-dasharray="3 4"/></g>
+    <ellipse cx="156" cy="232" rx="58" ry="10" fill="#17181C" opacity=".12" filter="url(#z-soft)"/>
+    <circle cx="150" cy="150" r="62" fill="url(#z-sSky)" stroke="#17181C" stroke-width="1.5"/>
+    <ellipse cx="126" cy="122" rx="17" ry="10" fill="#fff" opacity=".75" transform="rotate(-32 126 122)"/>
+    <g transform="rotate(-16 150 150)">
+        <ellipse cx="150" cy="150" rx="118" ry="30" fill="none" stroke="#17181C" stroke-width="1.2" clip-path="url(#z-ai-front)"/>
+        <circle r="7.5" fill="url(#z-sLime)" stroke="#17181C" stroke-width="1.2"><animateMotion dur="7s" repeatCount="indefinite" path="M32 150 A118 30 0 1 0 268 150 A118 30 0 1 0 32 150"/></circle>
+    </g>
+    <g font-family="JetBrains Mono, monospace" font-size="10" fill="#17181C">
+        <g transform="rotate(-8 50 52)"><rect x="24" y="40" width="50" height="22" rx="11" fill="#fff" stroke="#17181C" stroke-width="1.2"/><text x="49" y="55" text-anchor="middle">FAQ</text></g>
+        <g transform="rotate(6 236 46)"><rect x="200" y="34" width="74" height="22" rx="11" fill="#EFA28E" stroke="#17181C" stroke-width="1.2"/><text x="237" y="49" text-anchor="middle">{% trans "отчёты" %}</text></g>
+        <g transform="rotate(-5 254 222)"><rect x="218" y="211" width="72" height="22" rx="11" fill="#D4E89A" stroke="#17181C" stroke-width="1.2"/><text x="254" y="226" text-anchor="middle">{% trans "заявки" %}</text></g>
+    </g>
+    <path d="M58 344 L50 362 L82 344 Z" fill="#17181C"/>
+    <rect x="36" y="262" width="228" height="84" rx="20" fill="#17181C"/>
+    <circle cx="56" cy="282" r="4" fill="#D4E89A"/>
+    <text x="66" y="286" font-family="JetBrains Mono, monospace" font-size="10" fill="#D4E89A">{% trans "AI-ассистент" %}</text>
+    <text x="54" y="310" font-family="Manrope, sans-serif" font-weight="600" font-size="13" fill="#fff">{% trans "Отчёт за неделю готов." %}</text>
+    <g fill="#fff">
+        <circle cx="60" cy="329" r="3.2"><animate attributeName="opacity" values=".25;1;.25" dur="1.2s" repeatCount="indefinite"/></circle>
+        <circle cx="72" cy="329" r="3.2"><animate attributeName="opacity" values=".25;1;.25" dur="1.2s" begin="-.2s" repeatCount="indefinite"/></circle>
+        <circle cx="84" cy="329" r="3.2"><animate attributeName="opacity" values=".25;1;.25" dur="1.2s" begin="-.4s" repeatCount="indefinite"/></circle>
+    </g>
+</svg>

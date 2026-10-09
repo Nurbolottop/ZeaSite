@@ -1,35 +1,32 @@
 {% load i18n %}{% get_current_language as CURRENT_LANG %}
 <!-- ══════════ HEADER ══════════ -->
-<header id="header" class="fixed top-0 left-0 right-0 z-50 glass-nav">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-20 md:h-24">
-            <a href="#home" class="flex items-center gap-2.5" aria-label="{{ settings.site_name }}">
+<header id="header" class="site-header">
+    <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between gap-4 h-20">
+            <a href="#home" class="flex items-center gap-2.5 text-ink no-underline" aria-label="{{ settings.site_name }}">
                 {% include "site/_brand.html" with size="lg" %}
             </a>
 
-            <nav class="hidden lg:flex items-center gap-7" aria-label="{% trans 'Основное меню' %}">
+            <nav class="nav-pill hidden lg:flex items-center gap-0.5" aria-label="{% trans 'Основное меню' %}">
                 {% for href, label in nav_items %}
-                <a href="{{ href }}" class="nav-link text-gray-400 hover:text-white text-sm font-medium">{{ label }}</a>
+                <a href="{{ href }}" class="nav-link">{{ label }}</a>
                 {% endfor %}
             </nav>
 
-            <div class="flex items-center gap-3">
-                <div class="hidden md:flex items-center gap-1">
+            <div class="flex items-center gap-2">
+                <div class="hidden md:flex items-center gap-0.5">
                     {% for lang_code, lang_name in LANGUAGES %}
                     {% language lang_code %}
                     <a href="{% url 'index' %}" hreflang="{{ lang_code }}"
-                       class="lang-link px-2.5 py-1 rounded-lg text-xs font-semibold uppercase transition-colors {% if lang_code == CURRENT_LANG %}text-white bg-indigo-600/40 border border-indigo-500/50{% else %}text-gray-400 hover:text-white hover:bg-white/10{% endif %}">
-                        {{ lang_code }}
-                    </a>
+                       class="lang-link{% if lang_code == CURRENT_LANG %} is-current{% endif %}">{{ lang_code }}</a>
                     {% endlanguage %}
                     {% endfor %}
                 </div>
                 <a href="#contact" data-request-type="partnership"
-                   class="hidden md:inline-flex btn-primary items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold">{% trans "Обсудить партнёрство" %}</a>
-                <button id="burger-btn" class="lg:hidden flex flex-col justify-center gap-1.5 w-9 h-9 p-1" aria-label="{% trans 'Меню' %}">
-                    <span class="block w-full h-0.5 bg-white rounded transition-all duration-300"></span>
-                    <span class="block w-full h-0.5 bg-white rounded transition-all duration-300"></span>
-                    <span class="block w-full h-0.5 bg-white rounded transition-all duration-300"></span>
+                   class="hidden md:inline-flex btn btn-ink btn-sm">{% trans "Обсудить партнёрство" %}</a>
+                <button id="burger-btn" type="button" class="burger lg:hidden flex flex-col justify-center gap-[5px] w-11 h-11 p-2.5 rounded-full border-[1.5px] border-ink bg-white"
+                        aria-label="{% trans 'Меню' %}" aria-controls="mobile-menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
                 </button>
             </div>
         </div>
@@ -37,30 +34,29 @@
 </header>
 
 <!-- Mobile drawer -->
-<div id="mobile-menu" class="mobile-menu fixed top-0 right-0 bottom-0 w-72 z-50 bg-[#0D1120] border-l border-white/10 flex flex-col p-7">
+<div id="mobile-menu" class="mobile-menu fixed top-0 right-0 bottom-0 w-[min(20rem,88vw)] z-[55] flex flex-col p-6">
     <div class="flex items-center justify-between mb-10">
-        <div class="flex items-center gap-2">{% include "site/_brand.html" with size="sm" %}</div>
-        <button id="close-menu" aria-label="{% trans 'Закрыть меню' %}" class="text-gray-400 hover:text-white p-1"><i data-lucide="x" class="w-6 h-6"></i></button>
+        <div class="flex items-center gap-2.5">{% include "site/_brand.html" with size="sm" %}</div>
+        <button id="close-menu" type="button" aria-label="{% trans 'Закрыть меню' %}"
+                class="w-11 h-11 rounded-full border-[1.5px] border-ink bg-white grid place-items-center"><i data-lucide="x" class="w-5 h-5"></i></button>
     </div>
-    <nav class="flex flex-col gap-5">
+    <nav class="flex flex-col gap-1" aria-label="{% trans 'Основное меню' %}">
         {% for href, label in nav_items %}
-        <a href="{{ href }}" class="mobile-link text-gray-300 hover:text-white text-lg font-medium transition-colors py-1">{{ label }}</a>
+        <a href="{{ href }}" class="mobile-link font-display font-semibold text-2xl tracking-tight py-2.5 border-b border-ink/10">{{ label }}</a>
         {% endfor %}
     </nav>
-    <div class="mt-auto">
-        <a href="#contact" data-request-type="partnership" class="mobile-link btn-primary flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-white font-semibold">
-            <i data-lucide="handshake" class="w-4 h-4"></i> {% trans "Обсудить партнёрство" %}
+    <div class="mt-auto grid gap-4">
+        <a href="#contact" data-request-type="partnership" class="mobile-link btn btn-ink">
+            {% trans "Обсудить партнёрство" %} <i data-lucide="arrow-right" class="i-arrow"></i>
         </a>
-        <div class="flex items-center gap-2 mt-4 justify-center">
+        <div class="flex items-center gap-1 justify-center">
             {% for lang_code, lang_name in LANGUAGES %}
             {% language lang_code %}
             <a href="{% url 'index' %}" hreflang="{{ lang_code }}"
-               class="lang-link px-3 py-1.5 rounded-lg text-xs font-bold uppercase transition-colors {% if lang_code == CURRENT_LANG %}text-white bg-indigo-600/40 border border-indigo-500/50{% else %}text-gray-400 hover:text-white{% endif %}">
-                {{ lang_code }}
-            </a>
+               class="lang-link{% if lang_code == CURRENT_LANG %} is-current{% endif %}">{{ lang_code }}</a>
             {% endlanguage %}
             {% endfor %}
         </div>
     </div>
 </div>
-<div id="overlay" class="hidden fixed inset-0 bg-black/60 z-40 backdrop-blur-sm"></div>
+<div id="overlay" class="hidden fixed inset-0 bg-ink/40 z-50 backdrop-blur-[2px]"></div>

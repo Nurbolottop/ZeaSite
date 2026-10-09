@@ -1,47 +1,121 @@
 {% load i18n %}
-<!-- ══════════ О ZEA + ЧТО МЫ БЕРЁМ НА СЕБЯ ══════════ -->
-<section id="about" class="py-24 md:py-32 relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-12 gap-14 lg:gap-16 items-start">
-            <div class="lg:col-span-5 lg:sticky lg:top-32">
-                <div class="inline-flex items-center gap-2 glass px-3.5 py-1.5 rounded-full text-xs eyebrow mb-7" data-aos="fade-right">
-                    <i data-lucide="info" class="w-3.5 h-3.5"></i> {% trans "О ZEA" %}
-                </div>
-                <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-6 leading-tight"
-                    data-aos="fade-right" data-aos-delay="100">
-                    {% blocktrans %}IT-команда <span class="gradient-text">для развития вашего бизнеса</span>{% endblocktrans %}
-                </h2>
-                <p class="text-gray-400 text-lg leading-relaxed mb-8" data-aos="fade-right" data-aos-delay="200">
-                    {{ settings.about_text }}
-                </p>
-                <a href="#cooperation" class="btn-outline inline-flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-sm"
-                   data-aos="fade-right" data-aos-delay="300">
-                    {% trans "Форматы сотрудничества" %} <i data-lucide="arrow-right" class="w-4 h-4"></i>
+<!-- ══════════ О НАС: манифест, фото, что берём на себя, почему ZEA, команда, цифры, партнёры ══════════ -->
+<section id="about" class="py-20 md:py-28">
+    <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center mb-20 md:mb-28">
+            <div class="lg:col-span-6 min-w-0">
+                <span class="eyebrow mb-5" data-reveal>{% trans "О ZEA" %}</span>
+                <h2 class="h-section mb-6" data-reveal style="--d:80ms">{% trans "IT-команда, которая остаётся рядом с бизнесом" %}</h2>
+                <p class="lead mb-8" data-reveal style="--d:160ms">{{ settings.about_text }}</p>
+                <a href="#cooperation" class="btn btn-ghost" data-reveal style="--d:240ms">
+                    {% trans "Форматы сотрудничества" %} <i data-lucide="arrow-right" class="i-arrow"></i>
                 </a>
             </div>
-
-            {% if commitments %}
-            <div class="lg:col-span-7">
-                <h3 class="text-sm uppercase tracking-[.18em] text-gray-400 font-semibold mb-6" data-aos="fade-up">
-                    {% trans "Что мы берём на себя" %}
-                </h3>
-                <div class="grid sm:grid-cols-2 gap-4">
-                    {% for item in commitments %}
-                    <div class="glass card rounded-2xl p-6 border border-white/10" data-color="{{ item.color }}"
-                         data-aos="fade-up" data-aos-delay="{{ forloop.counter }}0">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-10 h-10 rounded-xl c-sicon flex items-center justify-center">
-                                <i data-lucide="{{ item.icon|default:'check-circle' }}" class="w-5 h-5"></i>
-                            </div>
-                            <span class="step-num text-xs font-bold text-gray-600">{{ forloop.counter|stringformat:"02d" }}</span>
-                        </div>
-                        <h4 class="text-white font-bold mb-1.5">{{ item.title }}</h4>
-                        <p class="text-gray-400 text-sm leading-relaxed">{{ item.description }}</p>
-                    </div>
-                    {% endfor %}
+            <div class="lg:col-span-6 min-w-0" data-reveal style="--d:120ms">
+                {% if settings.about_photo %}
+                <figure class="photo-frame m-0">
+                    <img src="{{ settings.about_photo.url }}" alt="{{ settings.about_photo_caption|default:settings.site_name }}" loading="lazy" width="1400" height="1050">
+                    {% if settings.about_photo_caption %}<figcaption class="sticker sticker-lime photo-caption">{{ settings.about_photo_caption }}</figcaption>{% endif %}
+                </figure>
+                {% else %}
+                <div class="photo-frame dot-grid grain bg-white p-4 sm:p-8 grid place-items-center">
+                    {% include "site/illustrations/team.html" %}
                 </div>
+                {% endif %}
             </div>
-            {% endif %}
         </div>
+
+        {% if commitments %}
+        <div class="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-8 lg:gap-14 mb-20 md:mb-28">
+            <div>
+                <h3 class="h-card text-2xl md:text-3xl lg:sticky lg:top-32" data-reveal>{% trans "Что мы берём на себя" %}</h3>
+            </div>
+            <div>
+                {% for item in commitments %}
+                <div class="spec-row" data-color="{{ item.color }}" data-reveal style="--d:{{ forloop.counter0 }}0ms">
+                    <span class="spec-ico"><i data-lucide="{{ item.icon|default:'check' }}"></i></span>
+                    <h4 class="font-extrabold text-lg">{{ item.title }}</h4>
+                    <p class="text-muted leading-relaxed">{{ item.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if why_us %}
+        <div id="why" class="mb-20 md:mb-28">
+            <h3 class="h-card text-2xl md:text-3xl mb-8" data-reveal>{% trans "Почему выбирают ZEA" %}</h3>
+            <div class="grid sm:grid-cols-2 gap-4 {% if why_us|length == 4 %}lg:grid-cols-4{% elif why_us|length >= 5 %}lg:grid-cols-5{% else %}lg:grid-cols-3{% endif %}">
+                {% for reason in why_us %}
+                <div class="why-card" data-color="{{ reason.color }}" data-reveal style="--d:{{ forloop.counter0 }}0ms">
+                    <span class="why-ico"><i data-lucide="{{ reason.icon|default:'check' }}"></i></span>
+                    <h4 class="font-extrabold leading-snug">{{ reason.title }}</h4>
+                    <p class="text-muted text-sm leading-relaxed">{{ reason.description }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if team %}
+        <div id="team" class="mb-20 md:mb-28">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+                <h3 class="h-card text-2xl md:text-3xl" data-reveal>{% trans "Команда" %}</h3>
+                <p class="text-muted max-w-sm" data-reveal>{% trans "Люди, которые проектируют, разрабатывают и сопровождают ваш продукт." %}</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
+                {% for person in team %}
+                <figure class="team-card m-0" data-color="{% cycle 'green' 'blue' 'orange' 'yellow' %}" data-reveal style="--d:{{ forloop.counter0 }}0ms">
+                    <div class="team-photo mb-3">
+                        {% if person.photo %}<img src="{{ person.photo.url }}" alt="{{ person.name }}" loading="lazy" width="600" height="750">
+                        {% else %}<span aria-hidden="true">{{ person.initials }}</span>{% endif %}
+                    </div>
+                    <figcaption>
+                        <p class="font-extrabold">{{ person.name }}</p>
+                        {% if person.role %}<p class="mono text-xs text-muted mt-1">{{ person.role }}</p>{% endif %}
+                    </figcaption>
+                </figure>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if stats %}
+        <div id="results" class="mb-20 md:mb-24">
+            <h3 class="h-card text-2xl md:text-3xl mb-8" data-reveal>{% trans "ZEA в цифрах" %}</h3>
+            <div class="grid gap-x-6 gap-y-10 sm:grid-cols-2 {% if stats|length >= 4 %}lg:grid-cols-4{% elif stats|length == 3 %}lg:grid-cols-3{% endif %}">
+                {% for stat in stats %}
+                <div class="stat" data-reveal style="--d:{{ forloop.counter0 }}0ms">
+                    {% if stat.is_counter and stat.counter_target is not None %}
+                    <p class="stat-num tnum"><span class="counter-num" data-target="{{ stat.counter_target }}">{{ stat.counter_target }}</span>{{ stat.suffix }}</p>
+                    {% else %}
+                    <p class="stat-num">{{ stat.value_text }}{{ stat.suffix }}</p>
+                    {% endif %}
+                    {% if stat.label %}<p class="font-extrabold">{{ stat.label }}</p>{% endif %}
+                    {% if stat.description %}<p class="text-muted text-sm leading-relaxed">{{ stat.description }}</p>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if partners %}
+        <div id="partners">
+            <h3 class="h-card text-2xl md:text-3xl mb-8" data-reveal>{% trans "С кем мы работаем" %}</h3>
+            <div class="flex flex-wrap gap-3" data-reveal>
+                {% for partner in partners %}
+                <div class="partner" data-color="{{ partner.color }}">
+                    <span class="partner-logo">
+                        {% if partner.logo %}<img src="{{ partner.logo.url }}" alt="" loading="lazy">
+                        {% else %}<i data-lucide="{{ partner.icon|default:'building-2' }}"></i>{% endif %}
+                    </span>
+                    <span><span class="block font-extrabold leading-tight">{{ partner.name }}</span>
+                    {% if partner.industry %}<span class="block mono text-[.7rem] text-muted mt-0.5">{{ partner.industry }}</span>{% endif %}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 </section>

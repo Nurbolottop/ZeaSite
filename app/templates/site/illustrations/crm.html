@@ -1,0 +1,37 @@
+{% load i18n %}<svg viewBox="0 0 520 300" role="img" aria-label="{% trans 'Канбан-доска CRM: карточка заявки переезжает в колонку «В работе»' %}">
+    <rect x="38" y="62" width="440" height="210" rx="24" fill="#17181C" opacity=".12" filter="url(#z-soft)"/>
+    <rect x="30" y="48" width="440" height="210" rx="24" fill="#D7DAE0" stroke="#17181C" stroke-width="1.5"/>
+    <rect x="30" y="40" width="440" height="210" rx="24" fill="#FFFFFF" stroke="#17181C" stroke-width="1.5"/>
+    <g font-family="JetBrains Mono, monospace" font-size="10" fill="#5A5D66" letter-spacing=".6">
+        <text x="50" y="66">{% trans "НОВЫЕ" %} · 3</text><text x="190" y="66">{% trans "В РАБОТЕ" %} · 2</text><text x="330" y="66">{% trans "ГОТОВО" %} · 5</text>
+    </g>
+    <g fill="#F3F4F6"><rect x="46" y="76" width="128" height="160" rx="14"/><rect x="186" y="76" width="128" height="160" rx="14"/><rect x="326" y="76" width="128" height="160" rx="14"/></g>
+    <g><rect x="54" y="86" width="112" height="44" rx="10" fill="#fff" stroke="#17181C" stroke-width="1.2"/><circle cx="70" cy="108" r="7" fill="#EFA28E" stroke="#17181C"/><rect x="84" y="100" width="58" height="5" rx="2.5" fill="#17181C"/><rect x="84" y="111" width="36" height="5" rx="2.5" fill="#C7CBD3"/></g>
+    <g><rect x="54" y="138" width="112" height="44" rx="10" fill="#fff" stroke="#17181C" stroke-width="1.2"/><circle cx="70" cy="160" r="7" fill="#C3D5EE" stroke="#17181C"/><rect x="84" y="152" width="48" height="5" rx="2.5" fill="#17181C"/><rect x="84" y="163" width="40" height="5" rx="2.5" fill="#C7CBD3"/></g>
+    <g><rect x="194" y="86" width="112" height="44" rx="10" fill="#fff" stroke="#17181C" stroke-width="1.2"/><circle cx="210" cy="108" r="7" fill="#D4E89A" stroke="#17181C"/><rect x="224" y="100" width="52" height="5" rx="2.5" fill="#17181C"/><rect x="224" y="111" width="30" height="5" rx="2.5" fill="#C7CBD3"/><rect x="278" y="94" width="20" height="10" rx="5" fill="#D4E89A" stroke="#17181C" stroke-width=".8"/></g>
+    <rect x="194" y="138" width="112" height="44" rx="10" fill="none" stroke="#17181C" stroke-width="1" stroke-dasharray="4 4" opacity=".5"/>
+    <g fill="#fff" stroke="#17181C" stroke-width="1.2"><rect x="334" y="86" width="112" height="32" rx="9"/><rect x="334" y="124" width="112" height="32" rx="9"/><rect x="334" y="162" width="112" height="32" rx="9"/></g>
+    <g fill="#D4E89A" stroke="#17181C"><circle cx="350" cy="102" r="7"/><circle cx="350" cy="140" r="7"/><circle cx="350" cy="178" r="7"/></g>
+    <g fill="#17181C"><rect x="364" y="99" width="56" height="5" rx="2.5"/><rect x="364" y="137" width="44" height="5" rx="2.5"/><rect x="364" y="175" width="62" height="5" rx="2.5"/></g>
+    <path d="M118 236 C 150 262 214 246 246 192" fill="none" stroke="#17181C" stroke-width="1.2" stroke-dasharray="3 4" marker-end="url(#z-arr)"/>
+    <g>
+        <animateTransform attributeName="transform" type="translate" values="0 0;0 0;140 -52;140 -52;140 -52" keyTimes="0;.18;.5;.86;1" dur="4.2s" repeatCount="indefinite" calcMode="spline" keySplines="0 0 1 1;.5 0 .2 1;0 0 1 1;0 0 1 1"/>
+        <animate attributeName="opacity" values="0;1;1;1;0" keyTimes="0;.08;.5;.86;1" dur="4.2s" repeatCount="indefinite"/>
+        <g>
+            <animateTransform attributeName="transform" type="rotate" values="0 110 212;0 110 212;-7 110 212;0 110 212;0 110 212" keyTimes="0;.18;.34;.5;1" dur="4.2s" repeatCount="indefinite"/>
+            <rect x="58" y="198" width="112" height="44" rx="10" fill="#17181C" opacity=".16"/>
+            <rect x="54" y="190" width="112" height="44" rx="10" fill="#fff" stroke="#17181C" stroke-width="1.5"/>
+            <rect x="96" y="198" width="62" height="12" rx="6" fill="#EFA28E" stroke="#17181C" stroke-width=".8"/>
+            <text x="127" y="207" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="7.5" fill="#17181C">{% trans "НОВАЯ" %}</text>
+            <circle cx="70" cy="212" r="7" fill="#E9D48E" stroke="#17181C"/>
+            <rect x="84" y="217" width="62" height="5" rx="2.5" fill="#17181C"/>
+        </g>
+    </g>
+    <circle cx="474" cy="48" r="24" fill="#17181C" opacity=".14" filter="url(#z-soft)"/>
+    <circle cx="470" cy="40" r="24" fill="url(#z-sCoral)" stroke="#17181C" stroke-width="1.5"/>
+    <text x="470" y="47" text-anchor="middle" font-family="Unbounded, sans-serif" font-weight="700" font-size="19" fill="#17181C">3</text>
+    <g transform="rotate(-4 400 270)">
+        <rect x="306" y="257" width="188" height="26" rx="13" fill="#D4E89A" stroke="#17181C" stroke-width="1.3"/>
+        <text x="400" y="274" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10.5" fill="#17181C">{% trans "автоназначение" %} · 0.4 с</text>
+    </g>
+</svg>

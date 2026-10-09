@@ -395,3 +395,236 @@ msgid "Расскажите о бизнесе — предложим подхо�
 msgstr ""
 "Tell us about your business and we'll suggest the right way to work "
 "together."
+
+# ── Редизайн сайта: дизайн-система «обведённый объём» ──
+
+msgid "Наверх"
+msgstr "Back to top"
+
+msgid "Кейсы"
+msgstr "Cases"
+
+msgid "Как мы начинаем работу"
+msgstr "How we get started"
+
+msgid "IT-команда, которая остаётся рядом с бизнесом"
+msgstr "An IT team that stays with your business"
+
+msgid "Почему выбирают ZEA"
+msgstr "Why companies choose ZEA"
+
+msgid "Команда"
+msgstr "Team"
+
+msgid "Люди, которые проектируют, разрабатывают и сопровождают ваш продукт."
+msgstr "The people who design, build and support your product."
+
+msgid "ZEA в цифрах"
+msgstr "ZEA in numbers"
+
+msgid "С кем мы работаем"
+msgstr "Who we work with"
+
+msgid "Расскажите о вашем бизнесе"
+msgstr "Tell us about your business"
+
+msgid "Быстрее всего"
+msgstr "Fastest way"
+
+msgid "Два формата <span class=\"mark\">сотрудничества</span>"
+msgstr "Two ways <span class=\"mark\">to work together</span>"
+
+msgid "Продукты, которые уже работают"
+msgstr "Products already at work"
+
+msgid "Показать все проекты"
+msgstr "Show all projects"
+
+msgid "Что мы строим для бизнеса"
+msgstr "What we build for business"
+
+msgid "Каждое направление — часть одной системы, которую мы проектируем, запускаем и развиваем."
+msgstr "Each service is part of one system that we design, launch and keep developing."
+
+msgid "автоматически"
+msgstr "automatically"
+
+msgid "ЗАКАЗЫ"
+msgstr "ORDERS"
+
+msgid "Новые сегодня"
+msgstr "New today"
+
+msgid "Принять заказ"
+msgstr "Accept order"
+
+msgid "Заявки за неделю"
+msgstr "Requests this week"
+
+msgid "НОВАЯ ЗАЯВКА"
+msgstr "NEW REQUEST"
+
+msgid "Заявка с сайта"
+msgstr "Website request"
+
+msgid "менеджер назначен"
+msgstr "manager assigned"
+
+msgid "AI-ассистент"
+msgstr "AI assistant"
+
+msgid "Отчёт за неделю готов."
+msgstr "Weekly report is ready."
+
+msgid "Цифровая система бизнеса: заявки, CRM, мобильное приложение и AI-ассистент связаны между собой"
+msgstr "A business’s digital system: requests, CRM, a mobile app and an AI assistant connected together"
+
+msgid "ВАШ ПРОЕКТ"
+msgstr "YOUR PROJECT"
+
+msgid "аналитик"
+msgstr "analyst"
+
+msgid "дизайнер"
+msgstr "designer"
+
+msgid "разработчик"
+msgstr "developer"
+
+msgid "менеджер"
+msgstr "manager"
+
+msgid "Одна команда вокруг вашего проекта: аналитик, дизайнер, разработчик и менеджер"
+msgstr "One team around your project: analyst, designer, developer and manager"
+
+msgid "обновления"
+msgstr "updates"
+
+msgid "резервные копии"
+msgstr "backups"
+
+msgid "мониторинг"
+msgstr "monitoring"
+
+msgid "Сопровождение: монитор с пульсом системы и спасательный круг"
+msgstr "Support: a monitor showing system status and a lifebuoy"
+
+msgid "ЗАЯВКА"
+msgstr "REQUEST"
+
+msgid "ОБРАБОТКА"
+msgstr "PROCESSING"
+
+msgid "УВЕДОМЛЕНИЕ"
+msgstr "NOTIFICATION"
+
+msgid "Конвейер автоматизации: заявка, обработка, уведомление"
+msgstr "Automation pipeline: request, processing, notification"
+
+msgid "платформа"
+msgstr "platform"
+
+msgid "СКЛАД"
+msgstr "WAREHOUSE"
+
+msgid "ФИНАНСЫ"
+msgstr "FINANCE"
+
+msgid "СОТРУДНИКИ"
+msgstr "STAFF"
+
+msgid "ОТЧЁТЫ"
+msgstr "REPORTS"
+
+msgid "роли и доступы"
+msgstr "roles and access"
+
+msgid "Веб-платформа из модулей: новый модуль встаёт на своё место"
+msgstr "A modular web platform: a new module slots into place"
+
+msgid "НОВЫЕ"
+msgstr "NEW"
+
+msgid "В РАБОТЕ"
+msgstr "IN PROGRESS"
+
+msgid "ГОТОВО"
+msgstr "DONE"
+
+msgid "НОВАЯ"
+msgstr "NEW"
+
+msgid "автоназначение"
+msgstr "auto-assign"
+
+msgid "Канбан-доска CRM: карточка заявки переезжает в колонку «В работе»"
+msgstr "CRM kanban board: a request card moves to “In progress”"
+
+msgid "Телефон с экраном заказов, за ним веер экранов приложения"
+msgstr "A phone showing the orders screen, with app screens fanned out behind it"
+
+msgid "ОПЛАТА"
+msgstr "PAYMENTS"
+
+msgid "УЧЁТ"
+msgstr "ACCOUNTING"
+
+msgid "САЙТ"
+msgstr "WEBSITE"
+
+msgid "Интеграции: сервисы соединены кабелями с центральным API"
+msgstr "Integrations: services connected to a central API"
+
+msgid "ЗАДАНИЕ"
+msgstr "BRIEF"
+
+msgid "ДИЗАЙН"
+msgstr "DESIGN"
+
+msgid "РАЗРАБОТКА"
+msgstr "DEVELOPMENT"
+
+msgid "СДАЧА"
+msgstr "HANDOVER"
+
+msgid "Проект под заказ: этапы от задания до сдачи"
+msgstr "Custom project: stages from brief to handover"
+
+msgid "отчёты"
+msgstr "reports"
+
+msgid "заявки"
+msgstr "requests"
+
+msgid "Объёмная сфера AI с орбитами данных и сообщением ассистента"
+msgstr "An AI sphere with data orbits and an assistant message"
+
+msgid "КОД"
+msgstr "CODE"
+
+msgid "КАРКАС"
+msgstr "WIREFRAME"
+
+msgid "Сайт, разложенный на слои: код, каркас и дизайн"
+msgstr "A website split into layers: code, wireframe and design"
+
+msgid "бизнес"
+msgstr "business"
+
+msgid "команда остаётся после запуска"
+msgstr "the team stays after launch"
+
+msgid "АНАЛИЗ"
+msgstr "ANALYSIS"
+
+msgid "ЗАПУСК"
+msgstr "LAUNCH"
+
+msgid "СОПРОВОЖДЕНИЕ"
+msgstr "SUPPORT"
+
+msgid "РАЗВИТИЕ"
+msgstr "GROWTH"
+
+msgid "Два сцепленных кольца ZEA и бизнес, под ними этапы партнёрства"
+msgstr "Two linked rings, ZEA and business, with partnership stages below"
