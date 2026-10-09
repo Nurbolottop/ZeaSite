@@ -171,6 +171,8 @@ class Partner(models.Model):
     about    = models.TextField('О партнёре', blank=True,
                                 help_text='Короткий текст для страницы партнёра')
     website  = models.URLField('Сайт партнёра', blank=True)
+    instagram = models.URLField('Instagram', blank=True,
+                                help_text='https://www.instagram.com/<аккаунт>/ — лента покажется на странице партнёра')
     since    = models.PositiveSmallIntegerField('Партнёр с (год)', null=True, blank=True,
                                                 help_text='Пусто — год самого раннего общего проекта')
     quote    = models.TextField('Отзыв партнёра', blank=True,
@@ -216,6 +218,11 @@ class Partner(models.Model):
         years = [p.year for p in projects if p.year]
         return {'projects': len(projects), 'since': self.since or (min(years) if years else None),
                 'technologies': techs, 'types': types}
+
+    @property
+    def instagram_username(self):
+        m = re.match(r'https?://(?:www\.)?instagram\.com/([A-Za-z0-9_.]+)', self.instagram or '')
+        return m.group(1) if m else ''
 
     def get_absolute_url(self):
         return reverse('site_partner', kwargs={'slug': self.slug})

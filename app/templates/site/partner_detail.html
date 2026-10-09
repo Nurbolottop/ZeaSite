@@ -45,12 +45,24 @@
                         <a class="share-btn" target="_blank" rel="noopener"
                            href="https://wa.me/?text={{ partner.name|urlencode:'' }}%20%C3%97%20{{ settings.site_name|urlencode:'' }}%20{{ canonical_url|urlencode:'' }}">
                             <i data-lucide="message-circle"></i> WhatsApp</a>
-                        <button type="button" class="share-btn" data-share-copy="{{ canonical_url }}"
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" class="share-btn flex-1 min-w-0" data-share-copy="{{ canonical_url }}"
                                 data-done="{% trans 'Ссылка скопирована' %}"><i data-lucide="link"></i> <span>{% trans "Скопировать ссылку" %}</span></button>
-                        <button type="button" class="share-btn" data-share-native="{{ canonical_url }}" data-title="{{ partner.name }} × {{ settings.site_name }}" hidden>
-                            <i data-lucide="share-2"></i> {% trans "Ещё" %}</button>
+                        <button type="button" class="share-btn" data-share-native="{{ canonical_url }}" data-title="{{ partner.name }} × {{ settings.site_name }}"
+                                aria-label="{% trans 'Ещё' %}" hidden><i data-lucide="share-2"></i></button>
                     </div>
                 </div>
+                {% if partner.instagram_username %}
+                <div class="panel ig-panel">
+                    <div class="flex items-center justify-between gap-3 px-5 py-3 border-b-[1.5px] border-ink">
+                        <span class="flex items-center gap-2 font-extrabold min-w-0"><i data-lucide="instagram" class="w-4 h-4 flex-none"></i><span class="truncate">@{{ partner.instagram_username }}</span></span>
+                        <a href="{{ partner.instagram }}" target="_blank" rel="noopener" class="mono text-xs text-muted hover:text-ink flex-none">{% trans "Открыть" %} ↗</a>
+                    </div>
+                    <iframe src="https://www.instagram.com/{{ partner.instagram_username }}/embed/" title="Instagram @{{ partner.instagram_username }}"
+                            loading="lazy" scrolling="no" allowtransparency="true"></iframe>
+                </div>
+                {% endif %}
                 <div class="flex flex-wrap gap-3">
                     {% if partner.website %}<a href="{{ partner.website }}" target="_blank" rel="noopener" class="btn btn-ink">{% trans "Сайт партнёра" %} <i data-lucide="arrow-up-right"></i></a>{% endif %}
                     {% if projects %}<a href="#partner-projects" class="btn btn-ghost">{% trans "Проекты" %} <span class="mono text-xs tnum">({{ projects|length }})</span></a>{% endif %}
@@ -58,14 +70,12 @@
             </aside>
         </div>
 
-        {% if stats.types or stats.technologies or partner.quote %}
+        {% if stats.types or partner.quote %}
         <div class="grid lg:grid-cols-12 gap-8 lg:gap-10 mt-12 md:mt-16">
-            {% if stats.types or stats.technologies %}
+            {% if stats.types %}
             <div class="lg:col-span-7 grid gap-6" data-reveal>
                 {% if stats.types %}<div><p class="eyebrow mb-3">{% trans "Что сделали" %}</p>
                     <div class="flex flex-wrap gap-2">{% for t in stats.types %}<span class="sticker" style="background:var(--tone)">{{ t }}</span>{% endfor %}</div></div>{% endif %}
-                {% if stats.technologies %}<div><p class="eyebrow mb-3">{% trans "Технологии" %}</p>
-                    <div class="flex flex-wrap gap-2">{% for t in stats.technologies %}<span class="chip">{{ t }}</span>{% endfor %}</div></div>{% endif %}
             </div>
             {% endif %}
             {% if partner.quote %}
