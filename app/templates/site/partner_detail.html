@@ -1,7 +1,7 @@
 {% extends "site/base.html" %}{% load i18n %}
 {% block content %}
 <main>
-<section class="relative pt-32 md:pt-40 pb-16 md:pb-24 overflow-hidden" data-color="{{ partner.color }}">
+<section class="relative pt-28 md:pt-36 pb-16 md:pb-24 overflow-hidden" data-color="{{ partner.color }}">
     <div class="absolute inset-x-0 top-0 h-96 dot-grid opacity-70 pointer-events-none [mask-image:linear-gradient(#000,transparent)]" aria-hidden="true"></div>
     <div class="relative max-w-site mx-auto px-4 sm:px-6 lg:px-8">
         <nav class="mono text-xs text-muted mb-8" aria-label="{% trans 'Навигация' %}">
@@ -9,23 +9,73 @@
             <a href="{% url 'site_partners' %}" class="hover:text-ink">{% trans "Партнёры" %}</a> / {{ partner.name }}
         </nav>
 
-        <div class="grid lg:grid-cols-12 gap-10 items-center">
-            <div class="lg:col-span-7 min-w-0">
-                <div class="flex items-center gap-5 mb-7" data-reveal>
-                    <span class="pd-logo">{% if partner.logo %}<img src="{{ partner.logo.url }}" alt="{{ partner.name }}">{% else %}<i data-lucide="{{ partner.icon|default:'building-2' }}"></i>{% endif %}</span>
-                    {% if partner.industry %}<span class="sticker" style="background:var(--tone)">{{ partner.industry }}</span>{% endif %}
+        <div class="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+            {# Карточка партнёрства — то же, что уходит в превью ссылки #}
+            <article class="pcard grain lg:col-span-8" data-reveal>
+                <div class="pcard-rings" aria-hidden="true">{% include "site/illustrations/partnership.html" %}</div>
+                <div class="relative z-[1] grid gap-6">
+                    <div class="flex items-center gap-4">
+                        <span class="brand-mark pcard-mark" aria-hidden="true">{{ settings.site_name|first }}</span>
+                        <span class="text-3xl font-bold" aria-hidden="true">×</span>
+                        <span class="pd-logo pcard-logo">{% if partner.logo %}<img src="{{ partner.logo.url }}" alt="{{ partner.name }}">{% else %}<i data-lucide="{{ partner.icon|default:'building-2' }}"></i>{% endif %}</span>
+                    </div>
+                    <div>
+                        <p class="eyebrow mb-3">{% trans "Технологический партнёр" %} {{ settings.site_name }}</p>
+                        <h1 class="h-display text-[2.4rem] sm:text-5xl md:text-6xl">{{ partner.name }}</h1>
+                    </div>
+                    {% if partner.industry %}<span class="sticker justify-self-start w-fit" style="background:var(--tone)">{{ partner.industry }}</span>{% endif %}
+                    {% if stats.projects or stats.since %}
+                    <dl class="pcard-stats">
+                        {% if stats.projects %}<div><dt>{% trans "Проекты" %}</dt><dd class="tnum">{{ stats.projects }}</dd></div>{% endif %}
+                        {% if stats.since %}<div><dt>{% trans "Вместе с" %}</dt><dd class="tnum">{{ stats.since }}</dd></div>{% endif %}
+                        {% if stats.technologies %}<div><dt>{% trans "Технологии" %}</dt><dd class="tnum">{{ stats.technologies|length }}</dd></div>{% endif %}
+                    </dl>
+                    {% endif %}
                 </div>
-                <h1 class="h-display text-4xl md:text-6xl mb-6" data-reveal style="--d:80ms">{{ partner.name }}</h1>
-                {% if partner.about %}<p class="lead max-w-xl mb-8" data-reveal style="--d:160ms">{{ partner.about }}</p>{% endif %}
-                <div class="flex flex-wrap gap-3" data-reveal style="--d:240ms">
+            </article>
+
+            <aside class="lg:col-span-4 grid gap-5" data-reveal style="--d:120ms">
+                {% if partner.about %}<p class="lead">{{ partner.about }}</p>{% endif %}
+                <div class="panel p-5 grid gap-3">
+                    <p class="eyebrow">{% trans "Поделиться" %}</p>
+                    <div class="grid grid-cols-2 gap-2">
+                        <a class="share-btn" target="_blank" rel="noopener"
+                           href="https://t.me/share/url?url={{ canonical_url|urlencode:'' }}&text={{ partner.name|urlencode:'' }}%20%C3%97%20{{ settings.site_name|urlencode:'' }}">
+                            <i data-lucide="send"></i> Telegram</a>
+                        <a class="share-btn" target="_blank" rel="noopener"
+                           href="https://wa.me/?text={{ partner.name|urlencode:'' }}%20%C3%97%20{{ settings.site_name|urlencode:'' }}%20{{ canonical_url|urlencode:'' }}">
+                            <i data-lucide="message-circle"></i> WhatsApp</a>
+                        <button type="button" class="share-btn" data-share-copy="{{ canonical_url }}"
+                                data-done="{% trans 'Ссылка скопирована' %}"><i data-lucide="link"></i> <span>{% trans "Скопировать ссылку" %}</span></button>
+                        <button type="button" class="share-btn" data-share-native="{{ canonical_url }}" data-title="{{ partner.name }} × {{ settings.site_name }}" hidden>
+                            <i data-lucide="share-2"></i> {% trans "Ещё" %}</button>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-3">
                     {% if partner.website %}<a href="{{ partner.website }}" target="_blank" rel="noopener" class="btn btn-ink">{% trans "Сайт партнёра" %} <i data-lucide="arrow-up-right"></i></a>{% endif %}
                     {% if projects %}<a href="#partner-projects" class="btn btn-ghost">{% trans "Проекты" %} <span class="mono text-xs tnum">({{ projects|length }})</span></a>{% endif %}
                 </div>
-            </div>
-            <div class="lg:col-span-5 min-w-0" data-reveal style="--d:120ms">
-                <div class="max-w-[440px] mx-auto">{% include "site/illustrations/partnership.html" %}</div>
-            </div>
+            </aside>
         </div>
+
+        {% if stats.types or stats.technologies or partner.quote %}
+        <div class="grid lg:grid-cols-12 gap-8 lg:gap-10 mt-12 md:mt-16">
+            {% if stats.types or stats.technologies %}
+            <div class="lg:col-span-7 grid gap-6" data-reveal>
+                {% if stats.types %}<div><p class="eyebrow mb-3">{% trans "Что сделали" %}</p>
+                    <div class="flex flex-wrap gap-2">{% for t in stats.types %}<span class="sticker" style="background:var(--tone)">{{ t }}</span>{% endfor %}</div></div>{% endif %}
+                {% if stats.technologies %}<div><p class="eyebrow mb-3">{% trans "Технологии" %}</p>
+                    <div class="flex flex-wrap gap-2">{% for t in stats.technologies %}<span class="chip">{{ t }}</span>{% endfor %}</div></div>{% endif %}
+            </div>
+            {% endif %}
+            {% if partner.quote %}
+            <figure class="lg:col-span-5 m-0 panel p-6 md:p-8 bg-lime-soft grain" data-reveal style="--d:120ms">
+                <blockquote class="h-card text-xl md:text-2xl leading-snug m-0">«{{ partner.quote }}»</blockquote>
+                {% if partner.quote_author %}<figcaption class="mono text-xs text-muted mt-4">— {{ partner.quote_author }}, {{ partner.name }}</figcaption>{% endif %}
+            </figure>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
 </section>
 

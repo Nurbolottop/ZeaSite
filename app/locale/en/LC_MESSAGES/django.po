@@ -689,3 +689,24 @@ msgstr "partner"
 msgid "Компании и организации, с которыми работает ZEA."
 msgstr "Companies and organizations ZEA works with."
 
+
+msgid "Технологический партнёр"
+msgstr "Technology partner"
+
+msgid "Вместе с"
+msgstr "Together since"
+
+msgid "Поделиться"
+msgstr "Share"
+
+msgid "Ссылка скопирована"
+msgstr "Link copied"
+
+msgid "Скопировать ссылку"
+msgstr "Copy link"
+
+msgid "Ещё"
+msgstr "More"
+
+msgid "Что сделали"
+msgstr "What we built"

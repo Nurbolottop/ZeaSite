@@ -207,7 +207,11 @@ class PartnerAdmin(PreviewAdmin):
 
     fieldsets = (
         ('Основная информация', {
-            'fields': ('name', 'slug', 'industry', 'about', 'website'),
+            'fields': ('name', 'slug', 'industry', 'about', 'website', 'since'),
+        }),
+        ('Отзыв (для страницы партнёра)', {
+            'classes': ('collapse',),
+            'fields': ('quote', 'quote_author'),
         }),
         ('Внешний вид', {
             'fields': ('icon', 'logo', 'color'),

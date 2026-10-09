@@ -171,6 +171,12 @@ class Partner(models.Model):
     about    = models.TextField('О партнёре', blank=True,
                                 help_text='Короткий текст для страницы партнёра')
     website  = models.URLField('Сайт партнёра', blank=True)
+    since    = models.PositiveSmallIntegerField('Партнёр с (год)', null=True, blank=True,
+                                                help_text='Пусто — год самого раннего общего проекта')
+    quote    = models.TextField('Отзыв партнёра', blank=True,
+                                help_text='Только реальный отзыв, с согласия партнёра')
+    quote_author = models.CharField('Автор отзыва', max_length=120, blank=True,
+                                    help_text='Например: Айгерим, директор')
     icon     = models.CharField('Иконка (lucide)', max_length=60, default='building-2',
                                 help_text='Используется если логотип не загружен')
     logo     = ResizedImageField(
@@ -196,6 +202,20 @@ class Partner(models.Model):
                 slug, n = f'{base}-{n}', n + 1
             self.slug = slug
         super().save(*args, **kwargs)
+
+    def card_stats(self, projects=None):
+        """Цифры для карточки партнёра — только из реальных проектов."""
+        projects = list(self.projects.filter(is_active=True)) if projects is None else projects
+        techs, types = [], []
+        for p in projects:
+            for t in p.technologies_list:
+                if t not in techs:
+                    techs.append(t)
+            if p.project_type and p.project_type not in types:
+                types.append(p.project_type)
+        years = [p.year for p in projects if p.year]
+        return {'projects': len(projects), 'since': self.since or (min(years) if years else None),
+                'technologies': techs, 'types': types}
 
     def get_absolute_url(self):
         return reverse('site_partner', kwargs={'slug': self.slug})

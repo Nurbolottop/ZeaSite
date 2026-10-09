@@ -29,7 +29,7 @@ class ProjectTranslationOptions(TranslationOptions):
 
 @register(Partner)
 class PartnerTranslationOptions(TranslationOptions):
-    fields = ('name', 'industry', 'about')
+    fields = ('name', 'industry', 'about', 'quote', 'quote_author')
     required_languages = ('ru',)
 
 

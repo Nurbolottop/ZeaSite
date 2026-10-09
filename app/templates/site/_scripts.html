@@ -146,6 +146,19 @@ function initApp() {
     syncHeader();
     window.addEventListener('scroll', syncHeader, { passive:true, ...sig });
 
+    /* ── Поделиться страницей партнёра ── */
+    document.querySelectorAll('[data-share-copy]').forEach(btn => btn.addEventListener('click', async () => {
+        const label = btn.querySelector('span');
+        try { await navigator.clipboard.writeText(btn.dataset.shareCopy); }
+        catch (e) { window.prompt('', btn.dataset.shareCopy); return; }
+        if (label) { const prev = label.textContent; label.textContent = btn.dataset.done; setTimeout(() => { label.textContent = prev; }, 2200); }
+    }, sig));
+    document.querySelectorAll('[data-share-native]').forEach(btn => {
+        if (!navigator.share) return;
+        btn.hidden = false;
+        btn.addEventListener('click', () => navigator.share({ title: btn.dataset.title, url: btn.dataset.shareNative }).catch(() => {}), sig);
+    });
+
     /* ── «Показать все проекты» ── */
     const moreBtn = document.getElementById('projects-more');
     if (moreBtn) moreBtn.addEventListener('click', () => {

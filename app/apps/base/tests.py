@@ -222,6 +222,22 @@ class PartnerPagesTests(TestCase):
         self.assertIn('href="/en/partners/teplyy-gorod/"', page)   # язык переключает эту же страницу
         self.assertIn('href="/#contact"', page)                    # меню ведёт на главную
 
+    def test_share_card_and_og_image(self):
+        page = self.client.get('/partners/teplyy-gorod/').content.decode()
+        self.assertIn('content="https://zeastudio.su/partners/teplyy-gorod/og.png"', page)
+        self.assertIn('summary_large_image', page)
+        self.assertIn('t.me/share/url?url=https%3A%2F%2Fzeastudio.su%2Fpartners%2Fteplyy-gorod%2F', page)
+        self.assertIn('data-share-copy="https://zeastudio.su/partners/teplyy-gorod/"', page)
+        with self.settings(MEDIA_ROOT=tempfile.mkdtemp()):
+            img = self.client.get('/partners/teplyy-gorod/og.png')
+            self.assertEqual(img.status_code, 200)
+            self.assertEqual(img['Content-Type'], 'image/png')
+            self.assertEqual(b''.join(img.streaming_content)[:8], b'\x89PNG\r\n\x1a\n')
+
+    def test_card_stats_from_real_projects(self):
+        stats = self.p.card_stats()
+        self.assertEqual((stats['projects'], stats['technologies'], stats['types']), (1, ['Django'], ['Сайт']))
+
     def test_inactive_partner_404(self):
         hidden = Partner.objects.get(name='Скрытый')
         self.assertEqual(self.client.get(f'/partners/{hidden.slug}/').status_code, 404)

@@ -169,6 +169,22 @@
         .pt-logo img, .pd-logo img { width:100%; height:100%; object-fit:contain; padding:.5rem; }
         .pt-logo svg { width:1.6rem; height:1.6rem; } .pd-logo svg { width:2.6rem; height:2.6rem; }
         .partner-tile, .pd-logo { background-color:var(--paper); }
+        .pcard { position:relative; overflow:hidden; border:1.5px solid var(--ink); border-radius:2rem; padding:clamp(1.4rem,1rem + 2vw,2.6rem);
+                 background:var(--paper) radial-gradient(rgba(23,24,28,.12) 1px, transparent 1.3px) 0 0/22px 22px; box-shadow:0 8px 0 var(--ink); }
+        .pcard-rings { position:absolute; right:1.6rem; top:1.4rem; width:min(36%,17rem); pointer-events:none; }
+        .pcard-mark { width:4.2rem; height:4.2rem; border-radius:1.2rem; font-size:1.7rem; }
+        .pcard .pcard-logo { width:4.2rem; height:4.2rem; border-radius:1.2rem; box-shadow:0 4px 0 var(--ink); }
+        .pcard-stats { display:flex; flex-wrap:wrap; gap:1.2rem 2.4rem; margin:0; padding-top:1.2rem; border-top:1.5px dashed rgba(23,24,28,.35); }
+        .pcard-stats div { display:flex; flex-direction:column-reverse; gap:.2rem; }
+        .pcard-stats dt { font:500 .72rem/1 var(--f-mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+        .pcard-stats dd { margin:0; font:600 clamp(1.8rem,1.3rem + 1.6vw,2.8rem)/1 var(--f-display); letter-spacing:-.04em; }
+        @media (max-width:767px) { .pcard-rings { display:none; } }
+        .share-btn { white-space:nowrap; display:inline-flex; align-items:center; justify-content:center; gap:.45rem; border:1.5px solid var(--ink); border-radius:999px;
+                     padding:.65rem .8rem; font-weight:700; font-size:.85rem; color:var(--ink); background:var(--paper); text-decoration:none; cursor:pointer;
+                     transition:background-color .2s, transform .2s var(--ease); }
+        .share-btn:hover { background:var(--lime); transform:translateY(-1px); }
+        .share-btn svg { width:1rem; height:1rem; }
+        .share-btn[hidden] { display:none; }
         .partners-band .partner { padding:.55rem 1.4rem .55rem .55rem; gap:1rem; background:var(--milk); }
         .partners-band .partner-logo { width:3.6rem; height:3.6rem; border-radius:1rem; background:#fff; }
         .partners-band .partner-logo img { object-fit:contain; padding:.3rem; }

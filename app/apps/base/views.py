@@ -1,7 +1,9 @@
 import json
 import os
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponse
+from urllib.parse import urlparse
+
+from django.http import FileResponse, HttpResponse
 from django.urls import reverse
 from django.utils import translation
 from django.utils.translation import gettext_lazy as _
@@ -182,9 +184,24 @@ def partner_detail(request, slug):
     context.update({
         'partner':  partner,
         'projects': projects,
+        'stats':    partner.card_stats(projects),
+        'og_image_url': context['base_url'] + reverse('site_partner_og', kwargs={'slug': slug}),
         'others':   list(Partner.objects.filter(is_active=True).exclude(pk=partner.pk)),
     })
     return render(request, 'site/partner_detail.html', context)
+
+
+def partner_og(request, slug):
+    """PNG-превью страницы партнёра для Telegram, WhatsApp, соцсетей."""
+    from .og import partner_card
+    partner = get_object_or_404(Partner, slug=slug, is_active=True)
+    projects = list(partner.projects.filter(is_active=True))
+    site = SiteSettings.get()
+    domain = urlparse(site.get_base_url(request)).netloc
+    path = partner_card(partner, partner.card_stats(projects), site.site_name, domain)
+    response = FileResponse(open(path, 'rb'), content_type='image/png')
+    response['Cache-Control'] = 'public, max-age=86400'
+    return response
 
 
 def robots_txt(request):
