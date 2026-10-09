@@ -1,0 +1,13 @@
+{% load i18n %}{# Текст карточки формата сотрудничества #}
+{% if f.is_primary %}<span class="sticker sticker-lime self-start mb-4">{% trans "Основной формат" %}</span>{% endif %}
+<h3 class="h-display text-2xl md:text-3xl mb-3">{{ f.title }}</h3>
+{% if f.audience %}<p class="font-bold mb-3 leading-relaxed">{{ f.audience }}</p>{% endif %}
+<p class="text-muted leading-relaxed mb-6">{{ f.description }}</p>
+{% if f.terms %}
+<div class="terms mb-8"><i data-lucide="file-text"></i><p>{{ f.terms }}</p></div>
+{% endif %}
+<div class="mt-auto">
+    <a href="#contact" data-request-type="{{ f.request_type }}" class="btn {% if f.is_primary %}btn-ink{% else %}btn-ghost{% endif %}">
+        {{ f.cta_label }} <i data-lucide="arrow-right" class="i-arrow"></i>
+    </a>
+</div>

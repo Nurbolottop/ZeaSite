@@ -323,6 +323,13 @@ class SiteSettings(models.Model):
 
 # ── Блоки нового позиционирования ───────────────────────────────────────────
 
+FORMAT_ILLUSTRATION_CHOICES = [
+    ('partnership',   'Сцепленные кольца — одна команда надолго'),
+    ('revenue_share', 'Рост дохода и доля ZEA — партнёрство за процент'),
+    ('development',   'Этапы до сдачи — проект под заказ'),
+]
+
+
 class CooperationFormat(models.Model):
     """Форматы сотрудничества (технологическое партнёрство / разработка под заказ)."""
     title        = models.CharField('Название', max_length=120)
@@ -335,6 +342,10 @@ class CooperationFormat(models.Model):
                                     choices=REQUEST_TYPE_CHOICES, default='partnership',
                                     help_text='Кнопка открывает форму с этим типом обращения')
     icon         = models.CharField('Иконка (lucide)', max_length=60, default='handshake')
+    illustration = models.CharField('Иллюстрация', max_length=20, choices=FORMAT_ILLUSTRATION_CHOICES,
+                                    blank=True,
+                                    help_text='Пусто — автоматически: основной формат — кольца, иконка «рост» '
+                                              'или «доллар» — доля в доходе, разработка — этапы до сдачи')
     is_primary   = models.BooleanField('Основной формат', default=False,
                                        help_text='Выделяется визуально')
     order        = models.PositiveIntegerField('Порядок', default=0)
@@ -347,6 +358,16 @@ class CooperationFormat(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def illustration_key(self):
+        if self.illustration:
+            return self.illustration
+        if self.is_primary:
+            return 'partnership'
+        if self.icon in ('trending-up', 'dollar-sign', 'bar-chart-3'):
+            return 'revenue_share'
+        return 'development' if self.request_type == 'development' else 'partnership'
 
 
 class ProcessStep(models.Model):

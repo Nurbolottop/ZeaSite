@@ -310,7 +310,7 @@ class CooperationFormatAdmin(PreviewAdmin):
             'fields': ('cta_label', 'request_type'),
         }),
         ('Внешний вид', {
-            'fields': ('icon', 'is_primary'),
+            'fields': ('illustration', 'icon', 'is_primary'),
         }),
         ('Отображение', {
             'classes': ('collapse',),

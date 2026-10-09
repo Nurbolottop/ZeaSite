@@ -180,5 +180,12 @@ class RedesignFieldsTests(TestCase):
         self.assertEqual(s.illustration_key, 'ai')
         self.assertEqual(Service(title='x', description='d', icon='star').illustration_key, 'platforms')
 
+    def test_format_illustration_auto(self):
+        F = CooperationFormat
+        self.assertEqual(F(is_primary=True, icon='handshake').illustration_key, 'partnership')
+        self.assertEqual(F(icon='trending-up', request_type='partnership').illustration_key, 'revenue_share')
+        self.assertEqual(F(icon='code-2', request_type='development').illustration_key, 'development')
+        self.assertEqual(F(icon='code-2', illustration='revenue_share').illustration_key, 'revenue_share')
+
     def test_team_member_initials(self):
         self.assertEqual(TeamMember(name='Айбек Сыдыков').initials, 'АС')

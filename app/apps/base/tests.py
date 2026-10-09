@@ -170,6 +170,16 @@ class RedesignSectionsTests(TestCase):
     def test_about_shows_illustration_without_photo(self):
         self.assertIn('ВАШ ПРОЕКТ', self.html())
 
+    def test_three_formats_get_distinct_illustrations(self):
+        from apps.cms.models import CooperationFormat
+        CooperationFormat.objects.create(title='Доля', description='d', cta_label='Ок', icon='trending-up',
+                                         request_type='partnership', order=2)
+        html = self.html()
+        self.assertIn('Форматы <span class="mark">', html)
+        self.assertIn('id="z-rev-top"', html)          # рост дохода и доля ZEA
+        self.assertIn('ЗАДАНИЕ', html)                 # этапы до сдачи
+        self.assertNotIn('Два формата', html)
+
     def test_more_projects_button(self):
         for i in range(9):
             Project.objects.create(name=f'Кейс {i}', description='d', project_type='CRM', technologies='Django')

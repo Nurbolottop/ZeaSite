@@ -1,0 +1,24 @@
+{% load i18n %}<svg viewBox="0 0 460 230" role="img" aria-label="{% trans 'Партнёрство за процент: ZEA получает долю от растущего дохода проекта' %}">
+    <g stroke="#17181C" stroke-width="1" opacity=".18"><path d="M110 150 H400 M110 110 H400 M110 70 H400"/></g>
+    {# До запуска ZEA вкладывает разработку — дохода ещё нет #}
+    <path d="M36 190 H110" stroke="#17181C" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <path d="M110 190 V44" stroke="#17181C" stroke-width="1" stroke-dasharray="3 4" opacity=".55"/>
+    {# Доход бизнеса и полоса доли ZEA сверху #}
+    <path d="M110 190 C 200 186 260 150 390 70 L390 190 Z" fill="url(#z-lCoral)" stroke="#17181C" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M110 190 C 200 180 260 138 390 50 L390 70 C 260 150 200 186 110 190 Z" fill="url(#z-lLime)" stroke="#17181C" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M30 190 H410" stroke="#17181C" stroke-width="1.5" marker-end="url(#z-arr)"/>
+    <path id="z-rev-top" d="M110 190 C 200 180 260 138 390 50" fill="none"/>
+    <circle r="7" fill="url(#z-sLime)" stroke="#17181C" stroke-width="1.2">
+        <animateMotion dur="4.5s" repeatCount="indefinite"><mpath href="#z-rev-top"/></animateMotion>
+        <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.08;.85;1" dur="4.5s" repeatCount="indefinite"/>
+    </circle>
+    <text x="300" y="172" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#17181C">{% trans "доход бизнеса" %}</text>
+    <path d="M352 36 L372 60" stroke="#17181C" stroke-width="1" stroke-dasharray="2 3"/>
+    <g transform="rotate(-4 318 26)">
+        <rect x="270" y="14" width="96" height="24" rx="12" fill="#D4E89A" stroke="#17181C" stroke-width="1.2"/>
+        <text x="318" y="30" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" fill="#17181C">% {% trans "доля ZEA" %}</text>
+    </g>
+    <g font-family="JetBrains Mono, monospace" font-size="9" fill="#17181C" text-anchor="middle" letter-spacing=".4">
+        <text x="72" y="214">{% trans "РАЗРАБОТКА" %}</text><text x="110" y="34">{% trans "ЗАПУСК" %}</text><text x="300" y="214">{% trans "РОСТ" %}</text>
+    </g>
+</svg>

@@ -63,5 +63,17 @@
             </div>
         </div>
         {% endif %}
+
+        {% if partners %}
+        <div id="partners" class="mt-10" data-reveal>
+            <p class="mono text-xs uppercase tracking-[.14em] text-muted mb-5">{% trans "Наши партнёры и организации" %}</p>
+            <div class="marquee">
+                <div class="marquee-track marquee-reverse">
+                    {% for partner in partners %}{% include "site/_partner_chip.html" %}{% endfor %}
+                    {% for partner in partners %}{% include "site/_partner_chip.html" with hidden=True %}{% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </section>

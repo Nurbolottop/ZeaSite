@@ -100,22 +100,5 @@
         </div>
         {% endif %}
 
-        {% if partners %}
-        <div id="partners">
-            <h3 class="h-card text-2xl md:text-3xl mb-8" data-reveal>{% trans "С кем мы работаем" %}</h3>
-            <div class="flex flex-wrap gap-3" data-reveal>
-                {% for partner in partners %}
-                <div class="partner" data-color="{{ partner.color }}">
-                    <span class="partner-logo">
-                        {% if partner.logo %}<img src="{{ partner.logo.url }}" alt="" loading="lazy">
-                        {% else %}<i data-lucide="{{ partner.icon|default:'building-2' }}"></i>{% endif %}
-                    </span>
-                    <span><span class="block font-extrabold leading-tight">{{ partner.name }}</span>
-                    {% if partner.industry %}<span class="block mono text-[.7rem] text-muted mt-0.5">{{ partner.industry }}</span>{% endif %}</span>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
     </div>
 </section>
