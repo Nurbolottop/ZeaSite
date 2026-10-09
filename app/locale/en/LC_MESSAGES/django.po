@@ -649,3 +649,15 @@ msgstr "Two linked rings: ZEA and your business, one team for the long run"
 
 msgid "Наши партнёры и организации"
 msgstr "Our partners and organizations"
+
+msgid "Скриншоты платформы"
+msgstr "Platform screenshots"
+
+msgid "Открыть скриншот"
+msgstr "Open screenshot"
+
+msgid "Подробнее об условиях"
+msgstr "More about the terms"
+
+msgid "Ответим и предложим формат работы."
+msgstr "We’ll reply and suggest how to work together."

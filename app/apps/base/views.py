@@ -103,7 +103,8 @@ def index(request):
     base_url = site.get_base_url(request)
     lang = translation.get_language()
 
-    projects = list(Project.objects.filter(is_active=True).order_by('-is_featured', 'order'))
+    projects = list(Project.objects.filter(is_active=True).order_by('-is_featured', 'order')
+                    .prefetch_related('gallery'))
     partners = list(Partner.objects.filter(is_active=True))
     stats = list(Stat.objects.filter(is_active=True))
 

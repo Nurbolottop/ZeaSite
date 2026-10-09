@@ -1,7 +1,7 @@
 from modeltranslation.translator import register, TranslationOptions
 from .models import (
     Service, Project, Partner, TechStack, WhyUs, Stat, SiteSettings,
-    CooperationFormat, ProcessStep, Commitment, TeamMember,
+    CooperationFormat, ProcessStep, Commitment, TeamMember, ProjectImage,
 )
 
 
@@ -71,3 +71,8 @@ class CommitmentTranslationOptions(TranslationOptions):
 class TeamMemberTranslationOptions(TranslationOptions):
     fields = ('name', 'role')
     required_languages = ('ru',)
+
+
+@register(ProjectImage)
+class ProjectImageTranslationOptions(TranslationOptions):
+    fields = ('caption',)

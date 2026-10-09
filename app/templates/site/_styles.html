@@ -23,9 +23,9 @@
         h1,h2,h3 { text-wrap:balance; }
 
         /* ── Типографика ───────────────────────────── */
-        .h-display { font-family:var(--f-display); font-weight:600; letter-spacing:-.035em; line-height:1.04; }
+        .h-display { font-family:var(--f-display); font-weight:600; letter-spacing:-.035em; line-height:1.04; overflow-wrap:break-word; }
         .h-section { font-family:var(--f-display); font-weight:600; letter-spacing:-.03em; line-height:1.08;
-                     font-size:clamp(1.9rem,1.2rem + 2.6vw,3.4rem); }
+                     font-size:clamp(1.6rem,.9rem + 3.6vw,3.4rem); overflow-wrap:break-word; }
         .h-card { font-family:var(--f-display); font-weight:600; letter-spacing:-.02em; line-height:1.15; }
         .eyebrow { display:inline-flex; align-items:center; gap:.6rem; font:500 .72rem/1 var(--f-mono);
                    letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
@@ -158,6 +158,11 @@
         .marquee-track { display:flex; gap:.6rem; width:max-content; animation:marquee 38s linear infinite; }
         .marquee:hover .marquee-track { animation-play-state:paused; }
         .marquee-reverse { animation-direction:reverse; animation-duration:46s; }
+        .partners-band .partner { padding:.55rem 1.4rem .55rem .55rem; gap:1rem; background:var(--milk); }
+        .partners-band .partner-logo { width:3.6rem; height:3.6rem; border-radius:1rem; background:#fff; }
+        .partners-band .partner-logo img { object-fit:contain; padding:.3rem; }
+        .partners-band .partner-logo svg { width:1.4rem; height:1.4rem; }
+        .partners-band .partner-name { font-size:1.05rem; }
         .partner .partner-name { display:block; font-weight:800; line-height:1.15; white-space:nowrap; }
         .partner .partner-industry { display:block; font:500 .68rem/1.2 var(--f-mono); color:var(--muted); white-space:nowrap; margin-top:.15rem; }
         @keyframes marquee { to { transform:translateX(-50%); } }
@@ -213,6 +218,13 @@
         .spec-row:last-child { border-bottom:1.5px solid var(--ink); }
         .spec-ico { width:2.4rem; height:2.4rem; border-radius:.8rem; border:1.4px solid var(--ink); background:var(--tone); display:grid; place-items:center; grid-row:span 2; }
         .spec-ico svg { width:1.15rem; height:1.15rem; }
+        .commit { display:flex; align-items:center; gap:.8rem; border:1.5px solid var(--ink); border-radius:1.1rem; padding:.75rem .9rem; background:var(--paper); }
+        .commit .spec-ico { grid-row:auto; flex:none; }
+        .coop-more summary { cursor:pointer; font-weight:700; font-size:.92rem; list-style:none; display:inline-flex; align-items:center; gap:.45rem;
+                             text-decoration:underline; text-decoration-thickness:1.5px; text-underline-offset:4px; }
+        .coop-more summary::-webkit-details-marker { display:none; }
+        .coop-more summary::after { content:'+'; font:500 1rem/1 var(--f-mono); transition:transform .25s; }
+        .coop-more[open] summary::after { transform:rotate(45deg); }
         .why-card { border:1.5px solid var(--ink); border-radius:1.4rem; padding:1.4rem; background:var(--paper); display:grid; gap:.55rem; align-content:start;
                     transition:transform .35s var(--ease), background-color .35s; }
         .why-card:hover { transform:translateY(-3px); background:var(--tone-bg); }
@@ -274,6 +286,16 @@
         .modal.open { opacity:1; }
         .modal-panel { transform:translateY(16px) scale(.98); transition:transform .35s var(--ease); background:var(--milk); border:1.5px solid var(--ink); }
         .modal.open .modal-panel { transform:none; }
+        .shots { display:flex; gap:1rem; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:.75rem; align-items:flex-start;
+                 scrollbar-width:thin; }
+        .shot { flex:none; scroll-snap-align:start; display:grid; gap:.55rem; color:var(--ink); text-decoration:none; }
+        .shot-desktop { width:min(88%,34rem); }
+        .shot-mobile { width:clamp(9.5rem,30%,12rem); }
+        .shot .browser img { aspect-ratio:16/10; }
+        .phone-frame { display:block; border:7px solid var(--ink); border-radius:1.7rem; overflow:hidden; background:var(--ink); }
+        .phone-frame img { display:block; width:100%; aspect-ratio:390/844; object-fit:cover; object-position:top; border-radius:1.15rem; }
+        .shot-cap { font:500 .72rem/1.35 var(--f-mono); color:var(--muted); }
+        .shot:hover .browser, .shot:hover .phone-frame { box-shadow:0 4px 0 var(--ink); }
         .modal-block { border:1.3px solid var(--ink); border-radius:1.1rem; padding:1.1rem 1.2rem; background:var(--paper); }
 
         /* ── Анимации внутри иллюстраций ───────────── */

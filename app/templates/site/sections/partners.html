@@ -1,0 +1,16 @@
+{% load i18n %}
+<!-- ══════════ ПАРТНЁРЫ (сразу после первого экрана) ══════════ -->
+<section id="partners" class="partners-band bg-white border-y-[1.5px] border-ink py-8 md:py-10">
+    <div class="max-w-site mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] gap-6 lg:gap-10 items-center">
+        <div data-reveal>
+            <span class="eyebrow">{% trans "Партнёры" %}</span>
+            <p class="h-card text-xl md:text-2xl mt-3">{% trans "Наши партнёры и организации" %}</p>
+        </div>
+        <div class="marquee min-w-0" data-reveal style="--d:120ms">
+            <div class="marquee-track marquee-reverse">
+                {% for partner in partners %}{% include "site/_partner_chip.html" %}{% endfor %}
+                {% for partner in partners %}{% include "site/_partner_chip.html" with hidden=True %}{% endfor %}
+            </div>
+        </div>
+    </div>
+</section>

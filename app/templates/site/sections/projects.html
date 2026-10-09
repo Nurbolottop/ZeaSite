@@ -7,7 +7,6 @@
                 <span class="eyebrow mb-5" data-reveal>{% trans "Проекты" %}</span>
                 <h2 class="h-section" data-reveal style="--d:80ms">{% trans "Продукты, которые уже работают" %}</h2>
             </div>
-            <p class="lead lg:col-span-5 lg:pb-2" data-reveal style="--d:160ms">{% trans "Цифровые продукты, которые мы разработали и запустили" %}</p>
         </div>
 
         {% for project in projects %}
@@ -48,7 +47,7 @@
                     <span class="mono text-xs text-muted">{{ project.project_type }} · <span class="tnum">{{ project.year }}</span></span>
                 </div>
                 <h3 class="h-card text-xl{% if not project.image %} sr-only{% endif %}">{{ project.name }}</h3>
-                <p class="text-muted text-[.95rem] leading-relaxed line-clamp-3">{{ project.description }}</p>
+                <p class="text-muted text-[.95rem] leading-relaxed line-clamp-2">{{ project.description }}</p>
                 <div class="flex items-center gap-5 mt-1">
                     <button type="button" data-project-open="{{ project.pk }}" class="link-arrow">
                         {% trans "Подробнее" %} <i data-lucide="arrow-right"></i>

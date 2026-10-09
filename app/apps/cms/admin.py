@@ -1,9 +1,9 @@
 from django import forms
 from django.contrib import admin
-from modeltranslation.admin import TranslationAdmin
+from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 from .models import (
     Service, Project, Partner, TechStack, WhyUs, Stat, SiteSettings,
-    CooperationFormat, ProcessStep, Commitment, TeamMember,
+    CooperationFormat, ProcessStep, Commitment, TeamMember, ProjectImage,
 )
 
 
@@ -154,8 +154,15 @@ class ServiceAdmin(PreviewAdmin):
 
 
 # ── Project ─────────────────────────────────────────────────────────────────
+class ProjectImageInline(TranslationTabularInline):
+    model  = ProjectImage
+    extra  = 1
+    fields = ('image', 'kind', 'caption', 'order')
+
+
 @admin.register(Project)
 class ProjectAdmin(PreviewAdmin):
+    inlines = [ProjectImageInline]
     list_display       = ('name', 'project_type', 'year', 'is_featured', 'order', 'is_active')
     list_display_links = ('name',)
     list_editable      = ('is_featured', 'order', 'is_active')

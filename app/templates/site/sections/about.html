@@ -27,19 +27,16 @@
         </div>
 
         {% if commitments %}
-        <div class="grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-8 lg:gap-14 mb-20 md:mb-28">
-            <div>
-                <h3 class="h-card text-2xl md:text-3xl lg:sticky lg:top-32" data-reveal>{% trans "Что мы берём на себя" %}</h3>
-            </div>
-            <div>
+        <div class="mb-20 md:mb-28">
+            <h3 class="h-card text-2xl md:text-3xl mb-8" data-reveal>{% trans "Что мы берём на себя" %}</h3>
+            <ul class="grid grid-cols-2 md:grid-cols-3 gap-3 list-none p-0 m-0">
                 {% for item in commitments %}
-                <div class="spec-row" data-color="{{ item.color }}" data-reveal style="--d:{{ forloop.counter0 }}0ms">
+                <li class="commit" data-color="{{ item.color }}" data-reveal style="--d:{{ forloop.counter0 }}0ms" title="{{ item.description }}">
                     <span class="spec-ico"><i data-lucide="{{ item.icon|default:'check' }}"></i></span>
-                    <h4 class="font-extrabold text-lg">{{ item.title }}</h4>
-                    <p class="text-muted leading-relaxed">{{ item.description }}</p>
-                </div>
+                    <span class="font-extrabold leading-tight">{{ item.title }}</span>
+                </li>
                 {% endfor %}
-            </div>
+            </ul>
         </div>
         {% endif %}
 
@@ -62,7 +59,6 @@
         <div id="team" class="mb-20 md:mb-28">
             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
                 <h3 class="h-card text-2xl md:text-3xl" data-reveal>{% trans "Команда" %}</h3>
-                <p class="text-muted max-w-sm" data-reveal>{% trans "Люди, которые проектируют, разрабатывают и сопровождают ваш продукт." %}</p>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
                 {% for person in team %}

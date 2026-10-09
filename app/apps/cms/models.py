@@ -117,6 +117,29 @@ class Project(models.Model):
         return [t.strip() for t in self.technologies.split(',') if t.strip()]
 
 
+class ProjectImage(models.Model):
+    """Скриншоты платформы в окне «Подробнее» проекта."""
+    KIND_CHOICES = [('desktop', 'Компьютер'), ('mobile', 'Телефон')]
+
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='gallery',
+                                verbose_name='Проект')
+    image   = ResizedImageField('📷 Скриншот', size=[1800, 2400], quality=85,
+                                upload_to='projects/gallery/', force_format='WEBP',
+                                help_text='Реальный скриншот платформы (без вымышленных данных)')
+    kind    = models.CharField('Экран', max_length=10, choices=KIND_CHOICES, default='desktop',
+                               help_text='Определяет рамку: окно браузера или телефон')
+    caption = models.CharField('Подпись', max_length=150, blank=True)
+    order   = models.PositiveIntegerField('Порядок', default=0)
+
+    class Meta:
+        verbose_name        = 'Скриншот проекта'
+        verbose_name_plural = 'Скриншоты проекта'
+        ordering            = ['order', 'pk']
+
+    def __str__(self):
+        return f'{self.project} — {self.caption or self.get_kind_display()}'
+
+
 class Partner(models.Model):
     name     = models.CharField('Название', max_length=100)
     industry = models.CharField('Сфера', max_length=100)

@@ -84,6 +84,7 @@
 
 <main>
     {% include "site/sections/hero.html" %}
+    {% if partners %}{% include "site/sections/partners.html" %}{% endif %}
     {% include "site/sections/services.html" %}
     {% if projects %}{% include "site/sections/projects.html" %}{% endif %}
     {% include "site/sections/process.html" %}
