@@ -9,6 +9,7 @@ from django.utils import translation
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings as dj_settings
 from django.contrib.staticfiles import finders
+from django.templatetags.static import static
 from apps.cms.models import (
     Service, Project, Partner, TechStack, WhyUs, Stat, SiteSettings,
     CooperationFormat, ProcessStep, Commitment, TeamMember,
@@ -68,8 +69,7 @@ def _organization_jsonld(site, base_url, description):
         'url': base_url + '/',
         'description': description,
     }
-    if site.logo:
-        data['logo'] = base_url + site.logo.url
+    data['logo'] = base_url + (site.logo.url if site.logo else static('img/zea-icon-512.png'))
     if site.email:
         data['email'] = site.email
     same_as = [u for u in (site.telegram_url, site.whatsapp_url, site.instagram_url) if u]

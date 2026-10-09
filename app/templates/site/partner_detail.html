@@ -1,4 +1,4 @@
-{% extends "site/base.html" %}{% load i18n %}
+{% extends "site/base.html" %}{% load i18n static %}
 {% block content %}
 <main>
 <section class="relative pt-28 md:pt-36 pb-14 md:pb-20 overflow-hidden" data-color="{{ partner.color }}">
@@ -14,7 +14,7 @@
             <div class="pcard-main">
                 <div class="grid gap-6 content-start min-w-0">
                     <div class="flex items-center gap-4">
-                        <span class="brand-mark pcard-mark" aria-hidden="true">{{ settings.site_name|first }}</span>
+                        <span class="pcard-mark"><img src="{% static 'img/zea-logo-white.svg' %}" alt="{{ settings.site_name }}"></span>
                         <span class="text-3xl font-bold" aria-hidden="true">×</span>
                         <span class="pd-logo pcard-logo">{% if partner.logo %}<img src="{{ partner.logo.url }}" alt="{{ partner.name }}">{% else %}<i data-lucide="{{ partner.icon|default:'building-2' }}"></i>{% endif %}</span>
                     </div>

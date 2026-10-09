@@ -48,6 +48,9 @@
     {% if settings.favicon %}
     <link rel="icon" type="image/webp" href="{{ settings.favicon.url }}">
     <link rel="apple-touch-icon" href="{{ settings.favicon.url }}">
+    {% else %}
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
     {% endif %}
 
     <!-- Structured Data (Organization) -->

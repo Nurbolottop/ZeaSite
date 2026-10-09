@@ -1,8 +1,8 @@
-{# Логотип из настроек (для светлого фона) или текстовый знак. size: lg (шапка) / sm (меню, подвал) #}
+{% load static %}{# Логотип: загруженный в настройках сайта или фирменный ZEA Hub (SVG). size: lg (шапка) / sm (меню, подвал) #}
 {% if settings.logo %}
 <img src="{{ settings.logo.url }}" alt="{{ settings.site_name }}"
-     class="{% if size == 'lg' %}h-10 md:h-12{% else %}h-8{% endif %} w-auto object-contain">
+     class="{% if size == 'lg' %}h-10 md:h-12{% else %}h-9{% endif %} w-auto object-contain">
 {% else %}
-<span class="brand-mark" aria-hidden="true">{{ settings.site_name|first }}</span>
-<span class="brand-name">{{ settings.site_name }}</span>
+<img src="{% static 'img/zea-logo.svg' %}" alt="{{ settings.site_name }}" width="2514" height="1200"
+     class="{% if size == 'lg' %}h-11 md:h-12{% else %}h-10{% endif %} w-auto">
 {% endif %}

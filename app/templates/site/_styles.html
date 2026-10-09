@@ -175,7 +175,9 @@
         .pcard-art { max-width:30rem; width:100%; justify-self:center; }
         @media (min-width:1024px) { .pcard-main { grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); } }
         @media (max-width:767px) { .pcard-art { display:none; } }
-        .pcard-mark { width:4.6rem; height:4.6rem; border-radius:1.3rem; font-size:1.9rem; }
+        .pcard-mark { width:4.6rem; height:4.6rem; border-radius:1.3rem; background:#111; border:1.5px solid var(--ink); box-shadow:0 4px 0 var(--ink);
+                      display:grid; place-items:center; padding:.55rem; }
+        .pcard-mark img { width:100%; height:auto; }
         .pcard .pcard-logo { width:4.6rem; height:4.6rem; border-radius:1.3rem; box-shadow:0 4px 0 var(--ink); }
         .pcard-foot { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1.4rem 2rem;
                       border-top:1.5px solid var(--ink); background:rgba(255,255,255,.75); padding:1.2rem clamp(1.4rem,1rem + 2.4vw,3rem); position:relative; z-index:1; }

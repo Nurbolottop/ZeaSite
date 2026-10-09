@@ -14,7 +14,7 @@ from PIL import Image, ImageDraw, ImageFont
 W, H = 1200, 630
 MILK, INK, MUTED = (250, 248, 244), (23, 24, 28), (90, 93, 102)
 LIME, LIME_D, CORAL, CORAL_D, SKY = (212, 232, 154), (169, 191, 94), (239, 162, 142), (207, 138, 118), (195, 213, 238)
-VERSION = '1'
+VERSION = '2'
 
 
 def _font(name, size, weight='Bold'):
@@ -80,11 +80,12 @@ def partner_card(partner, stats, site_name, domain):
     _ring(d, 905, 300, 120, LIME, LIME_D)
     _ring(d, 1045, 300, 120, CORAL, CORAL_D)
 
-    # ZEA × логотип партнёра
+    # логотип ZEA Hub × логотип партнёра
     d.rounded_rectangle((80, 87, 190, 197), 26, fill=INK)
-    d.rounded_rectangle((80, 80, 190, 190), 26, fill=LIME, outline=INK, width=3)
-    z = _font('Unbounded', 60, 'Bold')
-    d.text((135, 135), (site_name or 'ZEA')[:1], font=z, fill=INK, anchor='mm')
+    d.rounded_rectangle((80, 80, 190, 190), 26, fill=(17, 17, 17), outline=INK, width=3)
+    zea = Image.open(finders.find('img/zea-logo-white.png')).convert('RGBA')
+    zea.thumbnail((86, 86), Image.LANCZOS)
+    img.paste(zea, (135 - zea.width // 2, 135 - zea.height // 2), zea)
     d.text((232, 135), '×', font=_font('Manrope', 64, 'Bold'), fill=INK, anchor='mm')
     _logo_tile(img, logo_path, (274, 80, 384, 190), 26)
 

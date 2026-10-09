@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, follow">
     <title>404 — {% trans "Страница не найдена" %}</title>
-    {% if settings.favicon %}<link rel="icon" type="image/webp" href="{{ settings.favicon.url }}">{% endif %}
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700&family=Manrope:wght@500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -34,7 +34,8 @@
 <body>
     <main class="card">
         <span class="ball" aria-hidden="true"></span>
-        <span class="tag">ZEA · Error 404</span>
+        <img src="{% static 'img/zea-logo.svg' %}" alt="ZEA Hub" style="height:44px;width:auto;display:block;margin-bottom:22px">
+        <span class="tag">Error 404</span>
         <div class="code">404</div>
         <h1>{% trans "Страница не найдена" %}</h1>
         <p>{% trans "Возможно, ссылка устарела или страница была перемещена. Вернитесь на главную — там всё на месте." %}</p>

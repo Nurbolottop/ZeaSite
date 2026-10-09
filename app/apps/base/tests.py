@@ -279,11 +279,13 @@ class SeoTests(TestCase):
         self.assertIn('<link rel="canonical" href="https://zeastudio.su/en/">', html)
         self.assertIn('ZEA — Technology Partner for Business', html)
 
-    def test_no_images_when_not_set(self):
+    def test_brand_defaults_when_not_set(self):
+        # Без загрузок в админке: фирменный логотип ZEA Hub и favicon из static, og:image нет
         html = self.client.get('/').content.decode()
         self.assertNotIn('og:image', html)
-        self.assertNotIn('rel="icon"', html)
-        self.assertNotIn('"logo"', html)
+        self.assertIn('img/favicon.png', html)
+        self.assertIn('img/zea-logo.svg', html)
+        self.assertIn('img/zea-icon-512.png', html)   # logo в JSON-LD
 
     def test_jsonld_valid(self):
         html = self.client.get('/').content.decode()
