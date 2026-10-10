@@ -61,7 +61,7 @@
         {% endif %}
 
         <div class="flex flex-wrap gap-3">
-            <a href="#contact" data-request-type="development" data-modal-close class="btn btn-ink">
+            <a href="{{ contact_url|default:'#contact' }}" data-request-type="development" data-modal-close class="btn btn-ink">
                 {% trans "Нужен похожий проект" %} <i data-lucide="arrow-right" class="i-arrow"></i>
             </a>
             {% if project.live_url %}

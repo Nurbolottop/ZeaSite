@@ -200,9 +200,17 @@ function initApp() {
             if (closer.dataset.requestType) {
                 /* «Нужен похожий проект» — выбрать тип и перейти к форме */
                 e.preventDefault();
+                const target = document.getElementById('contact');
+                if (!target) {
+                    /* Формы на этой странице нет (страница партнёра) — на главную, к форме, с выбранным типом */
+                    const url = new URL(closer.getAttribute('href') || '/#contact', location.href);
+                    url.searchParams.set('request', closer.dataset.requestType);
+                    url.hash = 'contact';
+                    location.assign(url.toString());
+                    return;
+                }
                 setRequestType(closer.dataset.requestType);
                 closeProject();
-                const target = document.getElementById('contact');
                 if (target) window.scrollTo({ top: target.getBoundingClientRect().top + scrollY - 80, behavior:'smooth' });
                 return;
             }
