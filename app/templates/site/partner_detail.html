@@ -49,6 +49,8 @@
                         <i data-lucide="link"></i> <span>{% trans "Скопировать ссылку" %}</span></button>
                     <button type="button" class="share-icon" data-share-native="{{ canonical_url }}" data-title="{{ partner.name }} × {{ settings.site_name }}"
                             aria-label="{% trans 'Ещё' %}" title="{% trans 'Ещё' %}" hidden><i data-lucide="share-2"></i></button>
+                    <a href="{% url 'site_partner_card' partner.slug %}?download=1" download="{{ partner.slug }}-x-zea.png" class="share-btn"
+                       title="{% trans 'Карточка для соцсетей с QR-кодом на эту страницу' %}"><i data-lucide="image-down"></i> <span>{% trans "Скачать карточку" %}</span></a>
                     {% if partner.website %}<a href="{{ partner.website }}" target="_blank" rel="noopener" class="btn btn-ink btn-sm">{% trans "Сайт партнёра" %} <i data-lucide="arrow-up-right"></i></a>{% endif %}
                 </div>
             </div>

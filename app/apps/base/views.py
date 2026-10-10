@@ -204,6 +204,23 @@ def partner_og(request, slug):
     return response
 
 
+def partner_card(request, slug):
+    """Карточка-визитка партнёра (PNG 1080×1350) с QR на его страницу."""
+    from .og import partner_photo_card
+    partner = get_object_or_404(Partner, slug=slug, is_active=True)
+    projects = list(partner.projects.filter(is_active=True))
+    site = SiteSettings.get()
+    base_url = site.get_base_url(request)
+    url = base_url + reverse('site_partner', kwargs={'slug': slug})
+    path = partner_photo_card(partner, partner.card_stats(projects), site.site_name,
+                              urlparse(base_url).netloc, url)
+    response = FileResponse(open(path, 'rb'), content_type='image/png')
+    response['Cache-Control'] = 'public, max-age=86400'
+    if request.GET.get('download'):
+        response['Content-Disposition'] = f'attachment; filename="{slug}-x-zea.png"'
+    return response
+
+
 def robots_txt(request):
     site = SiteSettings.objects.first()
     base_url = site.get_base_url(request) if site else f'{request.scheme}://{request.get_host()}'

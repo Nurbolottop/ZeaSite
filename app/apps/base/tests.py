@@ -234,6 +234,18 @@ class PartnerPagesTests(TestCase):
             self.assertEqual(img['Content-Type'], 'image/png')
             self.assertEqual(b''.join(img.streaming_content)[:8], b'\x89PNG\r\n\x1a\n')
 
+    def test_photo_card_with_qr(self):
+        page = self.client.get('/partners/teplyy-gorod/').content.decode()
+        self.assertIn('href="/partners/teplyy-gorod/card.png?download=1"', page)
+        with self.settings(MEDIA_ROOT=tempfile.mkdtemp()):
+            card = self.client.get('/partners/teplyy-gorod/card.png?download=1')
+            self.assertEqual(card.status_code, 200)
+            self.assertIn('attachment', card['Content-Disposition'])
+            from PIL import Image
+            import io
+            img = Image.open(io.BytesIO(b''.join(card.streaming_content)))
+            self.assertEqual(img.size, (1080, 1350))
+
     def test_card_stats_from_real_projects(self):
         stats = self.p.card_stats()
         self.assertEqual((stats['projects'], stats['technologies'], stats['types']), (1, ['Django'], ['Сайт']))

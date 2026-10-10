@@ -716,3 +716,18 @@ msgstr "News, work and life of our partner."
 
 msgid "Открыть Instagram"
 msgstr "Open Instagram"
+
+msgid "Наведите камеру"
+msgstr "Point your camera"
+
+msgid "или нажмите на QR-код на фото"
+msgstr "or tap the QR code in the photo"
+
+msgid "Проекты и история партнёрства"
+msgstr "Projects and partnership story"
+
+msgid "Скачать карточку"
+msgstr "Download card"
+
+msgid "Карточка для соцсетей с QR-кодом на эту страницу"
+msgstr "A social card with a QR code to this page"
