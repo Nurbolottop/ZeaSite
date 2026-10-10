@@ -6,6 +6,7 @@ import tempfile
 
 from django.contrib.auth.models import User
 from django.test import Client, TestCase, override_settings
+from django.utils import translation
 
 from apps.base import views as site_views
 from apps.cms.models import Partner, Project, SiteSettings, Stat, TeamMember
@@ -245,6 +246,16 @@ class PartnerPagesTests(TestCase):
             import io
             img = Image.open(io.BytesIO(b''.join(card.streaming_content)))
             self.assertEqual(img.size, (1080, 1350))
+
+    def test_site_business_card(self):
+        html = self.client.get('/').content.decode()
+        self.assertIn('href="/card.png?download=1"', html)
+        with self.settings(MEDIA_ROOT=tempfile.mkdtemp()):
+            for url in ('/card.png', '/ky/card.png'):
+                card = self.client.get(url)
+                self.assertEqual(card.status_code, 200)
+                self.assertEqual(card['Content-Type'], 'image/png')
+        translation.activate('ru')   # запрос /ky/ оставляет язык активным для следующих тестов
 
     def test_card_stats_from_real_projects(self):
         stats = self.p.card_stats()

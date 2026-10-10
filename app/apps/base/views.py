@@ -221,6 +221,23 @@ def partner_card(request, slug):
     return response
 
 
+def site_card(request):
+    """Визитка ZEA (PNG 1080×1350) с QR-кодом на главную страницу сайта."""
+    from .og import site_photo_card
+    site = SiteSettings.get()
+    base_url = site.get_base_url(request)
+    services = [s.title for s in Service.objects.filter(is_active=True)]
+    stats = {'projects': Project.objects.filter(is_active=True).count(),
+             'partners': Partner.objects.filter(is_active=True).count(),
+             'services': len(services)}
+    path = site_photo_card(site, services, stats, urlparse(base_url).netloc, base_url + reverse('index'))
+    response = FileResponse(open(path, 'rb'), content_type='image/png')
+    response['Cache-Control'] = 'public, max-age=86400'
+    if request.GET.get('download'):
+        response['Content-Disposition'] = 'attachment; filename="zea-hub-card.png"'
+    return response
+
+
 def robots_txt(request):
     site = SiteSettings.objects.first()
     base_url = site.get_base_url(request) if site else f'{request.scheme}://{request.get_host()}'

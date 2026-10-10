@@ -731,3 +731,18 @@ msgstr "Download card"
 
 msgid "Карточка для соцсетей с QR-кодом на эту страницу"
 msgstr "A social card with a QR code to this page"
+
+msgid "Цифровые продукты для бизнеса"
+msgstr "Digital products for business"
+
+msgid "Технологический партнёр для бизнеса"
+msgstr "Technology partner for business"
+
+msgid "Проекты, услуги и заявка"
+msgstr "Projects, services and requests"
+
+msgid "Визитка ZEA"
+msgstr "ZEA card"
+
+msgid "Скачать визитку"
+msgstr "Download card"

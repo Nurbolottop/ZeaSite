@@ -43,8 +43,10 @@
                     <span>{% trans "Оставьте заявку — мы свяжемся с вами по телефону или email, который вы укажете." %}</span>
                 </p>
                 {% endif %}
-            </div>
 
+                <a href="{% url 'site_card' %}?download=1" download="zea-hub-card.png" class="link-arrow text-sm mt-10 inline-flex" data-reveal>
+                    <i data-lucide="qr-code"></i> {% trans "Скачать визитку" %}</a>
+            </div>
             <div class="lg:col-span-7 min-w-0" data-reveal style="--d:120ms">
                 <div class="panel p-6 sm:p-9 shadow-[0_6px_0_#17181C]">
 

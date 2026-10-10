@@ -22,8 +22,8 @@ module.exports = {
         butter: '#E9D48E',
       },
       fontFamily: {
-        display: ['Unbounded', 'Manrope', 'system-ui', 'sans-serif'],
-        sans:    ['Manrope', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['Unbounded', 'Onest', 'Manrope', 'system-ui', 'sans-serif'],
+        sans:    ['Manrope', 'Onest', 'system-ui', '-apple-system', 'sans-serif'],
         mono:    ['"JetBrains Mono"', 'ui-monospace', 'Menlo', 'monospace'],
       },
       borderRadius: {

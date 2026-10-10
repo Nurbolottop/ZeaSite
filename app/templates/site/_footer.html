@@ -16,6 +16,7 @@
         <div class="footer-word mt-10 -mb-4" aria-hidden="true">{{ settings.site_name }}</div>
         <div class="flex flex-col sm:flex-row justify-between gap-2 pt-6 border-t border-ink/15 relative">
             <p class="mono text-xs text-muted">{% if settings.footer_text %}{{ settings.footer_text }}{% else %}© {% now "Y" %} {{ settings.site_name }}{% endif %}</p>
+            <a href="{% url 'site_card' %}?download=1" download="zea-hub-card.png" class="mono text-xs text-muted hover:text-ink">{% trans "Визитка ZEA" %} ↓</a>
             <a href="#" class="mono text-xs text-muted hover:text-ink">{% trans "Наверх" %} ↑</a>
         </div>
     </div>
