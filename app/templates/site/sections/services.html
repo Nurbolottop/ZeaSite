@@ -33,10 +33,11 @@
                     <h3 class="h-card text-2xl md:text-3xl">{% trans "Не нашли свою задачу?" %}</h3>
                     <p class="lead">{% trans "Опишите её — подскажем, какое решение подойдёт." %}</p>
                 </div>
-                <div>
-                    <a href="#contact" data-request-type="development" class="btn btn-lime">
-                        {% trans "Обсудить задачу" %} <i data-lucide="arrow-right" class="i-arrow"></i>
+                <div class="flex flex-wrap gap-3">
+                    <a href="{% url 'site_brief' %}" class="btn btn-lime">
+                        {% trans "Заполнить бриф" %} <i data-lucide="arrow-right" class="i-arrow"></i>
                     </a>
+                    <a href="#contact" data-request-type="development" class="btn btn-ghost text-white border-white hover:bg-white/10">{% trans "Обсудить задачу" %}</a>
                 </div>
             </div>
             {% endif %}

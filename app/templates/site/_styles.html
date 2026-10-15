@@ -324,6 +324,43 @@
         .rt-option input:focus-visible + span { outline:2px solid var(--ink); outline-offset:2px; }
         .cf-error-text { color:#B03A27; }
 
+        /* ── Бриф ─────────────────────────────────── */
+        .btn[hidden] { display:none !important; }
+        .brief-title { font:600 clamp(2rem,1.4rem + 2vw,2.9rem)/1.08 var(--f-display); letter-spacing:-.03em; hyphens:manual; overflow-wrap:normal; word-break:keep-all; }
+        .brief-hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+        .brief-progress { height:.5rem; border:1.5px solid var(--ink); border-radius:999px; overflow:hidden; background:var(--milk); margin-bottom:.7rem; }
+        .brief-progress span { display:block; height:100%; width:0; background:var(--lime); border-right:1.5px solid var(--ink); transition:width .4s var(--ease); }
+        form:not(.is-wizard) .brief-progress, form:not(.is-wizard) #brief-counter, form:not(.is-wizard) #brief-next, form:not(.is-wizard) #brief-prev { display:none; }
+        form:not(.is-wizard) .brief-step + .brief-step { margin-top:3rem; padding-top:2.5rem; border-top:1.5px dashed rgba(23,24,28,.3); }
+        .brief-step { border:0; padding:0; margin:0; min-width:0; }
+        .brief-step legend { padding:0; }
+        .brief-nav-item { display:flex; align-items:center; gap:.8rem; width:100%; text-align:left; padding:.55rem .4rem; border-radius:.8rem;
+                          font-weight:700; color:var(--muted); cursor:pointer; transition:background-color .2s, color .2s; background:none; border:0; }
+        .brief-nav-item:hover { background:var(--fog); color:var(--ink); }
+        .brief-nav-num { width:2rem; height:2rem; border-radius:50%; border:1.5px solid currentColor; display:grid; place-items:center;
+                         font:500 .75rem/1 var(--f-mono); flex:none; background:var(--paper); }
+        .brief-nav-item.is-current { color:var(--ink); }
+        .brief-nav-item.is-current .brief-nav-num { background:var(--lime); border-color:var(--ink); }
+        .brief-nav-item.is-done { color:var(--ink); }
+        .brief-nav-item.is-done .brief-nav-num { background:var(--ink); color:#fff; border-color:var(--ink); }
+        .brief-chip input, .brief-check input { position:absolute; opacity:0; pointer-events:none; }
+        .brief-chip { position:relative; }
+        .brief-chip span { display:inline-flex; align-items:center; min-height:2.6rem; padding:.55rem 1rem; border:1.5px solid rgba(23,24,28,.22);
+                           border-radius:999px; background:var(--milk); font-weight:700; font-size:.9rem; cursor:pointer;
+                           transition:background-color .2s, border-color .2s; }
+        .brief-chip span:hover { border-color:var(--ink); }
+        .brief-chip input:checked + span { background:var(--lime); border-color:var(--ink); }
+        .brief-chip input[type=checkbox]:checked + span::before { content:'✓'; margin-right:.4rem; font-weight:800; }
+        .brief-chip input:focus-visible + span, .brief-check input:focus-visible + span::before { outline:2px solid var(--ink); outline-offset:2px; }
+        .brief-check { position:relative; display:flex; gap:.8rem; align-items:flex-start; cursor:pointer; font-weight:600; }
+        .brief-check span::before { content:''; flex:none; display:inline-grid; place-items:center; width:1.5rem; height:1.5rem; margin-right:.7rem;
+                                    border:1.5px solid var(--ink); border-radius:.45rem; background:var(--paper); vertical-align:-.3rem;
+                                    font-weight:800; font-size:.85rem; }
+        .brief-check input:checked + span::before { content:'✓'; background:var(--lime); }
+        .brief-field.has-error .cf-input { border-color:#C2412D; background:#FFF6F3; }
+        .brief-field.has-error .cf-label, .brief-field.has-error .brief-consent { color:#B03A27; }
+        .brief-field.has-error .brief-chip span { border-color:#C2412D; }
+
         /* ── Подвал ────────────────────────────────── */
         .site-footer { background:var(--fog); border-top:1.5px solid var(--ink); overflow:hidden; }
         .footer-word { font:700 clamp(5rem,22vw,19rem)/.8 var(--f-display); letter-spacing:-.045em; color:#DCDFE5;

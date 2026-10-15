@@ -746,3 +746,364 @@ msgstr "ZEA card"
 
 msgid "Скачать визитку"
 msgstr "Download card"
+
+# ── Бриф ──
+msgid "Бриф"
+msgstr "Brief"
+
+msgid "Бриф на разработку"
+msgstr "Project brief"
+
+msgid "Расскажите о продукте, который хотите создать. Чем подробнее ответы, тем точнее мы предложим решение, сроки и формат работы."
+msgstr "Tell us about the product you want to build. The more detail you give, the more precisely we can propose a solution, timeline and way of working."
+
+msgid "Около 10 минут. Черновик сохраняется в браузере."
+msgstr "About 10 minutes. Your draft is saved in the browser."
+
+msgid "Бриф отправлен"
+msgstr "Brief sent"
+
+msgid "Спасибо! Мы изучим ответы и свяжемся с вами в течение рабочего дня."
+msgstr "Thank you! We will review your answers and get back to you within one business day."
+
+msgid "Назад"
+msgstr "Back"
+
+msgid "Далее"
+msgstr "Next"
+
+msgid "Отправить бриф"
+msgstr "Send brief"
+
+msgid "Заполните обязательные поля."
+msgstr "Please fill in the required fields."
+
+msgid "Укажите телефон, email или Telegram — чтобы мы могли связаться с вами."
+msgstr "Please give a phone number, email or Telegram so we can reach you."
+
+msgid "Нужна разработка продукта?"
+msgstr "Need a product built?"
+
+msgid "Заполните бриф — около 10 минут, и мы предложим решение."
+msgstr "Fill in the brief — about 10 minutes — and we will propose a solution."
+
+msgid "Заполнить бриф"
+msgstr "Fill in the brief"
+
+msgid "О вас"
+msgstr "About you"
+
+msgid "Как к вам обращаться и как удобнее связаться."
+msgstr "How to address you and how best to get in touch."
+
+msgid "Название компании или проекта"
+msgstr "Company or project name"
+
+msgid "Например: логистика, клиника, ритейл"
+msgstr "For example: logistics, clinic, retail"
+
+msgid "Ваша роль"
+msgstr "Your role"
+
+msgid "Например: владелец, директор, менеджер"
+msgstr "For example: owner, director, manager"
+
+msgid "Telegram"
+msgstr "Telegram"
+
+msgid "Как удобнее связаться"
+msgstr "Preferred way to contact"
+
+msgid "WhatsApp"
+msgstr "WhatsApp"
+
+msgid "Звонок"
+msgstr "Phone call"
+
+msgid "Продукт"
+msgstr "Product"
+
+msgid "Что вы хотите создать и зачем."
+msgstr "What you want to build and why."
+
+msgid "Что нужно"
+msgstr "What you need"
+
+msgid "Веб-платформа или сервис"
+msgstr "Web platform or service"
+
+msgid "CRM или внутренняя система"
+msgstr "CRM or internal system"
+
+msgid "Telegram-бот"
+msgstr "Telegram bot"
+
+msgid "Автоматизация процессов"
+msgstr "Process automation"
+
+msgid "Другое"
+msgstr "Other"
+
+msgid "На каком этапе проект"
+msgstr "Project stage"
+
+msgid "Есть только идея"
+msgstr "Just an idea"
+
+msgid "Есть описание или ТЗ"
+msgstr "There is a description or spec"
+
+msgid "Есть дизайн"
+msgstr "There is a design"
+
+msgid "Продукт есть, нужна доработка или переделка"
+msgstr "The product exists and needs improvement or a rebuild"
+
+msgid "Опишите продукт своими словами"
+msgstr "Describe the product in your own words"
+
+msgid "Что это, для кого и как должно работать"
+msgstr "What it is, who it is for and how it should work"
+
+msgid "Какую задачу бизнеса он решает"
+msgstr "What business problem it solves"
+
+msgid "Что сейчас неудобно, где теряете время или деньги"
+msgstr "What is inconvenient now, where you lose time or money"
+
+msgid "Как вы поймёте, что проект удался"
+msgstr "How you will know the project succeeded"
+
+msgid "Например: больше заявок, меньше ручной работы, контроль сотрудников"
+msgstr "For example: more requests, less manual work, staff oversight"
+
+msgid "Пользователи и функции"
+msgstr "Users and features"
+
+msgid "Кто будет пользоваться продуктом и что он должен уметь."
+msgstr "Who will use the product and what it should do."
+
+msgid "Кто пользователи"
+msgstr "Who the users are"
+
+msgid "Клиенты"
+msgstr "Customers"
+
+msgid "Сотрудники"
+msgstr "Staff"
+
+msgid "Партнёры или дилеры"
+msgstr "Partners or dealers"
+
+msgid "Руководство"
+msgstr "Management"
+
+msgid "Сколько пользователей ожидаете"
+msgstr "Expected number of users"
+
+msgid "До 100"
+msgstr "Up to 100"
+
+msgid "100–1 000"
+msgstr "100–1,000"
+
+msgid "1 000–10 000"
+msgstr "1,000–10,000"
+
+msgid "Больше 10 000"
+msgstr "More than 10,000"
+
+msgid "Пока не знаю"
+msgstr "Not sure yet"
+
+msgid "Ключевые функции"
+msgstr "Key features"
+
+msgid "Например: заявки, личный кабинет, оплата, отчёты, роли сотрудников"
+msgstr "For example: requests, user accounts, payments, reports, staff roles"
+
+msgid "Что обязательно в первой версии"
+msgstr "Must-haves for the first version"
+
+msgid "Можно начать с главного и развивать продукт по этапам."
+msgstr "You can start with the essentials and grow the product in stages."
+
+msgid "Где должен работать продукт"
+msgstr "Where the product should run"
+
+msgid "Сайт или веб-приложение"
+msgstr "Website or web app"
+
+msgid "Веб-админка"
+msgstr "Web admin panel"
+
+msgid "Языки"
+msgstr "Languages"
+
+msgid "Кыргызский"
+msgstr "Kyrgyz"
+
+msgid "Английский"
+msgstr "English"
+
+msgid "Другой"
+msgstr "Other"
+
+msgid "С чем нужно связать"
+msgstr "Integrations needed"
+
+msgid "Онлайн-оплата"
+msgstr "Online payments"
+
+msgid "1С или учётная система"
+msgstr "1C or accounting system"
+
+msgid "Telegram или WhatsApp"
+msgstr "Telegram or WhatsApp"
+
+msgid "SMS"
+msgstr "SMS"
+
+msgid "Существующая CRM"
+msgstr "Existing CRM"
+
+msgid "Карты или доставка"
+msgstr "Maps or delivery"
+
+msgid "Подробнее об интеграциях"
+msgstr "More about integrations"
+
+msgid "Какие сервисы и что они должны передавать"
+msgstr "Which services and what data they should exchange"
+
+msgid "Дизайн и контент"
+msgstr "Design and content"
+
+msgid "Как продукт должен выглядеть и что уже готово."
+msgstr "How the product should look and what is ready."
+
+msgid "Фирменный стиль"
+msgstr "Brand identity"
+
+msgid "Есть брендбук"
+msgstr "We have a brand book"
+
+msgid "Есть только логотип"
+msgstr "Only a logo"
+
+msgid "Ничего нет, нужно сделать"
+msgstr "Nothing yet, needs to be created"
+
+msgid "Примеры, которые нравятся"
+msgstr "Examples you like"
+
+msgid "Ссылки на сайты или приложения и что именно в них нравится"
+msgstr "Links to sites or apps and what exactly you like about them"
+
+msgid "Что точно не нравится"
+msgstr "What you definitely dislike"
+
+msgid "Тексты и фото"
+msgstr "Texts and photos"
+
+msgid "Готовы"
+msgstr "Ready"
+
+msgid "Готовы частично"
+msgstr "Partly ready"
+
+msgid "Нужна помощь"
+msgstr "Need help"
+
+msgid "Чем пользуетесь сейчас"
+msgstr "What you use now"
+
+msgid "Например: Excel, Google Sheets, 1С, старый сайт"
+msgstr "For example: Excel, Google Sheets, 1C, an old website"
+
+msgid "Сроки и формат"
+msgstr "Timeline and format"
+
+msgid "Последний шаг — сроки, бюджет и как будем работать."
+msgstr "Last step — timeline, budget and how we will work together."
+
+msgid "Когда нужен запуск"
+msgstr "When you need to launch"
+
+msgid "Срочно, до месяца"
+msgstr "Urgently, within a month"
+
+msgid "Через 1–3 месяца"
+msgstr "In 1–3 months"
+
+msgid "Через 3–6 месяцев"
+msgstr "In 3–6 months"
+
+msgid "Сроки не горят"
+msgstr "No rush"
+
+msgid "Есть ли важная дата"
+msgstr "Any important date"
+
+msgid "Например: открытие филиала, сезон, выставка"
+msgstr "For example: a branch opening, the season, an exhibition"
+
+msgid "Ориентир по бюджету"
+msgstr "Budget range"
+
+msgid "До $1 000"
+msgstr "Up to $1,000"
+
+msgid "Больше $15 000"
+msgstr "More than $15,000"
+
+msgid "Обсудим"
+msgstr "Let's discuss"
+
+msgid "Помогает сразу предложить подходящий объём работ."
+msgstr "Helps us propose the right scope from the start."
+
+msgid "Формат сотрудничества"
+msgstr "Way of working"
+
+msgid "Технологическое партнёрство"
+msgstr "Technology partnership"
+
+msgid "Партнёрство за процент с дохода"
+msgstr "Revenue-share partnership"
+
+msgid "Разработка под заказ"
+msgstr "Custom development"
+
+msgid "Сопровождение после запуска"
+msgstr "Support after launch"
+
+msgid "Нужно"
+msgstr "Needed"
+
+msgid "Не нужно"
+msgstr "Not needed"
+
+msgid "Кто принимает решение по проекту"
+msgstr "Who makes decisions on the project"
+
+msgid "Например: я, совет директоров, владелец"
+msgstr "For example: me, the board, the owner"
+
+msgid "Ссылка на материалы"
+msgstr "Link to materials"
+
+msgid "Google Drive, Figma, ТЗ — если есть"
+msgstr "Google Drive, Figma, a spec — if you have one"
+
+msgid "Что ещё важно знать"
+msgstr "Anything else we should know"
+
+msgid "Согласен на обработку данных для связи по проекту"
+msgstr "I agree to my data being used to contact me about the project"
+
+msgid "Не удалось отправить бриф."
+msgstr "The brief could not be sent."
+
+msgid "Расскажите о продукте, который хотите создать: мы изучим задачу и предложим решение."
+msgstr "Tell us about the product you want to build: we will study the task and propose a solution."

@@ -1,0 +1,227 @@
+{% extends "site/base.html" %}{% load i18n %}
+{% block content %}
+<main>
+<section class="relative pt-28 md:pt-36 pb-20 md:pb-28">
+    <div class="absolute inset-x-0 top-0 h-96 dot-grid opacity-70 pointer-events-none [mask-image:linear-gradient(#000,transparent)]" aria-hidden="true"></div>
+    <div class="relative max-w-site mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+
+        <aside class="lg:col-span-4 lg:sticky lg:top-28">
+            <nav class="mono text-xs text-muted mb-6" aria-label="{% trans 'Навигация' %}">
+                <a href="{% url 'index' %}" class="hover:text-ink">{{ settings.site_name }}</a> / {% trans "Бриф" %}
+            </nav>
+            <h1 class="brief-title mb-5">{% trans "Бриф на разработку" %}</h1>
+            <p class="lead mb-8">{% trans "Расскажите о продукте, который хотите создать. Чем подробнее ответы, тем точнее мы предложим решение, сроки и формат работы." %}</p>
+            {% if not sent %}
+            <ol class="brief-nav list-none p-0 m-0 hidden lg:grid gap-1" id="brief-nav">
+                {% for step in steps %}
+                <li><button type="button" class="brief-nav-item" data-goto="{{ forloop.counter0 }}">
+                    <span class="brief-nav-num tnum">{{ forloop.counter }}</span>{{ step.title }}</button></li>
+                {% endfor %}
+            </ol>
+            <p class="mono text-xs text-muted lg:mt-6">{% trans "Около 10 минут. Черновик сохраняется в браузере." %}</p>
+            {% endif %}
+        </aside>
+
+        <div class="lg:col-span-8 min-w-0">
+            {% if sent %}
+            <div class="panel p-8 md:p-12 text-center grain" role="status">
+                <div class="w-16 h-16 rounded-full bg-lime border-[1.5px] border-ink grid place-items-center mx-auto mb-5"><i data-lucide="check" class="w-8 h-8"></i></div>
+                <h2 class="h-card text-2xl md:text-3xl mb-3">{% trans "Бриф отправлен" %}</h2>
+                <p class="lead mb-8">{% trans "Спасибо! Мы изучим ответы и свяжемся с вами в течение рабочего дня." %}</p>
+                <a href="{% url 'index' %}" class="btn btn-ink">{% trans "На главную" %}</a>
+            </div>
+            {% else %}
+            <form id="brief-form" method="post" action="{% url 'site_brief' %}" class="panel p-6 sm:p-10 shadow-[0_6px_0_#17181C]" novalidate>
+                {% csrf_token %}
+                <div class="brief-hp" aria-hidden="true"><label>Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+
+                <div class="brief-progress" aria-hidden="true"><span id="brief-bar"></span></div>
+                <p class="mono text-xs text-muted mb-6"><span id="brief-counter">1</span> / {{ steps|length }}</p>
+
+                {% if form.non_field_errors %}<p class="cf-error-text text-sm font-semibold mb-6" role="alert">{{ form.non_field_errors|join:" " }}</p>{% endif %}
+                <p id="brief-error" class="hidden cf-error-text text-sm font-semibold mb-6" role="alert"></p>
+
+                {% for step in steps %}
+                <fieldset class="brief-step" data-step="{{ forloop.counter0 }}">
+                    <legend class="h-card text-2xl md:text-3xl mb-2">{{ step.title }}</legend>
+                    <p class="text-muted mb-8">{{ step.intro }}</p>
+                    <div class="grid sm:grid-cols-2 gap-x-5 gap-y-6">
+                        {% for f, bf in step.bound %}
+                        <div class="brief-field{% if f.kind == 'textarea' or f.kind == 'multi' or f.kind == 'radio' or f.kind == 'consent' %} sm:col-span-2{% endif %}{% if bf.errors %} has-error{% endif %}" data-field="{{ f.key }}"{% if f.required %} data-required="1"{% endif %} data-kind="{{ f.kind }}">
+                            {% if f.kind == 'consent' %}
+                            <label class="brief-check brief-consent">
+                                <input type="checkbox" name="{{ f.key }}" value="on"{% if bf.value %} checked{% endif %}>
+                                <span>{{ f.label }}</span>
+                            </label>
+                            {% elif f.kind == 'multi' or f.kind == 'radio' %}
+                            <p class="cf-label">{{ f.label }}{% if f.required %} <span class="text-coral-deep">*</span>{% endif %}</p>
+                            {% if f.hint %}<p class="text-muted text-sm -mt-1 mb-3">{{ f.hint }}</p>{% endif %}
+                            <div class="flex flex-wrap gap-2">
+                                {% for code, label in f.options %}
+                                <label class="brief-chip">
+                                    <input type="{% if f.kind == 'multi' %}checkbox{% else %}radio{% endif %}" name="{{ f.key }}" value="{{ code }}"
+                                           {% if f.kind == 'multi' %}{% if code in bf.value %} checked{% endif %}{% elif bf.value == code %} checked{% endif %}>
+                                    <span>{{ label }}</span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <label for="brief-{{ f.key }}" class="cf-label">{{ f.label }}{% if f.required %} <span class="text-coral-deep">*</span>{% endif %}</label>
+                            {% if f.kind == 'textarea' %}
+                            <textarea id="brief-{{ f.key }}" name="{{ f.key }}" rows="4" class="cf-input resize-y" placeholder="{{ f.placeholder }}">{{ bf.value|default:'' }}</textarea>
+                            {% else %}
+                            <input id="brief-{{ f.key }}" type="{{ f.kind }}" name="{{ f.key }}" value="{{ bf.value|default:'' }}" class="cf-input"
+                                   placeholder="{{ f.placeholder }}"{% if f.kind == 'email' %} autocomplete="email"{% elif f.key == 'name' %} autocomplete="name"{% elif f.kind == 'tel' %} autocomplete="tel"{% endif %}>
+                            {% endif %}
+                            {% if f.hint %}<p class="text-muted text-sm mt-2">{{ f.hint }}</p>{% endif %}
+                            {% endif %}
+                            {% for e in bf.errors %}<p class="cf-error-text text-sm mt-2">{{ e }}</p>{% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+                {% endfor %}
+
+                <div class="flex flex-wrap items-center justify-between gap-3 mt-10 pt-6 border-t-[1.5px] border-dashed border-ink/30">
+                    <button type="button" class="btn btn-ghost" id="brief-prev">← {% trans "Назад" %}</button>
+                    <div class="flex gap-3 ml-auto">
+                        <button type="button" class="btn btn-ink" id="brief-next">{% trans "Далее" %} <i data-lucide="arrow-right" class="i-arrow"></i></button>
+                        <button type="submit" class="btn btn-ink" id="brief-submit"><i data-lucide="send"></i> <span>{% trans "Отправить бриф" %}</span></button>
+                    </div>
+                </div>
+            </form>
+            <div id="brief-done" class="hidden panel p-8 md:p-12 text-center grain" role="status">
+                <div class="w-16 h-16 rounded-full bg-lime border-[1.5px] border-ink grid place-items-center mx-auto mb-5"><i data-lucide="check" class="w-8 h-8"></i></div>
+                <h2 class="h-card text-2xl md:text-3xl mb-3">{% trans "Бриф отправлен" %}</h2>
+                <p class="lead mb-8">{% trans "Спасибо! Мы изучим ответы и свяжемся с вами в течение рабочего дня." %}</p>
+                <a href="{% url 'index' %}" class="btn btn-ink">{% trans "На главную" %}</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+</main>
+{% endblock %}
+
+{% block scripts %}
+{% if not sent %}
+<script>
+(function () {
+    const form = document.getElementById('brief-form');
+    if (!form) return;
+    const steps = [...form.querySelectorAll('.brief-step')];
+    const navItems = [...document.querySelectorAll('.brief-nav-item')];
+    const prev = document.getElementById('brief-prev'), next = document.getElementById('brief-next'),
+          submit = document.getElementById('brief-submit'), bar = document.getElementById('brief-bar'),
+          counter = document.getElementById('brief-counter'), errBox = document.getElementById('brief-error');
+    const KEY = 'zea-brief-draft';
+    const T = {
+        required: '{% trans "Заполните обязательные поля." as t %}{{ t|escapejs }}',
+        contact: '{% trans "Укажите телефон, email или Telegram — чтобы мы могли связаться с вами." as t %}{{ t|escapejs }}',
+        network: '{% trans "Ошибка соединения. Попробуйте позже." as t %}{{ t|escapejs }}',
+    };
+    let current = 0;
+    form.classList.add('is-wizard');
+
+    function show(i) {
+        current = Math.max(0, Math.min(i, steps.length - 1));
+        steps.forEach((s, n) => s.hidden = n !== current);
+        navItems.forEach((b, n) => { b.classList.toggle('is-current', n === current); b.classList.toggle('is-done', n < current); });
+        prev.hidden = current === 0;
+        next.hidden = current === steps.length - 1;
+        submit.hidden = current !== steps.length - 1;
+        bar.style.width = ((current + 1) / steps.length * 100) + '%';
+        counter.textContent = current + 1;
+        errBox.classList.add('hidden');
+    }
+
+    function filled(field) {
+        const kind = field.dataset.kind;
+        if (kind === 'multi' || kind === 'radio' || kind === 'consent') return !!field.querySelector('input:checked');
+        const el = field.querySelector('input, textarea');
+        return !!(el && el.value.trim());
+    }
+
+    function validate(i) {
+        let ok = true;
+        steps[i].querySelectorAll('.brief-field').forEach(f => {
+            const bad = f.dataset.required && !filled(f);
+            f.classList.toggle('has-error', bad);
+            if (bad) ok = false;
+        });
+        if (!ok) { errBox.textContent = T.required; errBox.classList.remove('hidden'); return false; }
+        if (steps[i].querySelector('[data-field="phone"]')) {
+            const has = ['phone', 'email', 'telegram'].some(k => (form.elements[k].value || '').trim());
+            if (!has) { errBox.textContent = T.contact; errBox.classList.remove('hidden'); return false; }
+        }
+        return true;
+    }
+
+    function scrollTop() { window.scrollTo({ top: form.getBoundingClientRect().top + scrollY - 110, behavior: 'smooth' }); }
+
+    next.addEventListener('click', () => { if (validate(current)) { show(current + 1); scrollTop(); } });
+    prev.addEventListener('click', () => { show(current - 1); scrollTop(); });
+    navItems.forEach((b, n) => b.addEventListener('click', () => {
+        if (n <= current || [...Array(n).keys()].every(validate)) { show(n); scrollTop(); }
+    }));
+    form.addEventListener('input', e => e.target.closest('.brief-field')?.classList.remove('has-error'));
+
+    // Черновик в браузере
+    function save() {
+        const data = {};
+        new FormData(form).forEach((v, k) => { if (k === 'csrfmiddlewaretoken' || k === 'website') return; (data[k] = data[k] || []).push(v); });
+        try { localStorage.setItem(KEY, JSON.stringify({ data, step: current })); } catch (e) {}
+    }
+    function restore() {
+        let saved;
+        try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
+        if (!saved) return;
+        Object.entries(saved.data).forEach(([k, values]) => {
+            form.querySelectorAll(`[name="${k}"]`).forEach(el => {
+                if (el.type === 'checkbox' || el.type === 'radio') el.checked = values.includes(el.value);
+                else el.value = values[0] || '';
+            });
+        });
+        show(saved.step || 0);
+    }
+    form.addEventListener('change', save);
+    form.addEventListener('input', save);
+
+    form.addEventListener('submit', async e => {
+        e.preventDefault();
+        if (!validate(current)) return;
+        for (let i = 0; i < steps.length; i++) { if (!validate(i)) { show(i); validate(i); return; } }
+        submit.disabled = true;
+        try {
+            const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'X-Requested-With': 'fetch' } });
+            const json = await res.json();
+            if (json.ok) {
+                try { localStorage.removeItem(KEY); } catch (e) {}
+                form.classList.add('hidden');
+                document.getElementById('brief-nav')?.classList.add('hidden');
+                document.getElementById('brief-done').classList.remove('hidden');
+                scrollTop();
+                return;
+            }
+            const errors = json.errors || {};
+            const firstKey = Object.keys(errors).find(k => k !== '__all__');
+            if (firstKey) {
+                const field = form.querySelector(`[data-field="${firstKey}"]`);
+                field?.classList.add('has-error');
+                const idx = steps.findIndex(s => s.contains(field));
+                if (idx >= 0) show(idx);
+            }
+            errBox.textContent = Object.values(errors).flat().join(' ');
+            errBox.classList.remove('hidden');
+        } catch (err) {
+            errBox.textContent = T.network; errBox.classList.remove('hidden');
+        }
+        submit.disabled = false;
+    });
+
+    show(0);
+    restore();
+})();
+</script>
+{% endif %}
+{% endblock %}
